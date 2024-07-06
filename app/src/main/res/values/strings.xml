@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">IU ThesisConnect</string>
+    <string name="password">password*</string>
+    <string name="username">Username*</string>
+    <string name="international_university">international university</string>
+    <string name="next">Continue</string>
 </resources>
