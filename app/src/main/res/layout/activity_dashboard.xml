@@ -11,11 +11,33 @@
         android:id="@+id/toolbar"
         android:layout_width="0dp"
         android:layout_height="50dp"
+        android:background="#4DFBFF"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        >
+        app:layout_constraintTop_toTopOf="parent">
 
+        <ImageButton
+            android:id="@+id/toolbarImageButton"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:src="@android:drawable/ic_dialog_info"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="2dp"
+            />
+
+
+        <TextView
+            android:id="@+id/toolbartextView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="iu"
+            android:textSize="40sp"
+            android:textStyle="bold"
+            android:layout_gravity="right"
+            android:layout_marginRight="15dp"
+            />
+-->
     </Toolbar>
 
     <ListView
@@ -26,7 +48,7 @@
         tools:layout_editor_absoluteY="50dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
         />
 
 

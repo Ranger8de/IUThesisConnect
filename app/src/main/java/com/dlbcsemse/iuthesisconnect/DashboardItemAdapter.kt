@@ -8,6 +8,7 @@ import android.view.ViewParent
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import java.util.zip.Inflater
 
 class DashboardItemAdapter (
@@ -22,7 +23,7 @@ class DashboardItemAdapter (
     }
 
     override fun getItemId(p0: Int): Long {
-        return p0 .toLong()
+        return p0.toLong()
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
@@ -38,6 +39,9 @@ class DashboardItemAdapter (
         val itemImageView = view.findViewById<ImageView>(R.id.dashboardItemimageView)
         itemTextView.text = item.itemName
         itemImageView.setImageResource(item.ImageID)
+        itemImageView.setOnClickListener {
+            Toast.makeText(context, "was", Toast.LENGTH_SHORT).show()
+        }
         return view
     }
 }
