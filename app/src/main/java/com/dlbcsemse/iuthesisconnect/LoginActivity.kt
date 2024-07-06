@@ -30,18 +30,20 @@ class LoginActivity : AppCompatActivity() {
         loginButton.setOnClickListener {
 
             val userName = loginUsername.text.toString()
+            var userType : DashboardUserType
 
             if (userName.equals("student", true)){
-
+                userType = DashboardUserType.student
             }
             else if (userName.equals("supervisor", true)){
-
+                userType = DashboardUserType.supervisor
             }
             else {
                 return@setOnClickListener
             }
 
             val intent = Intent(this, DashboardActivity::class.java)
+            intent.putExtra("userType", userType.toString())
             startActivity(intent)
 
         }
