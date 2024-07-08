@@ -42,14 +42,16 @@ class DashboardActivity : AppCompatActivity() {
             when (clickedItem.itemID) {
                 // das L muss verwendet werden um zu deklarieren, dass es sich hier um den Datentyp Long handelt
                 0L -> {
-                    Toast.makeText(this, "Betreuerboard geklickt", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, BetreuerboardActivity::class.java)
+                    startActivity(intent)
                 }
                 1L -> {
                     val intent = Intent(this, MyThesisActivity::class.java)
                     startActivity(intent)
                 }
                 2L -> {
-                    Toast.makeText(this, "Beaufsichtigte Abschlussarbeiten geklickt", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, BetreuteAbschlussarbeitenActivity::class.java)
+                    startActivity(intent)
                 }
             }
             Unit
