@@ -13,6 +13,10 @@
         android:theme="@style/Theme.IUThesisConnect"
         tools:targetApi="31">
         <activity
+            android:name=".ProfilActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize"/>
+        <activity
             android:name=".BetreuteAbschlussarbeitenActivity"
             android:exported="false" />
         <activity
@@ -34,4 +38,5 @@
             </intent-filter>
         </activity>
     </application>
+
 </manifest>
