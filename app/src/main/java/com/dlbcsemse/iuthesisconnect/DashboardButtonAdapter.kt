@@ -1,3 +1,5 @@
+package com.dlbcsemse.iuthesisconnect
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,8 +12,7 @@ import com.dlbcsemse.iuthesisconnect.R
 
 class ButtonAdapter(
     private val items: ArrayList<DashboardItem>,
-    private val onItemClick: (DashboardItem) -> Unit
-) : RecyclerView.Adapter<ButtonAdapter.ButtonViewHolder>() {
+    private val onItemClick: (DashboardItem) -> Unit) : RecyclerView.Adapter<ButtonAdapter.ButtonViewHolder>() {
 
     class ButtonViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView: ImageView = itemView.findViewById(R.id.dashboardItemimageView)
@@ -28,8 +29,6 @@ class ButtonAdapter(
         val item = items[position]
         holder.titleView.text = item.itemName
         holder.imageView.setImageResource(item.itemImageID)
-
-        // Setze den Click-Listener auf das gesamte itemView
         holder.itemView.setOnClickListener { onItemClick(item) }
     }
 
