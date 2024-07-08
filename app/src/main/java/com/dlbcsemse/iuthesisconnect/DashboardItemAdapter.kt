@@ -39,9 +39,7 @@ class DashboardItemAdapter (
         val itemImageView = view.findViewById<ImageView>(R.id.dashboardItemimageView)
         itemTextView.text = item.itemName
         itemImageView.setImageResource(item.ImageID)
-        itemImageView.setOnClickListener {
-     //       Toast.makeText(context, "was", Toast.LENGTH_SHORT).show()
-        }
+        itemImageView.setOnClickListener {}
         return view
     }
 }
