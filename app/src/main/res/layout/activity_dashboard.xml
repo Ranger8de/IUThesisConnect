@@ -40,9 +40,8 @@
 
     </Toolbar>
 
-    <!-- Der Versuch aus einem ArryList-Eintrag einen Button zu erzeugen -->
+    <!-- Der Versuch aus einem ArrayList-Eintrag einen Button zu erzeugen -->
 
-    <!--height und width erlaubt dem RecyclerView den verfügbaren Platz auszufüllen-->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/dashboardRecyclerView"
             android:layout_width="0dp"
@@ -54,18 +53,6 @@
 
             />
 
-    <!--
-        <ListView
-            android:id="@+id/dashboardListView"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="50dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"
-            />
-    -->
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
