@@ -45,7 +45,6 @@ class LoginActivity : AppCompatActivity() {
             val intent = Intent(this, DashboardActivity::class.java)
             intent.putExtra("userType", userType.toString())
             startActivity(intent)
-
         }
     }
 }

@@ -40,7 +40,7 @@ class DashboardItemAdapter (
         itemTextView.text = item.itemName
         itemImageView.setImageResource(item.ImageID)
         itemImageView.setOnClickListener {
-            Toast.makeText(context, "was", Toast.LENGTH_SHORT).show()
+     //       Toast.makeText(context, "was", Toast.LENGTH_SHORT).show()
         }
         return view
     }
