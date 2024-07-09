@@ -10,9 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.dlbcsemse.iuthesisconnect.DashboardItem
 import com.dlbcsemse.iuthesisconnect.R
 
-class ButtonAdapter(
+class DashboardButtonAdapter(
     private val items: ArrayList<DashboardItem>,
-    private val onItemClick: (DashboardItem) -> Unit) : RecyclerView.Adapter<ButtonAdapter.ButtonViewHolder>() {
+    private val onItemClick: (DashboardItem) -> Unit) : RecyclerView.Adapter<DashboardButtonAdapter.ButtonViewHolder>() {
 
     class ButtonViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView: ImageView = itemView.findViewById(R.id.dashboardItemimageView)

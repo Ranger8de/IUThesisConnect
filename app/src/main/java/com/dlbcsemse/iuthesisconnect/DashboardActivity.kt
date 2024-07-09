@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 class DashboardActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var buttonAdapter: ButtonAdapter
+    private lateinit var buttonAdapter: DashboardButtonAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +32,7 @@ class DashboardActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         // Verschiedene Weiterleitungen
-        buttonAdapter = ButtonAdapter(items) { clickedItem ->
+        buttonAdapter = DashboardButtonAdapter(items) { clickedItem ->
             when (clickedItem.itemID) {
                 // das L muss verwendet werden um zu deklarieren, dass es sich hier um den Datentyp Long handelt
                 0L -> {
