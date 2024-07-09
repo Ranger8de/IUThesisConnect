@@ -1,50 +1,44 @@
 package com.dlbcsemse.iuthesisconnect
 
-import android.content.Context
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
-
 class MyThesisActivity : AppCompatActivity() {
-    private lateinit var editTitle: EditText
-    private lateinit var editsupervisor: EditText
-    private lateinit var buttonSave: Button
+    // Deklaration der benötigten Variablen
+    private lateinit var dbHelper: DatabaseHelper
+    private lateinit var currentUserId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Setzt das Layout für diese Activity
         setContentView(R.layout.activity_my_thesis)
 
-        editTitle = findViewById(R.id.titelMyThesiseditTextData)
-        editsupervisor = findViewById(R.id.supervisorMyThesiseditTextData)
-        buttonSave = findViewById(R.id.myThesisbuttonSave)
+        // Initialisiert den DatabaseHelper
+        dbHelper = DatabaseHelper.getInstance(this)
 
-        buttonSave.setOnClickListener {
-            saveData()
+        // Setzt eine Beispiel-Benutzer-ID
+        // Dies würde dann aus dem Login-Prozess kommen
+        currentUserId = "user123"
+
+        // Speichert Beispieldaten für den aktuellen Benutzer
+        dbHelper.saveData(currentUserId, "MyThesisActivity", "title", "Meine Abschlussarbeit")
+        dbHelper.saveData(currentUserId, "MyThesisActivity", "supervisor", "Prof. Dr. Mustermann")
+
+        // Ruft die gespeicherten Daten ab
+        val title = dbHelper.getData(currentUserId, "MyThesisActivity", "title")
+        val supervisor = dbHelper.getData(currentUserId, "MyThesisActivity", "supervisor")
+
+        // Gibt die abgerufenen Daten aus
+        println("Titel: $title")
+        println("Betreuer: $supervisor")
+
+        // Ruft alle Daten für den aktuellen Benutzer ab und gibt sie aus
+        val allData = dbHelper.getAllDataForUser(currentUserId)
+        for ((className, data) in allData) {
+            println("Daten für $className:")
+            for ((key, value) in data) {
+                println("  $key: $value")
+            }
         }
-
-        // Laden gespeicherter Daten beim Start der Activity
-        loadData()
-    }
-
-    private fun saveData() {
-        val title = editTitle.text.toString()
-        val supervisor = editsupervisor.text.toString()
-        val sharedSettings = getSharedPreferences("MyThesisSettings", Context.MODE_PRIVATE)
-        val editor = sharedSettings.edit()
-        editor.putString("savedTitle", title)
-        editor.putString("savedSupervisor", supervisor)
-        editor.apply()
-        Toast.makeText(this, "Daten gespeichert", Toast.LENGTH_SHORT).show()
-    }
-
-    private fun loadData() {
-        val sharedPreferences = getSharedPreferences("MyThesisSettings", Context.MODE_PRIVATE)
-        val savedTitle = sharedPreferences.getString("savedTitle", "")
-        val savedSupervisor = sharedPreferences.getString("savedSupervisor", "")
-        editTitle.setText(savedTitle)
-        editsupervisor.setText(savedSupervisor)
     }
 }
