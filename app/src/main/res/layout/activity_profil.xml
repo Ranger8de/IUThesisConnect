@@ -23,7 +23,7 @@
 
     <ImageView
         android:id="@+id/profileImageViewImage"
-        android:contentDescription="profile header image showing a black board"
+        android:contentDescription="profile header image showing profile picture"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginTop="30dp"

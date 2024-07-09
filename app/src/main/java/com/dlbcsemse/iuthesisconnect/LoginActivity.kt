@@ -10,6 +10,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.dlbcsemse.iuthesisconnect.helper.AzureAdHelper
 
 class LoginActivity : AppCompatActivity() {
     @SuppressLint("MissingInflatedId")
@@ -26,11 +27,18 @@ class LoginActivity : AppCompatActivity() {
 
         val loginButton = findViewById<Button>(R.id.loginButtonContinue)
         val loginUsername = findViewById<EditText>(R.id.loginEditTextUsername)
+        val loginUserPassword = findViewById<EditText>(R.id.loginEditTextPassword)
 
         loginButton.setOnClickListener {
 
             val userName = loginUsername.text.toString()
+            val userPassword = loginUserPassword.text.toString()
             var userType : DashboardUserType
+            val azureAdHelper  = AzureAdHelper()
+
+            val uuid = azureAdHelper.logIn(userName, userPassword)
+
+
 
             if (userName.equals("student", true)){
                 userType = DashboardUserType.student
