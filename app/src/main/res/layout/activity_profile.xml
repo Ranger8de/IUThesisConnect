@@ -9,7 +9,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".ProfilActivity">
+    tools:context=".ProfileActivity">
 
     <ImageView
         android:id="@+id/profileImageViewHeader"

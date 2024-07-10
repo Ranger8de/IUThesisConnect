@@ -1,7 +1,6 @@
 package com.dlbcsemse.iuthesisconnect
 
 import android.app.AlertDialog
-import android.media.Image
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,25 +13,38 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.dlbcsemse.iuthesisconnect.helper.DatabaseHelper
+import com.dlbcsemse.iuthesisconnect.model.UserProfile
 
-class ProfilActivity : AppCompatActivity() {
+class ProfileActivity : AppCompatActivity() {
     private lateinit var imgButton: ImageButton
     private lateinit var textViewStatus : TextView
+    private lateinit var userProfile : UserProfile
+    private lateinit var userName : TextView
+    private lateinit var userEmail : TextView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_profil)
+        setContentView(R.layout.activity_profile)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
+        val databaseHelper = DatabaseHelper(this)
+        val userProfile = databaseHelper.getCurrentUser()
+
         imgButton  = findViewById<ImageButton>(R.id.profileImageViewAvailableStatus)
         textViewStatus = findViewById<TextView>(R.id.profileTextViewAvailableStatus)
         imgButton.setOnClickListener {
             showStatusSelectionDialog()
         }
+        userEmail = findViewById(R.id.profileTextViewEmail)
+        userName = findViewById(R.id.profileTextViewName)
+
+        userEmail.text = userProfile.eMail
+        userName.text = userProfile.name
     }
 
     private fun showStatusSelectionDialog() {

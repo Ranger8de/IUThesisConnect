@@ -11,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.dlbcsemse.iuthesisconnect.helper.AzureAdHelper
+import com.dlbcsemse.iuthesisconnect.helper.DatabaseHelper
+import java.util.UUID
 
 class LoginActivity : AppCompatActivity() {
     @SuppressLint("MissingInflatedId")
@@ -33,25 +35,23 @@ class LoginActivity : AppCompatActivity() {
 
             val userName = loginUsername.text.toString()
             val userPassword = loginUserPassword.text.toString()
-            var userType : DashboardUserType
             val azureAdHelper  = AzureAdHelper()
+            val databaseHelper = DatabaseHelper(this)
+
+            databaseHelper.removeCurrentUser()
 
             val uuid = azureAdHelper.logIn(userName, userPassword)
-
-
-
-            if (userName.equals("student", true)){
-                userType = DashboardUserType.student
-            }
-            else if (userName.equals("supervisor", true)){
-                userType = DashboardUserType.supervisor
-            }
-            else {
+            if (uuid == UUID(0, 0)) {
                 return@setOnClickListener
             }
+            val userProfile = azureAdHelper.getUserProfile(userName)
+            if (!databaseHelper.userExists(userProfile.userEmail))
+                databaseHelper.insertUser(userProfile)
+
+            databaseHelper.setCurrentUser(userProfile)
 
             val intent = Intent(this, DashboardActivity::class.java)
-            intent.putExtra("userType", userType.toString())
+            intent.putExtra("userType", userProfile.userType.toString())
             startActivity(intent)
         }
     }

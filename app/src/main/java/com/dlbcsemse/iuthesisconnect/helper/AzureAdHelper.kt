@@ -1,6 +1,7 @@
 package com.dlbcsemse.iuthesisconnect.helper
 
 import com.dlbcsemse.iuthesisconnect.DashboardUserType
+import com.dlbcsemse.iuthesisconnect.model.UserProfile
 import java.util.UUID
 
 /**
@@ -28,7 +29,15 @@ class AzureAdHelper {
     /**
      * gets the user profile of the given name
      */
-    fun getUserProfile(userName: String ){
+    fun getUserProfile(userName: String ) : UserProfile{
+        lateinit var profile : UserProfile
+        if (userName.equals("student", true)){
+            profile = UserProfile(1, "student", "student@iu.org", "student")
+        }
+        else if (userName.equals("supervisor", true)){
+            profile = UserProfile(2, "supervisor", "supervisor@iu.org", "supervisor")
+        }
 
+        return profile
     }
 }

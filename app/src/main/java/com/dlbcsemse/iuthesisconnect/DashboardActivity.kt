@@ -57,7 +57,7 @@ class DashboardActivity : AppCompatActivity() {
 
         toolbarButton = findViewById(R.id.toolbarImageButton)
         toolbarButton.setOnClickListener{
-            val intent = Intent(this, ProfilActivity::class.java)
+            val intent = Intent(this, ProfileActivity::class.java)
             startActivity(intent)
         }
 
