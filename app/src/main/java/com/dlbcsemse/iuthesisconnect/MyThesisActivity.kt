@@ -29,7 +29,7 @@ class MyThesisActivity : AppCompatActivity() {
         databaseHelper = DatabaseHelper(this)
         userProfile = databaseHelper.getCurrentUser()
         userProfile.userType.toString()
-
+//
         if (userProfile.userType == DashboardUserType.student){
             //Was passiert bei Student, der das aufruft?
         } else if (userProfile.userType == DashboardUserType.supervisor){
