@@ -78,7 +78,6 @@
                     android:layout_height="wrap_content"
                     android:hint="Dieser Bereich wird durch die Verfügbarkeitsdeklaration ersetzt"
                     android:text=""
-                    android:layout_marginBottom=""
                     />
 
             </LinearLayout>
