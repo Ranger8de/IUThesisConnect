@@ -51,11 +51,14 @@
                 app:layout_constraintTop_toTopOf="@id/betreuerboardBetreuerItemimageView"
                 app:layout_constraintBottom_toBottomOf="@id/betreuerboardBetreuerItemimageView">
 
+
                 <TextView
-                    android:id="@+id/verfuegbarkeitBetreuerboardItemLayoutTextview"
+                    android:id="@+id/faecherBetreuerboardTopicItemLayoutTextview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Verfügbarkeit"
+                    android:layout_gravity="left"
+                    android:text="Fächer:"
+                    android:layout_marginTop="4dp"
                     />
 
                 <TextView
@@ -63,8 +66,19 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
-                    android:text="Fächer"
+                    android:hint="Beispielfächer (werden in Zukunft hinzugefügt"
+                    android:text=""
                     android:layout_marginTop="4dp"
+                    android:maxLines="5"
+                    />
+
+                <TextView
+                    android:id="@+id/verfuegbarkeitBetreuerboardItemLayoutTextview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Dieser Bereich wird durch die Verfügbarkeitsdeklaration ersetzt"
+                    android:text=""
+                    android:layout_marginBottom=""
                     />
 
             </LinearLayout>
