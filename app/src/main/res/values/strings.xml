@@ -4,4 +4,7 @@
     <string name="username">Username*</string>
     <string name="international_university">international university</string>
     <string name="next">Continue</string>
+    <string name="availabilityStatus_free">I have free capacities</string>
+    <string name="availabilityStatus_limited">I am currently only able to accept a few more supervisions</string>
+    <string name="availabilityStatus_blocked">I have no more free capacities</string>
 </resources>

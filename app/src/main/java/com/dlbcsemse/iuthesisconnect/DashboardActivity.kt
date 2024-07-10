@@ -14,6 +14,7 @@ class DashboardActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var buttonAdapter: DashboardButtonAdapter
+    private lateinit var toolbarButton: ImageButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

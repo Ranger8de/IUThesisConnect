@@ -33,7 +33,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 + "$COLUMN_NAME TEXT )")
         db.execSQL(createTable)
 
-
         createTable = ("CREATE TABLE $PROFILE_TABLE_NAME ("
                 + "$COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + "$COLUMN_NAME TEXT, "
@@ -47,10 +46,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 + "$COLUMN_USER_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "FOREIGN KEY($COLUMN_USER_ID) REFERENCES $PROFILE_TABLE_NAME($COLUMN_ID) )")
         db.execSQL(createTable)
-
-
-
-
 
         insertTemplateDate(db)
     }
