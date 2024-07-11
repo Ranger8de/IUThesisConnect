@@ -15,6 +15,7 @@ import com.dlbcsemse.iuthesisconnect.helper.DatabaseHelper
 import java.util.UUID
 
 class LoginActivity : AppCompatActivity() {
+    private lateinit var dbHelper: DatabaseHelper
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
 
