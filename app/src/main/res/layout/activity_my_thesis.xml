@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,7 +8,7 @@
     android:layout_height="match_parent"
     tools:context=".MyThesisActivity">
 
-    <Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="0dp"
         android:layout_height="50dp"
@@ -37,7 +38,7 @@
             android:layout_gravity="right"
             android:layout_marginRight="15dp"
             />
-    </Toolbar>
+    </androidx.appcompat.widget.Toolbar>
 
     <TextView
         android:id="@+id/meineAbschlussarbeittextView"
@@ -65,42 +66,67 @@
         app:layout_constraintTop_toBottomOf="@+id/meineAbschlussarbeittextView"
         >
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Titel Ihrer Abschlussarbeit"
-            android:textSize="16sp" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/titelMyThesiseditTextData"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Eingabe"
-            android:textSize="24sp"/>
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingBottom="2dp">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Name Ihres Betreuers"
-            android:textSize="16sp" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Titel Ihrer Abschlussarbeit"
+                android:textSize="16sp" />
 
-        <EditText
-            android:id="@+id/supervisorMyThesiseditTextData"
+            <EditText
+                android:id="@+id/titelMyThesiseditTextEdit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Eingabe"
+                android:textSize="24sp"/>
+
+        </LinearLayout>
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Betreuer"
-            android:textSize="24sp"/>
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingBottom="2dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Name Ihres Betreuers"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/supervisorMyThesiseditTextEdit"
+                    android:hint="Betreuer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="24sp"/>
+        </LinearLayout>
+    </FrameLayout>
+
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:padding="5dp">
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingBottom="2dp">
 
                 <TextView
                     android:id="@+id/titlezustandMyThesisTextView"
@@ -109,14 +135,12 @@
                     android:text="Zustand der Abschlussarbeit"
                     android:textSize="16sp" />
 
-                <TextView
-                    android:id="@+id/zustandMyThesisTextView"
+                <EditText
+                    android:id="@+id/zustandMyThesisTextEdit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Beispieldaten"
-                    android:text=""
-                    android:textSize="24sp"
-                    android:layout_gravity="bottom"/>
+                    android:textSize="24sp" />
 
             </LinearLayout>
 
@@ -124,14 +148,13 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:padding="5dp">
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingBottom="2dp">
 
                 <TextView
                     android:id="@+id/titlezweitgutachterMyThesisTextView"
@@ -140,14 +163,12 @@
                     android:text="Zweitgutachter"
                     android:textSize="16sp" />
 
-                <TextView
-                    android:id="@+id/zweitgutachterMyThesisTextView"
+                <EditText
+                    android:id="@+id/zweitgutachterMyThesisTextEdit"
+                    android:hint="Beispieldaten"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Beispieldaten"
-                    android:text=""
-                    android:textSize="24sp"
-                    android:layout_gravity="bottom"/>
+                    android:textSize="24sp"/>
 
             </LinearLayout>
 
@@ -155,14 +176,13 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:padding="5dp">
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingBottom="2dp">
 
                 <TextView
                     android:id="@+id/titlestudentMyThesisTextView"
@@ -171,14 +191,12 @@
                     android:text="Student"
                     android:textSize="16sp" />
 
-                <TextView
-                    android:id="@+id/studentMyThesisTextView"
+                <EditText
+                    android:id="@+id/studentMyThesisTextEdit"
+                    android:hint="Beispieldaten"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Beispieldaten"
-                    android:text=""
-                    android:textSize="24sp"
-                    android:layout_gravity="bottom"/>
+                    android:textSize="24sp"/>
 
             </LinearLayout>
 
@@ -186,14 +204,13 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:padding="5dp">
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingBottom="2dp">
 
                 <TextView
                     android:id="@+id/titlefaelligkeitsdatumMyThesisTextView"
@@ -202,14 +219,68 @@
                     android:text="Fälligkeitsdatum"
                     android:textSize="16sp" />
 
+                <EditText
+                    android:id="@+id/faelligkeitsdatumMyThesisTextEdit"
+                    android:hint="Beispieldaten"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="24sp"/>
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingBottom="2dp">
+
                 <TextView
-                    android:id="@+id/faelligkeitsdatumMyThesisTextView"
+                    android:id="@+id/titleRechnungsstellungMyThesisTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Zustand der Abschlussarbeit"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/rechnungsstellungMyThesisTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Beispieldaten"
-                    android:text=""
-                    android:textSize="24sp"
-                    android:layout_gravity="bottom"/>
+                    android:textSize="24sp" />
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingBottom="2dp">
+
+                <TextView
+                    android:id="@+id/titlerechnungssatusMyThesisTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Zustand der Abschlussarbeit"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/rechnungsstatusMyThesisTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Beispieldaten"
+                    android:textSize="24sp" />
 
             </LinearLayout>
 
@@ -221,6 +292,7 @@
             android:layout_height="wrap_content"
             android:text="Speichern"
             android:layout_gravity="right"
+            android:layout_marginTop="10dp"
             />
 
     </LinearLayout>

@@ -1,6 +1,5 @@
 package com.dlbcsemse.iuthesisconnect.helper
 
-import com.dlbcsemse.iuthesisconnect.DashboardUserType
 import com.dlbcsemse.iuthesisconnect.model.UserProfile
 import java.util.UUID
 

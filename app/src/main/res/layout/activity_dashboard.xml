@@ -40,8 +40,8 @@
 
     </Toolbar>
 
-    <!-- Filter-(Sprache unf Fach) und Suchfunktionen (Name)
-    <!-- Der Versuch aus einem ArrayList-Eintrag einen Button zu erzeugen -->
+    <!-- Filter-(Sprache unf Fach) und Suchfunktionen (Name) -->
+    <!--Der Versuch aus einem ArrayList-Eintrag einen Button zu erzeugen -->
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/dashboardRecyclerView"
