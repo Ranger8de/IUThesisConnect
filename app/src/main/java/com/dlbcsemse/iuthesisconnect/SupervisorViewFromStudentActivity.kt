@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
-class SupervisorActivity : AppCompatActivity() {
+class SupervisorViewFromStudentActivity : AppCompatActivity() {
     private lateinit var toolbarImageButton : ImageButton
 
 
@@ -16,7 +16,7 @@ class SupervisorActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_supervisor)
+        setContentView(R.layout.activity_supervisor_view_from_student)
 
         ToolbarButton()
 

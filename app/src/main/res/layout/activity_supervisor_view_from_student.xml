@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SupervisorViewFromStudentActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:background="#4DFBFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/toolbarImageButton"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:src="@android:drawable/ic_dialog_info"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Profile" />
+
+        <TextView
+            android:id="@+id/toolbartextView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="iu"
+            android:textSize="40sp"
+            android:textStyle="bold"
+            android:layout_gravity="end"
+            android:layout_marginEnd="15dp" />
+    </androidx.appcompat.widget.Toolbar>
+
+    <ImageView
+        android:id="@+id/profileImageViewHeader"
+        android:layout_width="0dp"
+        android:layout_height="270dp"
+        android:contentDescription="profile header image showing a black board"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:srcCompat="@drawable/black_board" />
+
+    <ImageView
+        android:id="@+id/profileImageViewImage"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="30dp"
+        android:contentDescription="profile header image showing profile picture"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:srcCompat="@drawable/profile_male" />
+
+    <TextView
+        android:id="@+id/profileTextViewName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="supervisor"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profileImageViewImage" />
+
+    <TextView
+        android:id="@+id/profileTextViewEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="supervisor@iu.org"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profileTextViewName" />
+
+    <ImageView
+        android:id="@+id/profileImageViewAvailableStatus"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="35dp"
+        android:background="@android:color/transparent"
+        android:scaleType="centerInside"
+        android:src="@drawable/flag_green"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profileTextViewEmail" />
+
+    <LinearLayout
+        android:id="@+id/supervisorViewFromStudentHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/profileImageViewHeader"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="321dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/supervisorViewFromStudentLanguagesTopic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:text="Verfügbare Sprachen"/>
+
+        <ListView
+            android:id="@+id/supervisorViewFromStudentLanguages"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+        <TextView
+            android:id="@+id/supervisorViewFromStudentSubjectsTopic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:text="Meine Fächer:"/>
+
+        <ListView
+            android:id="@+id/supervisorViewFromStudentSubjects"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+        <TextView
+            android:id="@+id/supervisorViewFromStudentBiographyTopic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:text="Meine Biographie:"/>
+
+        <TextView
+            android:id="@+id/upervisorViewFromStudentBiography"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:text="
+Akademische Ausbildung:
+1987 - 1992: Studium der Informatik an der Technischen Universität München (TUM), Abschluss: Diplom-Informatiker
+1993 - 1997: Promotion in Informatik an der Ludwig-Maximilians-Universität München (LMU), Dissertation: „Algorithmen für verteilte Systeme“
+1998 - 2001: Habilitation an der Technischen Universität München (TUM), Habilitationsschrift: „Sichere Kommunikation in großen Netzwerken“
+Beruflicher Werdegang:
+1992 - 1993: Softwareentwickler bei Siemens AG, München
+1997 - 1998: Wissenschaftlicher Mitarbeiter am Lehrstuhl für Informatik, LMU München
+2001 - 2005: Juniorprofessor für Informatik an der Universität Freiburg
+2005 - 2010: Professor für IT-Sicherheit an der Universität Leipzig
+seit 2010: Professor für Informatik mit dem Schwerpunkt IT-Sicherheit an der Technischen Universität München (TUM)"
+            />
+
+        <TextView
+            android:id="@+id/supervisorViewFromStudentThesisThemesTopic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:text="Meine Biographie:"/>
+
+        <TextView
+            android:id="@+id/upervisorViewFromStudentThesisThemes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:text="IT-Sicherheit und Datenschutz, Verteilte Systeme und Netzwerke, Kryptografie und sichere Kommunikation und Künstliche Intelligenz und maschinelles Lernen im Kontext der IT-Sicherheit"
+            />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
