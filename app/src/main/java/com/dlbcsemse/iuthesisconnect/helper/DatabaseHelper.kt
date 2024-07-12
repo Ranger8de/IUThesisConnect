@@ -6,11 +6,7 @@ import android.database.Cursor
 import android.database.DatabaseUtils
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-<<<<<<< .mine
-import android.database.DatabaseUtils
-=======
 
->>>>>>> .theirs
 import com.dlbcsemse.iuthesisconnect.model.UserProfile
 import com.dlbcsemse.iuthesisconnect.model.ThesisProfile
 
@@ -21,13 +17,17 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         private const val DATABASE_VERSION = 1
 
         // Tabellennamen
+        private const val PROFILE_TABLE_NAME = "profile"
         private const val ROLE_TABLE_NAME = "role"
         private const val CURRENT_USER_TABLE_NAME = "current_user"
-        private const val LANGUAGES_TABLE_NAME = "languages"
+        private const val THESIS_TABLE_NAME = "thesis"
+		private const val LANGUAGES_TABLE_NAME = "languages"
         private const val TOPICCATEGORIES_TABLE_NAME = "topic_categories"
         private const val SUPERVISORPROFILE_TABLE_NAME = "supervisor_profile"
-		const val THESIS_TABLE_NAME = "thesis"
+
+        // Gemeinsame Spaltennamen
         private const val COLUMN_ID = "id"
+ 		private const val COLUMN_USER_ID = "user_id"
         private const val COLUMN_NAME = "name"
         private const val COLUMN_EMAIL = "email"
         private const val COLUMN_ROLE = "role"
@@ -50,10 +50,27 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     }
 
     override fun onCreate(db: SQLiteDatabase) {
+        // Erstellen der Role-Tabelle
+        var createTable = ("CREATE TABLE IF NOT EXISTS $ROLE_TABLE_NAME ("
+                + "$COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "$COLUMN_NAME TEXT )")
+        db.execSQL(createTable)
         
 
+ 		// Erstellen der Profile-Tabelle
+        createTable = ("CREATE TABLE $PROFILE_TABLE_NAME ("
+                + "$COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + "$COLUMN_NAME TEXT, "
+                + "$COLUMN_EMAIL TEXT, "
+                + "$COLUMN_PICTURE TEXT, "
+                + "$COLUMN_ROLE int, "
+                + "FOREIGN KEY($COLUMN_ROLE) REFERENCES $ROLE_TABLE_NAME($COLUMN_ID) )")
+        db.execSQL(createTable)
 
-
+       // Erstellen der Current User-Tabelle
+        createTable = ("CREATE TABLE $CURRENT_USER_TABLE_NAME ("
+                + "$COLUMN_USER_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "FOREIGN KEY($COLUMN_USER_ID) REFERENCES $PROFILE_TABLE_NAME($COLUMN_ID) )")
         db.execSQL(createTable)
 
 
@@ -101,7 +118,11 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         insertTemplateDate(db)
     }
 
+     private fun insertTemplateDate(db: SQLiteDatabase) {
+        if (roleInsertNeeded(db)) {
             var insertStatement =
+                "INSERT INTO $ROLE_TABLE_NAME ($COLUMN_NAME) VALUES ('student'), ('supervisor') "
+            db.execSQL(insertStatement)
 
             insertStatement =
                 "INSERT INTO $LANGUAGES_TABLE_NAME ($COLUMN_NAME) VALUES ('German'), ('English') "
@@ -132,74 +153,23 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         onCreate(db)
     }
 
-    fun removeCurrentUser() {
+    fun removeCurrentUser(){
         val db = this.writableDatabase
+        val deleteStatement = "DELETE FROM $CURRENT_USER_TABLE_NAME "
         db.execSQL(deleteStatement)
         db.close()
     }
 
     // Setzt den aktuellen Benutzer
-    fun setCurrentUser(profile: UserProfile) {
+    fun setCurrentUser(profile : UserProfile){
         val db = this.writableDatabase
-        val values = ContentValues().apply {
-            put(COLUMN_ID, profile.userId)
-        }
-        db.insert(CURRENT_USER_TABLE_NAME, null, values)
+        val insertStatement = "INSERT INTO $CURRENT_USER_TABLE_NAME ($COLUMN_USER_ID) VALUES (${profile.userId}) "
+        db.execSQL(insertStatement)
         db.close()
     }
-
-    // Holt den aktuellen Benutzer
-    fun getCurrentUser(): UserProfile {
+ fun getCurrentUser () : UserProfile {
         val db = this.readableDatabase
-        val selectQuery = """
-        SELECT p.* FROM $PROFILE_TABLE_NAME p
-        JOIN $CURRENT_USER_TABLE_NAME c ON p.$COLUMN_ID = c.$COLUMN_ID
-    """.trimIndent()
-
-        val cursor = db.rawQuery(selectQuery, null)
-        return cursor.use {
-            if (it.moveToFirst()) {
-                val id = it.getLong(it.getColumnIndexOrThrow(COLUMN_ID))
-                val name = it.getString(it.getColumnIndexOrThrow(COLUMN_NAME))
-                val email = it.getString(it.getColumnIndexOrThrow(COLUMN_EMAIL))
-                val roleId = it.getInt(it.getColumnIndexOrThrow(COLUMN_ROLE))
-                UserProfile(id, name, email, roleId)
-            } else {
-                throw NoSuchElementException("No current user found")
-            }
-        }
-    }
-
-<<<<<<< .mine
-    // Fügt einen neuen Benutzer hinzu
-    fun insertUser(userProfile: UserProfile) {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-=======
-    fun getUser (userName : String) : UserProfile {
-        val db = this.readableDatabase
-        val selectStatement = "SELECT * FROM $PROFILE_TABLE_NAME where $COLUMN_NAME = '$userName'"
+        val selectStatement = "SELECT * FROM $PROFILE_TABLE_NAME where $COLUMN_ID = (SELECT $COLUMN_USER_ID FROM $CURRENT_USER_TABLE_NAME )"
 
         val cursor: Cursor = db.rawQuery(selectStatement, null)
 
@@ -219,22 +189,70 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return userProfile
     }
 
+
+    // Holt Benutzer anhand des Benutzernamens
+    fun getUser(userName: String): UserProfile? {
+        val db = this.readableDatabase
+        val selectStatement = "SELECT * FROM $PROFILE_TABLE_NAME WHERE $COLUMN_NAME = ?"
+        val cursor: Cursor = db.rawQuery(selectStatement, arrayOf(userName))
+
+        var userProfile: UserProfile? = null
+        if (cursor.moveToFirst()) {
+            val id = cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_ID))
+            val name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME))
+            val email = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_EMAIL))
+            val picture = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PICTURE))
+            val roleId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ROLE))
+
+            userProfile = UserProfile(id, name, email, roleId)
+            userProfile.picture = picture
+        }
+        cursor.close()
+        return userProfile
+    }
+    // Fügt einen neuen Nutzer hinzu
     fun insertUser( userProfile: UserProfile) {
-
-
->>>>>>> .theirs
         val db = this.writableDatabase
+
         val values = ContentValues().apply {
             put(COLUMN_NAME, userProfile.userName)
-            put(COLUMN_EMAIL, userProfile.userEmail)
+            put(COLUMN_EMAIL, userProfile.userEmail )
+            put(COLUMN_PICTURE, userProfile.picture)
             put(COLUMN_ROLE, userProfile.userType.ordinal)
         }
+
         db.insert(PROFILE_TABLE_NAME, null, values)
         db.close()
     }
 
-    // Holt eine Thesis anhand des Studentennamens
-    fun getThesisByStudent(studentName: String): ThesisProfile? {
+ // Prüft ob ein Benutzer existiert
+    fun userExists(email : String) : Boolean{
+        val count = DatabaseUtils.queryNumEntries(this.writableDatabase, PROFILE_TABLE_NAME, "$COLUMN_EMAIL = '$email'")
+        return count > 0
+    }
+
+
+ // Holt die Fachrichtungen der Betreuer
+    fun getAllSpecialisations() : Array<String>{
+        val specialisations = ArrayList<String>()
+        val selectStatement = "SELECT * FROM $TOPICCATEGORIES_TABLE_NAME "
+
+        val cursor: Cursor = this.readableDatabase.rawQuery(selectStatement, null)
+        with(cursor) {
+            while (moveToNext()) {
+                specialisations.add(getString(getColumnIndexOrThrow(COLUMN_NAME)))
+            }
+        }
+        cursor.close()
+
+        return specialisations.toArray() as Array<String>
+    }
+
+    // Holt den Datenbankpfad
+    fun getDatabasePath(context: Context): String {
+        return context.getDatabasePath(DATABASE_NAME).absolutePath
+    }// Holt eine Thesis anhand des Studentennamens
+    fun getThesisByStudent(studentName: String): Thesis? {
         val db = this.readableDatabase
         val cursor = db.query(
             THESIS_TABLE_NAME,
@@ -246,18 +264,18 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             null
         )
 
-        var thesis: ThesisProfile? = null
+        var thesis: Thesis? = null
         if (cursor.moveToFirst()) {
-            thesis = ThesisProfile(
+            thesis = Thesis(
+                id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID)),
                 state = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_STATE)),
-                supervisor = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_SUPERVISOR)),
-                secondSupervisor = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_SECOND_SUPERVISOR)),
+                supervisor = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_SUPERVISOR)),
+                secondSupervisor = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_SECOND_SUPERVISOR)),
                 theme = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_THEME)),
-                student = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_STUDENT)),
+                student = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_STUDENT)),
                 dueDateDay = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_DUE_DATE_DAY)),
                 dueDateMonth = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_DUE_DATE_MONTH)),
                 dueDateYear = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_DUE_DATE_YEAR)),
-                bill = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_BILL)),
                 billState = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_BILL_STATE)),
                 userType = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_USER_TYPE))
             )
@@ -266,9 +284,9 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return thesis
     }
 
-<<<<<<< .mine
-    // Aktualisiert eine bestehende Thesis
-    fun updateThesis(thesis: ThesisProfile): Int {
+    // Aktualisiert die Thesis
+    fun updateThesis(thesis: Thesis): Int {
+
         val db = this.writableDatabase
         val values = ContentValues().apply {
             put(COLUMN_STATE, thesis.state)
@@ -278,62 +296,56 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             put(COLUMN_DUE_DATE_DAY, thesis.dueDateDay)
             put(COLUMN_DUE_DATE_MONTH, thesis.dueDateMonth)
             put(COLUMN_DUE_DATE_YEAR, thesis.dueDateYear)
-            put(COLUMN_BILL, thesis.bill)
-            put(COLUMN_BILL_STATE, thesis.billState)
-            put(COLUMN_USER_TYPE, thesis.userType)
         }
-
-
-
-=======
-    fun getAllSpecialisations() : Array<String>{
-
-        val cursor: Cursor = this.readableDatabase.query(TOPICCATEGORIES_TABLE_NAME, null, null, null, null,null,null)
-        val specialisations = Array<String>(cursor.count){""}
-        var cursorIndex = 0
-        while (cursor.moveToNext()) {
-            specialisations[cursorIndex] = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME))
-            cursorIndex++
-        }
-
-        cursor.close()
-        return specialisations
-    }
-
-
-    fun readData(context: Context): List<String> {
-        val dbHelper = DatabaseHelper(context)
-        val db = dbHelper.readableDatabase
->>>>>>> .theirs
 
         return db.update(
             THESIS_TABLE_NAME,
             values,
-            "$COLUMN_STUDENT = ?",
-            arrayOf(thesis.student)
+            "$COLUMN_ID = ?",
+            arrayOf(thesis.id.toString())
         )
     }
-
-    // Prüft, ob ein Benutzer existiert
-    fun userExists(email: String): Boolean {
-        return try {
-            val db = this.readableDatabase
-            val count = DatabaseUtils.queryNumEntries(
-                db,
-                PROFILE_TABLE_NAME,
-                "$COLUMN_EMAIL = ?",
-                arrayOf(email)
-            )
-            count > 0
-        } catch (e: Exception) {
-            false
+    fun insertThesis(thesis: Thesis): Long {
+        val db = this.writableDatabase
+        val values = ContentValues().apply {
+            put(COLUMN_STATE, thesis.state)
+            put(COLUMN_SUPERVISOR, thesis.supervisor)
+            put(COLUMN_SECOND_SUPERVISOR, thesis.secondSupervisor)
+            put(COLUMN_THEME, thesis.theme)
+            put(COLUMN_STUDENT, thesis.student)
+            put(COLUMN_DUE_DATE_DAY, thesis.dueDateDay)
+            put(COLUMN_DUE_DATE_MONTH, thesis.dueDateMonth)
+            put(COLUMN_DUE_DATE_YEAR, thesis.dueDateYear)
+            put(COLUMN_BILL_STATE, thesis.billState)
+            put(COLUMN_USER_TYPE, thesis.userType)
         }
+        return db.insert(THESIS_TABLE_NAME, null, values)
     }
 
+    // Fügt eine neue Thesis ein oder aktualisiert eine bestehende
+    fun insertOrUpdateThesis(thesis: Thesis) : Long {
+        val db = this.writableDatabase
+        val values = ContentValues().apply {
+            put(COLUMN_STATE, thesis.state)
+            put(COLUMN_SUPERVISOR, thesis.supervisor)
+            put(COLUMN_SECOND_SUPERVISOR, thesis.secondSupervisor)
+            put(COLUMN_THEME, thesis.theme)
+            put(COLUMN_STUDENT, thesis.student)
+            put(COLUMN_DUE_DATE_DAY, thesis.dueDateDay)
+            put(COLUMN_DUE_DATE_MONTH, thesis.dueDateMonth)
+            put(COLUMN_DUE_DATE_YEAR, thesis.dueDateYear)
+            put(COLUMN_BILL_STATE, thesis.billState)
+            put(COLUMN_USER_TYPE, thesis.userType)
+        }
 
-
-
-    fun getDatabasePath(context: Context): String {
-        return context.getDatabasePath(DATABASE_NAME).absolutePath
+        val cursor = db.query(THESIS_TABLE_NAME, arrayOf(COLUMN_ID), "$COLUMN_STUDENT = ?", arrayOf(thesis.student.toString()), null, null, null)
+        return if (cursor.moveToFirst()) {
+            val id = cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_ID))
+            cursor.close()
+            db.update(THESIS_TABLE_NAME, values, "$COLUMN_ID = ?", arrayOf(id.toString())).toLong()
+        } else {
+            cursor.close()
+            db.insert(THESIS_TABLE_NAME, null, values)
+        }
     }
 }
