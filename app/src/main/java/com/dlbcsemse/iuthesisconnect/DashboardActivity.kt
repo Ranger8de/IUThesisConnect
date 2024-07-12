@@ -39,7 +39,7 @@ class DashboardActivity : AppCompatActivity() {
             when (clickedItem.itemID) {
                 // das L muss verwendet werden um zu deklarieren, dass es sich hier um den Datentyp Long handelt
                 0L -> {
-                    val intent = Intent(this, BetreuerboardActivity::class.java)
+                    val intent = Intent(this, SupervisorBoardActivity::class.java)
                     intent.putExtra("userType", userType)
                     startActivity(intent)
                 }
@@ -50,7 +50,7 @@ class DashboardActivity : AppCompatActivity() {
                     startActivity(intent)
                 }
                 2L -> {
-                    val intent = Intent(this, BetreuteAbschlussarbeitenActivity::class.java)
+                    val intent = Intent(this, SupervisedThesisActivity::class.java)
                     intent.putExtra("userType", userType)
                     startActivity(intent)
                 }

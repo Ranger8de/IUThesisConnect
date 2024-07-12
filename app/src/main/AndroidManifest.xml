@@ -13,14 +13,17 @@
         android:theme="@style/Theme.IUThesisConnect"
         tools:targetApi="31">
         <activity
-            android:name=".ProfileActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize"/>
-        <activity
-            android:name=".BetreuteAbschlussarbeitenActivity"
+            android:name=".SupervisorActivity"
             android:exported="false" />
         <activity
-            android:name=".BetreuerboardActivity"
+            android:name=".ProfileActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".SupervisedThesisActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SupervisorBoardActivity"
             android:exported="false" />
         <activity
             android:name=".MyThesisActivity"

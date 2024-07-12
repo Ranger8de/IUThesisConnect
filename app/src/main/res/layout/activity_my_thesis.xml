@@ -193,10 +193,10 @@
 
                 <EditText
                     android:id="@+id/studentMyThesisTextEdit"
-                    android:hint="Beispieldaten"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="24sp"/>
+                    android:textSize="24sp"
+                    android:enabled="false"/>
 
             </LinearLayout>
 
@@ -244,7 +244,7 @@
                     android:id="@+id/titleRechnungsstellungMyThesisTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Zustand der Abschlussarbeit"
+                    android:text="Rechnungserstellung"
                     android:textSize="16sp" />
 
                 <TextView
@@ -272,7 +272,7 @@
                     android:id="@+id/titlerechnungssatusMyThesisTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Zustand der Abschlussarbeit"
+                    android:text="Rechnungsstatus"
                     android:textSize="16sp" />
 
                 <TextView
