@@ -18,9 +18,7 @@ data class UserProfile (val id : Long, val name : String, val eMail : String, va
         eMail,
         DashboardUserType.valueOf(type).ordinal
     ){
-
     }
-
     init {
         picture = ""
         biography = ""
