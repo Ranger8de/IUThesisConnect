@@ -1,11 +1,11 @@
 package com.dlbcsemse.iuthesisconnect.helper
 
-import android.content.Context
-import android.database.sqlite.SQLiteDatabase
-import android.database.sqlite.SQLiteOpenHelper
 import android.content.ContentValues
+import android.content.Context
 import android.database.Cursor
 import android.database.DatabaseUtils
+import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteOpenHelper
 import com.dlbcsemse.iuthesisconnect.model.UserProfile
 
 class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
@@ -13,6 +13,11 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         private const val DATABASE_NAME = "iuThesisConnect.db"
         private const val DATABASE_VERSION = 1
         private const val PROFILE_TABLE_NAME = "profile"
+        private const val ROLE_TABLE_NAME = "role"
+        private const val CURRENT_USER_TABLE_NAME = "current_user"
+        private const val LANGUAGES_TABLE_NAME = "languages"
+        private const val TOPICCATEGORIES_TABLE_NAME = "topic_categories"
+
         private const val COLUMN_ID = "id"
         private const val COLUMN_USER_ID = "user_id"
         private const val COLUMN_NAME = "name"
@@ -20,11 +25,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         private const val COLUMN_PICTURE = "picture"
         private const val COLUMN_ROLE = "role"
 
-        private const val ROLE_TABLE_NAME = "role"
-        private const val CURRENT_USER_TABLE_NAME = "current_user"
-    }
 
-    lateinit var currentDb : SQLiteDatabase
+    }
 
     override fun onCreate(db: SQLiteDatabase) {
 
@@ -47,6 +49,17 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 + "FOREIGN KEY($COLUMN_USER_ID) REFERENCES $PROFILE_TABLE_NAME($COLUMN_ID) )")
         db.execSQL(createTable)
 
+        createTable = ("CREATE TABLE $LANGUAGES_TABLE_NAME ("
+                        + "$COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
+                        + "$COLUMN_NAME TEXT )")
+        db.execSQL(createTable)
+
+        createTable = ("CREATE TABLE $TOPICCATEGORIES_TABLE_NAME ("
+                + "$COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "$COLUMN_NAME TEXT )")
+        db.execSQL(createTable)
+
+
         insertTemplateDate(db)
     }
 
@@ -57,8 +70,24 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     private fun insertTemplateDate(db: SQLiteDatabase) {
         if (roleInsertNeeded(db)) {
-            val insertStatement =
+            var insertStatement =
                 "INSERT INTO $ROLE_TABLE_NAME ($COLUMN_NAME) VALUES ('student'), ('supervisor') "
+            db.execSQL(insertStatement)
+
+            insertStatement =
+                "INSERT INTO $LANGUAGES_TABLE_NAME ($COLUMN_NAME) VALUES ('German'), ('English') "
+            db.execSQL(insertStatement)
+
+            insertStatement =
+                ("INSERT INTO $TOPICCATEGORIES_TABLE_NAME ($COLUMN_NAME) " +
+                        "VALUES ('Real Estate'), ('Architecture'), ('Industry & Construction') , " +
+                        "('Design & Media'), ('Education & Psychology'), ('Social Affairs'), " +
+                        "('Health & Nursing'), ('IT & Software Development'), ('Engineering'), " +
+                        "('Data Science & Artificial Intelligence'), ('Human Resources & Law'), " +
+                        "('Marketing & Communication'), ('Tourism, Hospitality & Event'), " +
+                        "('Business Administration & Management'), ('Finance & Tax Accounting'), " +
+                            "('Planning & Controlling'), ('Methods'), ('Project Management'), " +
+                        " ('Languages'), ('Economics')")
             db.execSQL(insertStatement)
         }
     }
@@ -105,6 +134,28 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return userProfile
     }
 
+    fun getUser (userName : String) : UserProfile {
+        val db = this.readableDatabase
+        val selectStatement = "SELECT * FROM $PROFILE_TABLE_NAME where $COLUMN_NAME = '$userName'"
+
+        val cursor: Cursor = db.rawQuery(selectStatement, null)
+
+        cursor.moveToNext()
+
+        val id = cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_ID))
+        val name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME))
+        val email = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_EMAIL))
+        val picture = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PICTURE))
+        val roleId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ROLE))
+
+        val userProfile = UserProfile(id, name, email, roleId)
+        userProfile.picture = picture
+
+        cursor.close()
+
+        return userProfile
+    }
+
     fun insertUser( userProfile: UserProfile) {
 
 
@@ -126,6 +177,24 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         val count = DatabaseUtils.queryNumEntries(this.writableDatabase, PROFILE_TABLE_NAME, "$COLUMN_EMAIL = '$email'")
         return count > 0
     }
+
+    fun getAllSpecialisations() : Array<String>{
+
+        val specialisations = ArrayList<String>()
+        val selectStatement = "SELECT * FROM $TOPICCATEGORIES_TABLE_NAME "
+
+        val cursor: Cursor = this.readableDatabase.rawQuery(selectStatement, null)
+        with(cursor) {
+            while (moveToNext()) {
+                specialisations.add(getString(getColumnIndexOrThrow(COLUMN_NAME)))
+
+            }
+        }
+        cursor.close()
+
+        return specialisations.toArray() as Array<String>
+    }
+
 
     fun readData(context: Context): List<String> {
         val dbHelper = DatabaseHelper(context)
@@ -153,5 +222,12 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         cursor.close()
 
         return items
+    }
+
+
+
+
+    fun getDatabasePath(context: Context): String {
+        return context.getDatabasePath(DATABASE_NAME).absolutePath
     }
 }

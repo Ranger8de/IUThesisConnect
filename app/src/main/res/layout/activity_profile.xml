@@ -1,35 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    android:fillViewport="true"
+    android:fitsSystemWindows="true"
+    tools:context=".ProfileActivity">
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:context=".ProfileActivity">
+        android:layout_height="match_parent"
+        >
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/profileToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/cyan"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme"
+            tools:layout_editor_absoluteX="1dp"
+            tools:layout_editor_absoluteY="1dp"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageButton
+                android:id="@+id/profileToolbarBackButton"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:background="@android:color/transparent"
+                android:scaleType="fitCenter"
+                android:src="@drawable/arrow_left"
+                tools:layout_editor_absoluteX="16dp"
+                tools:layout_editor_absoluteY="2dp" />
+        </androidx.appcompat.widget.Toolbar>
 
         <ImageView
             android:id="@+id/profileImageViewHeader"
-            android:contentDescription="profile header image showing a black board"
             android:layout_width="0dp"
             android:layout_height="270dp"
+            android:contentDescription="profile header image showing a black board"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profileToolbar"
             app:srcCompat="@drawable/black_board" />
 
         <ImageView
             android:id="@+id/profileImageViewImage"
-            android:contentDescription="profile header image showing profile picture"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginTop="30dp"
+            android:contentDescription="profile header image showing profile picture"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@id/profileImageViewHeader"
             app:srcCompat="@drawable/profile_male" />
 
         <TextView
@@ -79,26 +104,85 @@
             app:layout_constraintBottom_toBottomOf="@+id/profileImageViewAvailableStatus"
             app:layout_constraintStart_toEndOf="@+id/profileImageViewAvailableStatus" />
 
-        <ScrollView
+        <androidx.cardview.widget.CardView
+            android:id="@+id/profileCardViewBiography"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/profileImageViewHeader"
-            android:fillViewport="true"
-            android:padding="16dp"
-            app:layout_constraintTop_toBottomOf="@+id/profileImageViewHeader">
-
-            <EditText
-                android:id="@+id/biographyEditText"
+            android:layout_margin="16dp"
+            android:layout_marginTop="148dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp"
+            app:layout_constraintTop_toBottomOf="@+id/profileImageViewHeader"
+            >
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:drawable/edit_text"
-                android:gravity="top"
-                android:hint="Geben Sie Ihre Biografie ein"
-                android:inputType="textMultiLine"
-                android:minHeight="100dp"
-                android:overScrollMode="always"
-                android:scrollbars="vertical" />
-        </ScrollView>
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Biography" />
+
+                    <EditText
+                        android:id="@+id/profileEditTextBiography"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="top"
+                        android:hint="Enter something"
+                        android:inputType="textMultiLine"
+                        android:minHeight="100dp"
+                        android:overScrollMode="always"
+                        android:scrollbars="vertical" />
+
+                </LinearLayout>
+            </ScrollView>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:layout_marginTop="148dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp"
+            app:layout_constraintTop_toBottomOf="@id/profileCardViewBiography"
+            >
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Specializations" />
+
+                    <TextView
+                        android:id="@+id/profileTextViewSpecializations"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:editable="false"
+                        android:gravity="top"
+                        android:hint="Enter something"
+                        android:inputType="textMultiLine"
+                        android:minHeight="100dp"
+                        android:overScrollMode="always"
+                        android:scrollbars="vertical" />
+
+                </LinearLayout>
+            </ScrollView>
+        </androidx.cardview.widget.CardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
