@@ -45,11 +45,9 @@ class LoginActivity : AppCompatActivity() {
             if (uuid == UUID(0, 0)) {
                 return@setOnClickListener
             }
-            var userProfile = azureAdHelper.getUserProfile(userName)
+            val userProfile = azureAdHelper.getUserProfile(userName)
             if (!databaseHelper.userExists(userProfile.userEmail))
                 databaseHelper.insertUser(userProfile)
-
-            userProfile = databaseHelper.getUser(userName)
 
             databaseHelper.setCurrentUser(userProfile)
 
