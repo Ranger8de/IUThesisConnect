@@ -115,6 +115,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                         "('Business Administration & Management'), ('Finance & Tax Accounting'), " +
                         "('Planning & Controlling'), ('Methods'), ('Project Management'), " +
                         " ('Languages'), ('Economics')")
+
             db.execSQL(insertStatement)
         }
     }
