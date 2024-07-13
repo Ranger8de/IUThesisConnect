@@ -1,4 +1,4 @@
-package com.dlbcsemse.iuthesisconnect.model
+package com.dlbcsemse.iuthesisconnect
 
 enum class DashboardUserType {
     student, supervisor

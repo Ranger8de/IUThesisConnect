@@ -1,147 +1,105 @@
 package com.dlbcsemse.iuthesisconnect
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.View
-import android.widget.*
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import com.dlbcsemse.iuthesisconnect.helper.DatabaseHelper
-import com.dlbcsemse.iuthesisconnect.model.DashboardUserType
-import com.dlbcsemse.iuthesisconnect.model.UserProfile
 import com.dlbcsemse.iuthesisconnect.model.ThesisProfile
+import com.dlbcsemse.iuthesisconnect.model.UserProfile
 
 class MyThesisActivity : AppCompatActivity() {
-    private lateinit var toolbarImageButton : ImageButton
-    // Datenbank-Helper und Datenmodelle
-    private lateinit var dbHelper: DatabaseHelper
-    private lateinit var currentUser: UserProfile
-    private lateinit var thesis: ThesisProfile
-    private lateinit var userType: DashboardUserType
-    // UI-Elemente
-    private lateinit var titleEditText: EditText
-    private lateinit var supervisorEditText: EditText
-    private lateinit var stateEditText: EditText
-    private lateinit var secondSupervisorEditText: EditText
-    private lateinit var dueDateEditText: EditText
-    private lateinit var stateTextView: TextView
-    private lateinit var secondSupervisorTextView: TextView
-    private lateinit var studentEditText: EditText
-    private lateinit var dueDateTextView: TextView
-    private lateinit var saveButton: Button
+    private lateinit var editTitle: EditText
+    private lateinit var editSupervisor: EditText
+    private lateinit var editState: EditText
+    private lateinit var editSecondSupervisor: EditText
+    private lateinit var editStudent: EditText
+    private lateinit var editDueDate: EditText
+    private lateinit var buttonSave: Button
+    private lateinit var databaseHelper: DatabaseHelper
+    private lateinit var userProfile: UserProfile
+    private lateinit var thesisProfile: ThesisProfile
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_my_thesis)
 
-        ToolbarButton()
+        initializeViews()
+        setupUserAndThesis()
+        setupSaveButton()
+        loadThesisData()
+    }
 
-        try {
-            // Initialisierung der Daten und UI
-            initializeData()
-            initializeViews()
-            loadAndDisplayThesisData()
-            setupSaveButton()
-        } catch (e: Exception) {
-            // Fehlerbehandlung
-            Log.e("MyThesisActivity", "Error in onCreate", e)
-            Toast.makeText(this, "Ein Fehler ist aufgetreten: ${e.message}", Toast.LENGTH_LONG).show()
-            finish() // Beendet die Activity bei einem Fehler
-        }
-    }
-    // Gibt dem Toolbarbutton die weiterleit-Funktion
-    private fun ToolbarButton() {
-        toolbarImageButton = findViewById(R.id.toolbarImageButton)
-        toolbarImageButton.setOnClickListener {
-            val intent = Intent(this, ProfileActivity::class.java)
-            startActivity(intent)
-        }
-    }
-    // Initialisiert die Daten aus der Datenbank und dem Intent
-    private fun initializeData() {
-        dbHelper = DatabaseHelper(this)
-        // Sicheres Casting des userType mit Fallback auf einen Fehler
-        userType = intent.getSerializableExtra("userType") as? DashboardUserType
-            ?: throw IllegalArgumentException("User type not provided")
-        currentUser = dbHelper.getCurrentUser()
-        // Lädt die Thesis oder erstellt eine neue, wenn keine existiert
-        thesis = dbHelper.getThesisByStudent(currentUser.userName) ?: ThesisProfile(
-            "", "", "", "", currentUser.userName, 0, 0, 0, "", "", currentUser.userType.ordinal
-        )
-    }
-    // Initialisiert die UI-Elemente
     private fun initializeViews() {
-        titleEditText = findViewById(R.id.titelMyThesiseditTextEdit)
-        supervisorEditText = findViewById(R.id.supervisorMyThesiseditTextEdit)
-        stateEditText = findViewById(R.id.zustandMyThesisTextEdit)
-        secondSupervisorEditText = findViewById(R.id.zweitgutachterMyThesisTextEdit)
-        studentEditText = findViewById(R.id.studentMyThesisTextEdit)
-        dueDateEditText = findViewById(R.id.faelligkeitsdatumMyThesisTextEdit)
-        saveButton = findViewById(R.id.myThesisbuttonSave)
+        editTitle = findViewById(R.id.titelMyThesiseditTextEdit)
+        editSupervisor = findViewById(R.id.supervisorMyThesiseditTextEdit)
+        editState = findViewById(R.id.zustandMyThesisTextEdit)
+        editSecondSupervisor = findViewById(R.id.zweitgutachterMyThesisTextEdit)
+        editStudent = findViewById(R.id.studentMyThesisTextEdit)
+        editDueDate = findViewById(R.id.faelligkeitsdatumMyThesisTextEdit)
+        buttonSave = findViewById(R.id.myThesisbuttonSave)
     }
-    // Lädt und zeigt die Thesis-Daten an
-    private fun loadAndDisplayThesisData() {
-        titleEditText.setText(thesis.theme)
-        supervisorEditText.setText(thesis.supervisor)
-        stateEditText.setText(thesis.state)
-        secondSupervisorEditText.setText(thesis.secondSupervisor)
-        // setzt den Studenten automatin anhand des aktuellen Users
-        studentEditText.setText(currentUser.userName)
-        dueDateEditText.setText("${thesis.dueDateDay}.${thesis.dueDateMonth}.${thesis.dueDateYear}")
 
-        // Passt die UI basierend auf dem Benutzertyp an
-        when (userType) {
-            DashboardUserType.student -> {
-                titleEditText.isEnabled = true
-                supervisorEditText.isEnabled = true
-                stateEditText.isEnabled = false
-                secondSupervisorEditText.isEnabled = false
-                dueDateEditText.isEnabled = false
-            }
-            DashboardUserType.supervisor -> {
-                titleEditText.isEnabled = false
-                supervisorEditText.isEnabled = false
-                stateEditText.isEnabled = true
-                secondSupervisorEditText.isEnabled = true
-                dueDateEditText.isEnabled = true
-            }
-        }
-        //saveButton.visibility = View.VISIBLE
+    private fun setupUserAndThesis() {
+        databaseHelper = DatabaseHelper(this)
+        userProfile = databaseHelper.getCurrentUser()
+        // Hier verwenden wir die wiederhergestellte Funktion getThesisByStudent
+        thesisProfile = databaseHelper.getThesisByStudent(userProfile.userName)
+            ?: ThesisProfile("", "", "", "", userProfile.userName, 0, 0, 0, "", "", userProfile.userType.ordinal)
     }
-    // Richtet den Speichern-Button ein
+
     private fun setupSaveButton() {
-        saveButton.setOnClickListener {
-            updateThesis()
+        buttonSave.setOnClickListener {
+            saveThesisData()
         }
     }
-    // Aktualisiert die Thesis-Daten
-    private fun updateThesis() {
-        when (userType) {
-            DashboardUserType.student -> {
-                thesis.theme = titleEditText.text.toString()
-                thesis.supervisor = supervisorEditText.text.toString()
-                // Anzeigen lassen was geupdatet wurde
-                Log.d("MyThesisActivity", "Updating as student: theme=${thesis.theme}, supervisor=${thesis.supervisor}")
-            }
-            DashboardUserType.supervisor -> {
-                thesis.state = stateEditText.text.toString()
-                thesis.secondSupervisor = secondSupervisorEditText.text.toString()
-                // Hier müssen Sie die Datumsverarbeitung anpassen
-                val dateParts = dueDateEditText.text.toString().split(".")
-                if (dateParts.size == 3) {
-                    thesis.dueDateDay = dateParts[0].toIntOrNull() ?: 0
-                    thesis.dueDateMonth = dateParts[1].toIntOrNull() ?: 0
-                    thesis.dueDateYear = dateParts[2].toIntOrNull() ?: 0
-                }
-                Log.d("MyThesisActivity", "Updating as supervisor: state=${thesis.state}, secondSupervisor=${thesis.secondSupervisor}, dueDate=${thesis.dueDateDay}.${thesis.dueDateMonth}.${thesis.dueDateYear}")
+
+    private fun loadThesisData() {
+        editTitle.setText(thesisProfile.thesisTheme)
+        editSupervisor.setText(thesisProfile.thesisSupervisor)
+        editState.setText(thesisProfile.thesisState)
+        editSecondSupervisor.setText(thesisProfile.thesisSecondSupervisor)
+        editStudent.setText(thesisProfile.thesisStudent)
+        editDueDate.setText("${thesisProfile.thesisDueDateDay}.${thesisProfile.thesisDueDateMonth}.${thesisProfile.thesisDueDateYear}")
+
+        if (userProfile.userType == DashboardUserType.student) {
+            editTitle.isEnabled = true
+            editSupervisor.isEnabled = true
+            editState.isEnabled = false
+            editSecondSupervisor.isEnabled = false
+            editDueDate.isEnabled = false
+        } else {
+            editTitle.isEnabled = false
+            editSupervisor.isEnabled = false
+            editState.isEnabled = true
+            editSecondSupervisor.isEnabled = true
+            editDueDate.isEnabled = true
+        }
+    }
+
+    private fun saveThesisData() {
+        if (userProfile.userType == DashboardUserType.student) {
+            thesisProfile.thesisTheme = editTitle.text.toString()
+            thesisProfile.thesisSupervisor = editSupervisor.text.toString()
+        } else {
+            thesisProfile.thesisState = editState.text.toString()
+            thesisProfile.thesisSecondSupervisor = editSecondSupervisor.text.toString()
+            // Parse and set due date
+            val dueDateParts = editDueDate.text.toString().split(".")
+            if (dueDateParts.size == 3) {
+                thesisProfile.thesisDueDateDay = dueDateParts[0].toIntOrNull() ?: 0
+                thesisProfile.thesisDueDateMonth = dueDateParts[1].toIntOrNull() ?: 0
+                thesisProfile.thesisDueDateYear = dueDateParts[2].toIntOrNull() ?: 0
             }
         }
-        val updatedRows = dbHelper.updateThesis(thesis)
-        Log.d("MyThesisActivity", "Updated rows: $updatedRows")
+
+        // Hier verwenden wir die wiederhergestellte Funktion updateThesis
+        val updatedRows = databaseHelper.updateThesis(thesisProfile)
         if (updatedRows > 0) {
             Toast.makeText(this, "Thesis erfolgreich aktualisiert", Toast.LENGTH_SHORT).show()
-            loadAndDisplayThesisData()
+            loadThesisData()
         } else {
             Toast.makeText(this, "Fehler beim Aktualisieren der Thesis", Toast.LENGTH_SHORT).show()
         }

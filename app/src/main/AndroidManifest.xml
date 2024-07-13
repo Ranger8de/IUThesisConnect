@@ -20,10 +20,10 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".SupervisedThesisActivity"
+            android:name=".BetreuteAbschlussarbeitenActivity"
             android:exported="false" />
         <activity
-            android:name=".SupervisorBoardActivity"
+            android:name=".BetreuerboardActivity"
             android:exported="false" />
         <activity
             android:name=".MyThesisActivity"

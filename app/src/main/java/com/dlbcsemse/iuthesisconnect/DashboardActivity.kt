@@ -9,7 +9,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.dlbcsemse.iuthesisconnect.model.DashboardUserType
 
 class DashboardActivity : AppCompatActivity() {
 
@@ -39,19 +38,15 @@ class DashboardActivity : AppCompatActivity() {
             when (clickedItem.itemID) {
                 // das L muss verwendet werden um zu deklarieren, dass es sich hier um den Datentyp Long handelt
                 0L -> {
-                    val intent = Intent(this, SupervisorBoardActivity::class.java)
-                    intent.putExtra("userType", userType)
+                    val intent = Intent(this, BetreuerboardActivity::class.java)
                     startActivity(intent)
                 }
                 1L -> {
                     val intent = Intent(this, MyThesisActivity::class.java)
-                    // Für MyThesisactivity, Usetype übergabe
-                    intent.putExtra("userType", userType)
                     startActivity(intent)
                 }
                 2L -> {
-                    val intent = Intent(this, SupervisedThesisActivity::class.java)
-                    intent.putExtra("userType", userType)
+                    val intent = Intent(this, BetreuteAbschlussarbeitenActivity::class.java)
                     startActivity(intent)
                 }
             }
@@ -59,13 +54,11 @@ class DashboardActivity : AppCompatActivity() {
         }
         recyclerView.adapter = buttonAdapter
 
-
         toolbarButton = findViewById(R.id.toolbarImageButton)
         toolbarButton.setOnClickListener{
             val intent = Intent(this, ProfileActivity::class.java)
             startActivity(intent)
         }
-
     }
 
     private fun getMenuItems(userType: DashboardUserType): ArrayList<DashboardItem> {

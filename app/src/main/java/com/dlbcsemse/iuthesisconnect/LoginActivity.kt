@@ -15,10 +15,8 @@ import com.dlbcsemse.iuthesisconnect.helper.DatabaseHelper
 import java.util.UUID
 
 class LoginActivity : AppCompatActivity() {
-    private lateinit var dbHelper: DatabaseHelper
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_login)
@@ -33,7 +31,6 @@ class LoginActivity : AppCompatActivity() {
         val loginUserPassword = findViewById<EditText>(R.id.loginEditTextPassword)
 
         loginButton.setOnClickListener {
-
             val userName = loginUsername.text.toString()
             val userPassword = loginUserPassword.text.toString()
             val azureAdHelper  = AzureAdHelper()
@@ -45,10 +42,10 @@ class LoginActivity : AppCompatActivity() {
             if (uuid == UUID(0, 0)) {
                 return@setOnClickListener
             }
-            val userProfile = azureAdHelper.getUserProfile(userName)
+            var userProfile = azureAdHelper.getUserProfile(userName)
             if (!databaseHelper.userExists(userProfile.userEmail))
                 databaseHelper.insertUser(userProfile)
-
+            userProfile = databaseHelper.getUser(userName)
             databaseHelper.setCurrentUser(userProfile)
 
             val intent = Intent(this, DashboardActivity::class.java)

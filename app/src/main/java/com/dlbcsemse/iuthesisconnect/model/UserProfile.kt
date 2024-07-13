@@ -1,4 +1,7 @@
 package com.dlbcsemse.iuthesisconnect.model
+import com.dlbcsemse.iuthesisconnect.DashboardUserType
+import org.intellij.lang.annotations.Language
+import java.io.Serializable
 
 data class UserProfile (val id : Long, val name : String, val eMail : String, val type : Int)  {
     var userId : Long = id
@@ -6,6 +9,9 @@ data class UserProfile (val id : Long, val name : String, val eMail : String, va
     var userEmail : String = eMail
     var userType : DashboardUserType = DashboardUserType.entries[type]
     lateinit var picture : String
+    lateinit var biography : String
+    var languages : ArrayList<Language> = ArrayList<Language>()
+    var status : AvailabilityStatus = AvailabilityStatus.free
 
     constructor(id : Long, name : String, eMail : String, type : String)
             : this(
@@ -17,5 +23,6 @@ data class UserProfile (val id : Long, val name : String, val eMail : String, va
     }
     init {
         picture = ""
+        biography = ""
     }
 }

@@ -1,20 +1,21 @@
 package com.dlbcsemse.iuthesisconnect
 
 import android.app.AlertDialog
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.dlbcsemse.iuthesisconnect.helper.DatabaseHelper
 import com.dlbcsemse.iuthesisconnect.model.UserProfile
+import java.util.Base64
 
 class ProfileActivity : AppCompatActivity() {
     private lateinit var imgButton: ImageButton
@@ -22,6 +23,12 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var userProfile : UserProfile
     private lateinit var userName : TextView
     private lateinit var userEmail : TextView
+    private lateinit var userImage : ImageView
+    private lateinit var backButton : ImageButton
+    private lateinit var textBiography : EditText
+    private lateinit var textSpecialisation : TextView
+    private lateinit var cardViewBiography : CardView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -33,18 +40,44 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         val databaseHelper = DatabaseHelper(this)
-        val userProfile = databaseHelper.getCurrentUser()
+        Log.d("Database Path", databaseHelper.getDatabasePath(this));
 
-        imgButton  = findViewById<ImageButton>(R.id.profileImageViewAvailableStatus)
+        userProfile = databaseHelper.getCurrentUser()
+
+        imgButton = findViewById<ImageButton>(R.id.profileImageViewAvailableStatus)
         textViewStatus = findViewById<TextView>(R.id.profileTextViewAvailableStatus)
+        userEmail = findViewById(R.id.profileTextViewEmail)
+        userName = findViewById(R.id.profileTextViewName)
+        userImage = findViewById(R.id.profileImageViewImage)
+        backButton = findViewById(R.id.profileToolbarBackButton)
+        textBiography = findViewById(R.id.profileEditTextBiography)
+        textSpecialisation = findViewById(R.id.profileTextViewSpecializations)
+        cardViewBiography = findViewById(R.id.profileCardViewBiography)
+
+        if (userProfile.userType == DashboardUserType.student) {
+            imgButton.visibility = View.INVISIBLE
+            textViewStatus.visibility = View.INVISIBLE
+            cardViewBiography.visibility = View.GONE
+        }
+
         imgButton.setOnClickListener {
             showStatusSelectionDialog()
         }
-        userEmail = findViewById(R.id.profileTextViewEmail)
-        userName = findViewById(R.id.profileTextViewName)
+
+        backButton.setOnClickListener {
+            finish()
+        }
+
+        textSpecialisation.setOnClickListener {
+            showSubjectsDialog(textSpecialisation.text.toString().split("\r\n"))
+        }
 
         userEmail.text = userProfile.eMail
         userName.text = userProfile.name
+
+        val decodedString: ByteArray = Base64.getDecoder().decode(userProfile.picture.toByteArray())
+        val decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
+        userImage.setImageBitmap(decodedByte)
     }
 
     private fun showStatusSelectionDialog() {
@@ -86,6 +119,46 @@ class ProfileActivity : AppCompatActivity() {
                 }
             }
         }
+        builder.show()
+    }
+
+    private fun showSubjectsDialog(listedItems : List<String>) {
+        val databaseHelper = DatabaseHelper(this)
+        val selectedSubjects = mutableListOf<String>()
+        val subjects = databaseHelper.getAllSpecialisations()
+        val checkedItems = BooleanArray(subjects.size)
+
+        for (element in listedItems){
+            for (subject in subjects){
+                if (subject.equals(element, true)){
+                    checkedItems[subjects.indexOf(subject)] = true
+                }
+            }
+        }
+
+        for (i in checkedItems.indices) {
+            if (checkedItems[i]) {
+                selectedSubjects.add(subjects[i])
+            }
+        }
+
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Choose your specialisations")
+        builder.setMultiChoiceItems(subjects, checkedItems) { _, which, isChecked ->
+            if (isChecked) {
+                selectedSubjects.add(subjects[which])
+            } else {
+                selectedSubjects.remove(subjects[which])
+            }
+        }
+        builder.setPositiveButton("OK") { _, _ ->
+            if (selectedSubjects.isEmpty()) {
+                Toast.makeText(this, "Please choose at least one specialisation", Toast.LENGTH_SHORT).show()
+            } else {
+                textSpecialisation.text =  selectedSubjects.joinToString("\r\n")
+            }
+        }
+        builder.setNegativeButton("Cancel", null)
         builder.show()
     }
 }

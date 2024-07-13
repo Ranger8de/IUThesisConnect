@@ -1,6 +1,6 @@
 package com.dlbcsemse.iuthesisconnect.model
 
-import com.dlbcsemse.iuthesisconnect.model.DashboardUserType
+import com.dlbcsemse.iuthesisconnect.DashboardUserType
 
 data class ThesisProfile(var state: String, var supervisor: String, var secondSupervisor: String, var theme: String, var student: String, var dueDateDay: Int, var dueDateMonth: Int,
                          var dueDateYear: Int, var bill: String, var billState: String, var userType: Int
