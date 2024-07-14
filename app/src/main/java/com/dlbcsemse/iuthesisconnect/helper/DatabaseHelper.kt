@@ -6,13 +6,16 @@ import android.database.Cursor
 import android.database.DatabaseUtils
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import com.dlbcsemse.iuthesisconnect.model.ThesisProfile
+import com.dlbcsemse.iuthesisconnect.model.Thesis
 import com.dlbcsemse.iuthesisconnect.model.UserProfile
 
 class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     companion object {
+        // Datenbank-Metadaten
         private const val DATABASE_NAME = "iuThesisConnect.db"
         private const val DATABASE_VERSION = 1
+
+        // Tabellennamen
         private const val PROFILE_TABLE_NAME = "profile"
         private const val ROLE_TABLE_NAME = "role"
         private const val CURRENT_USER_TABLE_NAME = "current_user"
@@ -20,6 +23,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         private const val TOPICCATEGORIES_TABLE_NAME = "topic_categories"
         private const val THESIS_TABLE_NAME = "thesis"
 
+        // Gemeinsame Spaltennamen
         private const val COLUMN_ID = "id"
         private const val COLUMN_USER_ID = "user_id"
         private const val COLUMN_NAME = "name"
@@ -36,17 +40,19 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         const val COLUMN_DUE_DATE_DAY = "due_date_day"
         const val COLUMN_DUE_DATE_MONTH = "due_date_month"
         const val COLUMN_DUE_DATE_YEAR = "due_date_year"
-        const val COLUMN_BILL = "bill"
         const val COLUMN_BILL_STATE = "bill_state"
         const val COLUMN_USER_TYPE = "user_type"
     }
 
+    // Erstellen der Datenbanktabellen
     override fun onCreate(db: SQLiteDatabase) {
+        // Erstellen der Role-Tabelle
         var createTable = ("CREATE TABLE IF NOT EXISTS $ROLE_TABLE_NAME ("
                 + "$COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "$COLUMN_NAME TEXT )")
         db.execSQL(createTable)
 
+        // Erstellen der Profile-Tabelle
         createTable = ("CREATE TABLE $PROFILE_TABLE_NAME ("
                 + "$COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + "$COLUMN_NAME TEXT, "
@@ -56,55 +62,68 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 + "FOREIGN KEY($COLUMN_ROLE) REFERENCES $ROLE_TABLE_NAME($COLUMN_ID) )")
         db.execSQL(createTable)
 
+        // Erstellen der Current User-Tabelle
         createTable = ("CREATE TABLE $CURRENT_USER_TABLE_NAME ("
                 + "$COLUMN_USER_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "FOREIGN KEY($COLUMN_USER_ID) REFERENCES $PROFILE_TABLE_NAME($COLUMN_ID) )")
         db.execSQL(createTable)
 
+        // Erstellen der Language-Tabelle
         createTable = ("CREATE TABLE $LANGUAGES_TABLE_NAME ("
                 + "$COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "$COLUMN_NAME TEXT )")
         db.execSQL(createTable)
 
+        // Erstellen der Topic Categories-Tabelle
         createTable = ("CREATE TABLE $TOPICCATEGORIES_TABLE_NAME ("
                 + "$COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "$COLUMN_NAME TEXT )")
         db.execSQL(createTable)
 
+        // Erstellen der Thesis-Tabelle
         createTable = ("CREATE TABLE $THESIS_TABLE_NAME ("
-                + "$COLUMN_STUDENT TEXT PRIMARY KEY, "
+                + "$COLUMN_ID INTEGER PRIMARY KEY, "
+                + "$COLUMN_STUDENT INTEGER , "
                 + "$COLUMN_STATE TEXT, "
-                + "$COLUMN_SUPERVISOR TEXT, "
-                + "$COLUMN_SECOND_SUPERVISOR TEXT, "
+                + "$COLUMN_SUPERVISOR INTEGER , "
+                + "$COLUMN_SECOND_SUPERVISOR INTEGER, "
                 + "$COLUMN_THEME TEXT, "
                 + "$COLUMN_DUE_DATE_DAY INTEGER, "
                 + "$COLUMN_DUE_DATE_MONTH INTEGER, "
                 + "$COLUMN_DUE_DATE_YEAR INTEGER, "
-                + "$COLUMN_BILL TEXT, "
                 + "$COLUMN_BILL_STATE TEXT, "
-                + "$COLUMN_USER_TYPE INTEGER)")
+                + "$COLUMN_USER_TYPE INTEGER, "
+                + "FOREIGN KEY($COLUMN_STUDENT) REFERENCES $PROFILE_TABLE_NAME($COLUMN_ID), "
+                + "FOREIGN KEY($COLUMN_SUPERVISOR) REFERENCES $PROFILE_TABLE_NAME($COLUMN_ID), "
+                + "FOREIGN KEY($COLUMN_SECOND_SUPERVISOR) REFERENCES $PROFILE_TABLE_NAME($COLUMN_ID) ) " )
 
             db.execSQL(createTable)
 
+        // Einfügen von Beispieldaten
         insertTemplateDate(db)
 
         }
 
+    // Überprüfen, ob Rollen eingefügt werden müssen
     private fun roleInsertNeeded(db: SQLiteDatabase): Boolean {
         val count = DatabaseUtils.queryNumEntries(db, ROLE_TABLE_NAME)
         return count <= 0
     }
 
+    // Einfügen von Beispieldaten
     private fun insertTemplateDate(db: SQLiteDatabase) {
         if (roleInsertNeeded(db)) {
+            // Einfügen von Rollen
             var insertStatement =
                 "INSERT INTO $ROLE_TABLE_NAME ($COLUMN_NAME) VALUES ('student'), ('supervisor') "
             db.execSQL(insertStatement)
 
+            // Einfügen von Sprachen
             insertStatement =
                 "INSERT INTO $LANGUAGES_TABLE_NAME ($COLUMN_NAME) VALUES ('German'), ('English') "
             db.execSQL(insertStatement)
 
+            // Einfügen von Themen
             insertStatement =
                 ("INSERT INTO $TOPICCATEGORIES_TABLE_NAME ($COLUMN_NAME) " +
                         "VALUES ('Real Estate'), ('Architecture'), ('Industry & Construction') , " +
@@ -120,11 +139,19 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         }
     }
 
+    // Aktualisieren der Datenbank
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        // Bei einem Upgrade werden alle Tabellen gelöscht und neu erstellt
         db.execSQL("DROP TABLE IF EXISTS $PROFILE_TABLE_NAME")
+        db.execSQL("DROP TABLE IF EXISTS $THESIS_TABLE_NAME")
+        db.execSQL("DROP TABLE IF EXISTS $ROLE_TABLE_NAME")
+        db.execSQL("DROP TABLE IF EXISTS $CURRENT_USER_TABLE_NAME")
+        db.execSQL("DROP TABLE IF EXISTS $LANGUAGES_TABLE_NAME")
+        db.execSQL("DROP TABLE IF EXISTS $TOPICCATEGORIES_TABLE_NAME")
         onCreate(db)
     }
 
+    // Entfernt den aktuellen Benutzer
     fun removeCurrentUser(){
         val db = this.writableDatabase
         val deleteStatement = "DELETE FROM $CURRENT_USER_TABLE_NAME "
@@ -132,6 +159,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         db.close()
     }
 
+    // Setzt den aktuellen Benutzer
     fun setCurrentUser(profile : UserProfile){
         val db = this.writableDatabase
         val insertStatement = "INSERT INTO $CURRENT_USER_TABLE_NAME ($COLUMN_USER_ID) VALUES (${profile.userId}) "
@@ -139,6 +167,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         db.close()
     }
 
+    // Holt den aktuellen Benutzer
     fun getCurrentUser () : UserProfile {
         val db = this.readableDatabase
         val selectStatement = "SELECT * FROM $PROFILE_TABLE_NAME where $COLUMN_ID = (SELECT $COLUMN_USER_ID FROM $CURRENT_USER_TABLE_NAME )"
@@ -161,6 +190,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return userProfile
     }
 
+    // Holt Benutzer anhand des Benutzernamens
     fun getUser (userName : String) : UserProfile {
         val db = this.readableDatabase
         val selectStatement = "SELECT * FROM $PROFILE_TABLE_NAME where $COLUMN_NAME = '$userName'"
@@ -183,6 +213,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return userProfile
     }
 
+    // Fügt einen neuen Nutzer hinzu
     fun insertUser( userProfile: UserProfile) {
         val db = this.writableDatabase
 
@@ -197,11 +228,13 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         db.close()
     }
 
+    // Prüft ob ein Benutzer existiert
     fun userExists(email : String) : Boolean{
         val count = DatabaseUtils.queryNumEntries(this.writableDatabase, PROFILE_TABLE_NAME, "$COLUMN_EMAIL = '$email'")
         return count > 0
     }
 
+    // Holt die Fachrichtungen der Betreuer
     fun getAllSpecialisations() : Array<String>{
         val specialisations = ArrayList<String>()
         val selectStatement = "SELECT * FROM $TOPICCATEGORIES_TABLE_NAME "
@@ -217,16 +250,13 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return specialisations.toArray() as Array<String>
     }
 
+    // Holt den Datenbankpfad
     fun getDatabasePath(context: Context): String {
         return context.getDatabasePath(DATABASE_NAME).absolutePath
     }
 
-
-
-// HIER GIBT ES NICHTS ZU SEHEN DIESER CODE BEFINDET SICH IM AUFBAU!!! \\
-
-
-    fun getThesisByStudent(studentName: String): ThesisProfile? {
+    // Holt eine Thesis anhand des Studentennamens
+    fun getThesisByStudent(studentName: String): Thesis? {
         val db = this.readableDatabase
         val cursor = db.query(
             THESIS_TABLE_NAME,
@@ -238,18 +268,18 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             null
         )
 
-        var thesis: ThesisProfile? = null
+        var thesis: Thesis? = null
         if (cursor.moveToFirst()) {
-            thesis = ThesisProfile(
+            thesis = Thesis(
+                id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID)),
                 state = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_STATE)),
-                supervisor = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_SUPERVISOR)),
-                secondSupervisor = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_SECOND_SUPERVISOR)),
+                supervisor = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_SUPERVISOR)),
+                secondSupervisor = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_SECOND_SUPERVISOR)),
                 theme = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_THEME)),
-                student = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_STUDENT)),
+                student = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_STUDENT)),
                 dueDateDay = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_DUE_DATE_DAY)),
                 dueDateMonth = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_DUE_DATE_MONTH)),
                 dueDateYear = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_DUE_DATE_YEAR)),
-                bill = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_BILL)),
                 billState = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_BILL_STATE)),
                 userType = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_USER_TYPE))
             )
@@ -258,7 +288,9 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return thesis
     }
 
-    fun updateThesis(thesis: ThesisProfile): Int {
+    // Aktualisiert die Thesis
+    fun updateThesis(thesis: Thesis): Int {
+
         val db = this.writableDatabase
         val values = ContentValues().apply {
             put(COLUMN_STATE, thesis.state)
@@ -268,17 +300,30 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             put(COLUMN_DUE_DATE_DAY, thesis.dueDateDay)
             put(COLUMN_DUE_DATE_MONTH, thesis.dueDateMonth)
             put(COLUMN_DUE_DATE_YEAR, thesis.dueDateYear)
-            put(COLUMN_BILL, thesis.bill)
-            put(COLUMN_BILL_STATE, thesis.billState)
-            put(COLUMN_USER_TYPE, thesis.userType)
         }
 
         return db.update(
             THESIS_TABLE_NAME,
             values,
-            "$COLUMN_STUDENT = ?",
-            arrayOf(thesis.student)
+            "$COLUMN_ID = ?",
+            arrayOf(thesis.id.toString())
         )
+    }
+    fun insertThesis(thesis: Thesis): Long {
+        val db = this.writableDatabase
+        val values = ContentValues().apply {
+            put(COLUMN_STATE, thesis.state)
+            put(COLUMN_SUPERVISOR, thesis.supervisor)
+            put(COLUMN_SECOND_SUPERVISOR, thesis.secondSupervisor)
+            put(COLUMN_THEME, thesis.theme)
+            put(COLUMN_STUDENT, thesis.student)
+            put(COLUMN_DUE_DATE_DAY, thesis.dueDateDay)
+            put(COLUMN_DUE_DATE_MONTH, thesis.dueDateMonth)
+            put(COLUMN_DUE_DATE_YEAR, thesis.dueDateYear)
+            put(COLUMN_BILL_STATE, thesis.billState)
+            put(COLUMN_USER_TYPE, thesis.userType)
+        }
+        return db.insert(THESIS_TABLE_NAME, null, values)
     }
 }
 

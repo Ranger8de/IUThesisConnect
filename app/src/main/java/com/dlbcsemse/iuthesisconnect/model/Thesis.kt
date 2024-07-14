@@ -2,18 +2,18 @@ package com.dlbcsemse.iuthesisconnect.model
 
 import com.dlbcsemse.iuthesisconnect.DashboardUserType
 
-data class ThesisProfile(var state: String, var supervisor: String, var secondSupervisor: String, var theme: String, var student: String, var dueDateDay: Int, var dueDateMonth: Int,
-                         var dueDateYear: Int, var bill: String, var billState: String, var userType: Int
+data class Thesis(var id: Int, var state: String, var supervisor: Int, var secondSupervisor: Int, var theme: String, var student: Int, var dueDateDay: Int, var dueDateMonth: Int,
+                  var dueDateYear: Int, var billState: String, var userType: Int
 ) {
+    var thesisId: Int = id
     var thesisState: String = state
-    var thesisSupervisor: String = supervisor
-    var thesisSecondSupervisor: String = secondSupervisor
+    var thesisSupervisor: Int = supervisor
+    var thesisSecondSupervisor: Int = secondSupervisor
     var thesisTheme: String = theme
-    var thesisStudent: String = student
+    var thesisStudent: Int = student
     var thesisDueDateDay: Int = dueDateDay
     var thesisDueDateMonth: Int = dueDateMonth
     var thesisDueDateYear: Int = dueDateYear
-    var thesisBill: String = bill
     var thesisBillState: String = billState
 
     fun getUserTypeString(): String {
