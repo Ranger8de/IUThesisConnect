@@ -34,7 +34,7 @@ class SupervisorViewFromStudentActivity : AppCompatActivity() {
     private fun loadSupervisorData() {
         databaseHelper = DatabaseHelper(this)
         val supervisorName = intent.getStringExtra("supervisorName") ?: return
-        supervisorProfile = databaseHelper.getUser(supervisorName)
+        supervisorProfile = databaseHelper.getUser(supervisorName)!!
         // Load and display supervisor information
     }
 }

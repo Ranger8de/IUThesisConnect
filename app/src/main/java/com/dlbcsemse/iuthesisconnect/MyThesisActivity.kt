@@ -50,10 +50,29 @@ class MyThesisActivity : AppCompatActivity() {
     private fun setupUserAndThesis() {
         databaseHelper = DatabaseHelper(this)
         userProfile = databaseHelper.getCurrentUser()
-        // Hier verwenden wir die wiederhergestellte Funktion getThesisByStudent
-        // Wir stellen hier auch die Grundeinstellungen für eine neu Abschlussarbeit bereit
-        thesisProfile = databaseHelper.getThesisByStudent(userProfile.userName)
-            ?: Thesis(-1, "Noch nicht zugewiesen", -1, -1, userProfile.userName, 0, 0, 0, 0, "Noch nicht gestellt", userProfile.userType.ordinal)
+        val existingThesis = databaseHelper.getThesisByStudent(userProfile.userName)
+        thesisProfile = existingThesis ?: createNewThesis()
+    }
+
+    private fun createNewThesis(): Thesis {
+        val newThesis = Thesis(
+            -1,
+            "Noch nicht zugewiesen",
+            -1,
+            -1,
+            "Noch nicht zugewiesen",
+            userProfile.userId.toInt(),
+            0,
+            0,
+            0,
+            "Noch nicht gestellt",
+            userProfile.userType.ordinal
+        )
+        val insertedId = databaseHelper.insertThesis(newThesis)
+        if (insertedId != -1L) {
+            newThesis.id = insertedId.toInt()
+        }
+        return newThesis
     }
 
     private fun setupSaveButton() {
@@ -91,39 +110,42 @@ class MyThesisActivity : AppCompatActivity() {
     }
 
     private fun saveThesisData() {
-        val supervisorUser = databaseHelper.getUser(editSupervisor.text.toString())
-        val secondSupervisorUser = databaseHelper.getUser(editSecondSupervisor.text.toString())
-        val dueDateParts = editDueDate.text.toString().split(".")
+        try {
+            val supervisorName = editSupervisor.text.toString()
+            val secondSupervisorName = editSecondSupervisor.text.toString()
+            val dueDateParts = editDueDate.text.toString().split(".")
 
-        if (userProfile.userType == DashboardUserType.student) {
-            thesisProfile.theme = editTitle.text.toString()
-            if (supervisorUser != null) {
-            thesisProfile.supervisor = supervisorUser.id.toInt()}
-        } else {
-            thesisProfile.state = editState.text.toString()
-            if (secondSupervisorUser != null) {
-            thesisProfile.secondSupervisor = secondSupervisorUser.id.toInt()}
+            if (userProfile.userType == DashboardUserType.student) {
+                thesisProfile.theme = editTitle.text.toString()
+                val supervisorUser = databaseHelper.getUser(supervisorName)
+                thesisProfile.supervisor = supervisorUser?.id?.toInt() ?: -1
+            } else {
+                thesisProfile.state = editState.text.toString()
+                val secondSupervisorUser = databaseHelper.getUser(secondSupervisorName)
+                thesisProfile.secondSupervisor = secondSupervisorUser?.id?.toInt() ?: -1
 
-            if (dueDateParts.size == 3) {
-                thesisProfile.dueDateDay = dueDateParts[0].toIntOrNull() ?: 0
-                thesisProfile.dueDateMonth = dueDateParts[1].toIntOrNull() ?: 0
-                thesisProfile.dueDateYear = dueDateParts[2].toIntOrNull() ?: 0
+                if (dueDateParts.size == 3) {
+                    thesisProfile.dueDateDay = dueDateParts[0].toIntOrNull() ?: 0
+                    thesisProfile.dueDateMonth = dueDateParts[1].toIntOrNull() ?: 0
+                    thesisProfile.dueDateYear = dueDateParts[2].toIntOrNull() ?: 0
+                }
             }
-        }
 
-        // Hier verwenden wir die wiederhergestellte Funktion updateThesis
-        var updatedRows = -1
-        if (thesisProfile.id <= 0) {
-            updatedRows = databaseHelper.updateThesis(thesisProfile)
-        }
-        else {
-            databaseHelper.insertThesis(thesisProfile)
-        }
-        if (updatedRows > 0) {
-            Toast.makeText(this, "Thesis erfolgreich aktualisiert", Toast.LENGTH_SHORT).show()
-            loadThesisData()
-        } else {
-            Toast.makeText(this, "Fehler beim Aktualisieren der Thesis", Toast.LENGTH_SHORT).show()
+            val result = if (thesisProfile.id > 0) {
+                databaseHelper.updateThesis(thesisProfile)
+            } else {
+                databaseHelper.insertThesis(thesisProfile).toInt()
+            }
+
+            if (result > 0) {
+                Toast.makeText(this, "Thesis erfolgreich gespeichert", Toast.LENGTH_SHORT).show()
+                loadThesisData()
+            } else {
+                Toast.makeText(this, "Fehler beim Speichern der Thesis", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: Exception) {
+            Toast.makeText(this, "Fehler beim Speichern: ${e.message}", Toast.LENGTH_LONG).show()
+            e.printStackTrace()
         }
     }
 }

@@ -96,8 +96,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 + "FOREIGN KEY($COLUMN_STUDENT) REFERENCES $PROFILE_TABLE_NAME($COLUMN_ID), "
                 + "FOREIGN KEY($COLUMN_SUPERVISOR) REFERENCES $PROFILE_TABLE_NAME($COLUMN_ID), "
                 + "FOREIGN KEY($COLUMN_SECOND_SUPERVISOR) REFERENCES $PROFILE_TABLE_NAME($COLUMN_ID) ) " )
-
-            db.execSQL(createTable)
+        db.execSQL(createTable)
 
         // Einfügen von Beispieldaten
         insertTemplateDate(db)
@@ -191,25 +190,23 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     }
 
     // Holt Benutzer anhand des Benutzernamens
-    fun getUser (userName : String) : UserProfile {
+    fun getUser(userName: String): UserProfile? {
         val db = this.readableDatabase
-        val selectStatement = "SELECT * FROM $PROFILE_TABLE_NAME where $COLUMN_NAME = '$userName'"
+        val selectStatement = "SELECT * FROM $PROFILE_TABLE_NAME WHERE $COLUMN_NAME = ?"
+        val cursor: Cursor = db.rawQuery(selectStatement, arrayOf(userName))
 
-        val cursor: Cursor = db.rawQuery(selectStatement, null)
+        var userProfile: UserProfile? = null
+        if (cursor.moveToFirst()) {
+            val id = cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_ID))
+            val name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME))
+            val email = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_EMAIL))
+            val picture = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PICTURE))
+            val roleId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ROLE))
 
-        cursor.moveToNext()
-
-        val id = cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_ID))
-        val name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME))
-        val email = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_EMAIL))
-        val picture = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PICTURE))
-        val roleId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ROLE))
-
-        val userProfile = UserProfile(id, name, email, roleId)
-        userProfile.picture = picture
-
+            userProfile = UserProfile(id, name, email, roleId)
+            userProfile.picture = picture
+        }
         cursor.close()
-
         return userProfile
     }
 
@@ -324,6 +321,33 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             put(COLUMN_USER_TYPE, thesis.userType)
         }
         return db.insert(THESIS_TABLE_NAME, null, values)
+    }
+
+    // Fügt eine neue Thesis ein oder aktualisiert eine bestehende
+    fun insertOrUpdateThesis(thesis: Thesis) : Long {
+        val db = this.writableDatabase
+        val values = ContentValues().apply {
+            put(COLUMN_STATE, thesis.state)
+            put(COLUMN_SUPERVISOR, thesis.supervisor)
+            put(COLUMN_SECOND_SUPERVISOR, thesis.secondSupervisor)
+            put(COLUMN_THEME, thesis.theme)
+            put(COLUMN_STUDENT, thesis.student)
+            put(COLUMN_DUE_DATE_DAY, thesis.dueDateDay)
+            put(COLUMN_DUE_DATE_MONTH, thesis.dueDateMonth)
+            put(COLUMN_DUE_DATE_YEAR, thesis.dueDateYear)
+            put(COLUMN_BILL_STATE, thesis.billState)
+            put(COLUMN_USER_TYPE, thesis.userType)
+        }
+
+        val cursor = db.query(THESIS_TABLE_NAME, arrayOf(COLUMN_ID), "$COLUMN_STUDENT = ?", arrayOf(thesis.student.toString()), null, null, null)
+        return if (cursor.moveToFirst()) {
+            val id = cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_ID))
+            cursor.close()
+            db.update(THESIS_TABLE_NAME, values, "$COLUMN_ID = ?", arrayOf(id.toString())).toLong()
+        } else {
+            cursor.close()
+            db.insert(THESIS_TABLE_NAME, null, values)
+        }
     }
 }
 

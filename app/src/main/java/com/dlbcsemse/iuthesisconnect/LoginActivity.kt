@@ -33,7 +33,7 @@ class LoginActivity : AppCompatActivity() {
         loginButton.setOnClickListener {
             val userName = loginUsername.text.toString()
             val userPassword = loginUserPassword.text.toString()
-            val azureAdHelper  = AzureAdHelper()
+            val azureAdHelper = AzureAdHelper()
             val databaseHelper = DatabaseHelper(this)
 
             databaseHelper.removeCurrentUser()
@@ -45,11 +45,16 @@ class LoginActivity : AppCompatActivity() {
             var userProfile = azureAdHelper.getUserProfile(userName)
             if (!databaseHelper.userExists(userProfile.userEmail))
                 databaseHelper.insertUser(userProfile)
-            userProfile = databaseHelper.getUser(userName)
-            databaseHelper.setCurrentUser(userProfile)
+
+            val userProfileFromDb = databaseHelper.getUser(userName) ?: run {
+                Toast.makeText(this, "Benutzer konnte nicht gefunden werden", Toast.LENGTH_SHORT)
+                    .show()
+                return@setOnClickListener
+            }
+            databaseHelper.setCurrentUser(userProfileFromDb)
 
             val intent = Intent(this, DashboardActivity::class.java)
-            intent.putExtra("userType", userProfile.userType.toString())
+            intent.putExtra("userType", userProfileFromDb.userType.toString())
             startActivity(intent)
         }
     }
