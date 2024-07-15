@@ -1,4 +1,5 @@
 package com.dlbcsemse.iuthesisconnect.model
 
-enum class Language { German, English
+enum class Language {
+    German, English
 }

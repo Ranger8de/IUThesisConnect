@@ -65,7 +65,7 @@ class MyThesisActivity : AppCompatActivity() {
         userType = intent.getSerializableExtra("userType") as? DashboardUserType
             ?: throw IllegalArgumentException("User type not provided")
         currentUser = dbHelper.getCurrentUser()
-        // LÃ¤dt die Thesis oder erstellt eine neue, wenn keine existiert
+        // Lädt die Thesis oder erstellt eine neue, wenn keine existiert
         thesis = dbHelper.getThesisByStudent(currentUser.userName) ?: ThesisProfile(
             "", "", "", "", currentUser.userName, 0, 0, 0, "", "", currentUser.userType.ordinal
         )
@@ -80,7 +80,7 @@ class MyThesisActivity : AppCompatActivity() {
         dueDateEditText = findViewById(R.id.faelligkeitsdatumMyThesisTextEdit)
         saveButton = findViewById(R.id.myThesisbuttonSave)
     }
-    // LÃ¤dt und zeigt die Thesis-Daten an
+    // Lädt und zeigt die Thesis-Daten an
     private fun loadAndDisplayThesisData() {
         titleEditText.setText(thesis.theme)
         supervisorEditText.setText(thesis.supervisor)
@@ -127,7 +127,7 @@ class MyThesisActivity : AppCompatActivity() {
             DashboardUserType.supervisor -> {
                 thesis.state = stateEditText.text.toString()
                 thesis.secondSupervisor = secondSupervisorEditText.text.toString()
-                // Hier mÃ¼ssen Sie die Datumsverarbeitung anpassen
+                // Hier müssen Sie die Datumsverarbeitung anpassen
                 val dateParts = dueDateEditText.text.toString().split(".")
                 if (dateParts.size == 3) {
                     thesis.dueDateDay = dateParts[0].toIntOrNull() ?: 0

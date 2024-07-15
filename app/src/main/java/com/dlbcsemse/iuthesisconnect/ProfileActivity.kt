@@ -24,7 +24,6 @@ import com.dlbcsemse.iuthesisconnect.model.UserProfile
 import java.nio.charset.Charset
 import java.util.Base64
 
-
 class ProfileActivity : AppCompatActivity() {
     private lateinit var toolBar : Toolbar
     private lateinit var imgButton: ImageButton
@@ -88,7 +87,6 @@ class ProfileActivity : AppCompatActivity() {
         val decodedString: ByteArray = Base64.getDecoder().decode(userProfile.picture.toByteArray())
         val decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
         userImage.setImageBitmap(decodedByte)
-
     }
 
     private fun showStatusSelectionDialog() {

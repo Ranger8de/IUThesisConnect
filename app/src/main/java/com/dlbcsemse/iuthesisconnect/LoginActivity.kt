@@ -18,7 +18,6 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var dbHelper: DatabaseHelper
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_login)
@@ -33,10 +32,9 @@ class LoginActivity : AppCompatActivity() {
         val loginUserPassword = findViewById<EditText>(R.id.loginEditTextPassword)
 
         loginButton.setOnClickListener {
-
             val userName = loginUsername.text.toString()
             val userPassword = loginUserPassword.text.toString()
-            val azureAdHelper  = AzureAdHelper()
+            val azureAdHelper = AzureAdHelper()
             val databaseHelper = DatabaseHelper(this)
 
             databaseHelper.removeCurrentUser()
@@ -49,12 +47,15 @@ class LoginActivity : AppCompatActivity() {
             if (!databaseHelper.userExists(userProfile.userEmail))
                 databaseHelper.insertUser(userProfile)
 
-            userProfile = databaseHelper.getUser(userName)
-
-            databaseHelper.setCurrentUser(userProfile)
+            val userProfileFromDb = databaseHelper.getUser(userName) ?: run {
+                Toast.makeText(this, "Benutzer konnte nicht gefunden werden", Toast.LENGTH_SHORT)
+                    .show()
+                return@setOnClickListener
+            }
+            databaseHelper.setCurrentUser(userProfileFromDb)
 
             val intent = Intent(this, DashboardActivity::class.java)
-            intent.putExtra("userType", userProfile.userType.toString())
+            intent.putExtra("userType", userProfileFromDb.userType.toString())
             startActivity(intent)
         }
     }

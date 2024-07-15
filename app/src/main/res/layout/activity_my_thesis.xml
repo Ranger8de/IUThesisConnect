@@ -86,7 +86,7 @@
                 android:id="@+id/titelMyThesiseditTextEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Eingabe"
+                android:hint="B-Daten"
                 android:textSize="24sp"/>
 
         </LinearLayout>
@@ -110,7 +110,7 @@
 
                 <EditText
                     android:id="@+id/supervisorMyThesiseditTextEdit"
-                    android:hint="Betreuer"
+                    android:hint="B-Daten"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="24sp"/>
@@ -139,7 +139,7 @@
                     android:id="@+id/zustandMyThesisTextEdit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Beispieldaten"
+                    android:hint="B-Daten"
                     android:textSize="24sp" />
 
             </LinearLayout>
@@ -165,7 +165,7 @@
 
                 <EditText
                     android:id="@+id/zweitgutachterMyThesisTextEdit"
-                    android:hint="Beispieldaten"
+                    android:hint="B-Daten"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="24sp"/>
@@ -221,12 +221,18 @@
 
                 <EditText
                     android:id="@+id/faelligkeitsdatumMyThesisTextEdit"
-                    android:hint="Beispieldaten"
+                    android:hint="B-Daten"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="24sp"/>
 
             </LinearLayout>
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
         </FrameLayout>
 
@@ -241,17 +247,17 @@
                 android:paddingBottom="2dp">
 
                 <TextView
-                    android:id="@+id/titleRechnungsstellungMyThesisTextView"
+                    android:id="@+id/titlerechnungssatusMyThesisTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Rechnungserstellung"
+                    android:text="Rechnungsstatus"
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/rechnungsstellungMyThesisTextView"
+                    android:id="@+id/rechnungsstatusMyThesisTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Beispieldaten"
+                    android:hint="B-Daten"
                     android:textSize="24sp" />
 
             </LinearLayout>
@@ -287,6 +293,15 @@
         </FrameLayout>
 
         <Button
+            android:id="@+id/myThesisbuttonRechnungsstellung"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rechnungsstellung"
+            android:layout_gravity="right"
+            android:layout_marginTop="10dp"
+            />
+
+        <Button
             android:id="@+id/myThesisbuttonSave"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -294,6 +309,7 @@
             android:layout_gravity="right"
             android:layout_marginTop="10dp"
             />
+
 
     </LinearLayout>
 

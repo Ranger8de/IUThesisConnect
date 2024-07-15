@@ -3,12 +3,9 @@ package com.dlbcsemse.iuthesisconnect
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.dlbcsemse.iuthesisconnect.DashboardItem
-import com.dlbcsemse.iuthesisconnect.R
 
 class DashboardButtonAdapter(
     private val items: ArrayList<DashboardItem>,

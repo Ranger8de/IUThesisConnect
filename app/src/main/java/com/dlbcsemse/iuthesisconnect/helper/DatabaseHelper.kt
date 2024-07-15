@@ -35,7 +35,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         private const val COLUMN_BIO = "biography"
         private const val COLUMN_RESEARCH_TOPICS = "research_topics"
 
-        // Spezifische Spaltennamen f�r Thesis-Tabelle
+        // Spezifische Spaltennamen für Thesis-Tabelle
         const val COLUMN_STATE = "state"
         const val COLUMN_SUPERVISOR = "supervisor"
         const val COLUMN_SECOND_SUPERVISOR = "second_supervisor"
@@ -49,6 +49,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         const val COLUMN_USER_TYPE = "user_type"
     }
 
+    // Erstellen der Datenbanktabellen
     override fun onCreate(db: SQLiteDatabase) {
         // Erstellen der Role-Tabelle
         var createTable = ("CREATE TABLE IF NOT EXISTS $ROLE_TABLE_NAME ("
@@ -67,7 +68,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 + "FOREIGN KEY($COLUMN_ROLE) REFERENCES $ROLE_TABLE_NAME($COLUMN_ID) )")
         db.execSQL(createTable)
 
-       // Erstellen der Current User-Tabelle
+
         createTable = ("CREATE TABLE $CURRENT_USER_TABLE_NAME ("
                 + "$COLUMN_USER_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "FOREIGN KEY($COLUMN_USER_ID) REFERENCES $PROFILE_TABLE_NAME($COLUMN_ID) )")
@@ -96,10 +97,11 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         db.execSQL(createTable)
 
         createTable = ("CREATE TABLE $LANGUAGES_TABLE_NAME ("
-                        + "$COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
-                        + "$COLUMN_NAME TEXT )")
+                + "$COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "$COLUMN_NAME TEXT )")
         db.execSQL(createTable)
 
+        // Erstellen der Topic Categories-Tabelle
         createTable = ("CREATE TABLE $TOPICCATEGORIES_TABLE_NAME ("
                 + "$COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "$COLUMN_NAME TEXT )")
@@ -112,22 +114,49 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 + "$COLUMN_BIO TEXT, "
                 + "$COLUMN_RESEARCH_TOPICS TEXT, "
                 + "FOREIGN KEY($COLUMN_USER_ID) REFERENCES $PROFILE_TABLE_NAME($COLUMN_ID))")
+        db.execSQL(createTable)        // Erstellen der Thesis-Tabelle
+        createTable = ("CREATE TABLE $THESIS_TABLE_NAME ("
+                + "$COLUMN_ID INTEGER PRIMARY KEY, "
+                + "$COLUMN_STUDENT INTEGER , "
+                + "$COLUMN_STATE TEXT, "
+                + "$COLUMN_SUPERVISOR INTEGER , "
+                + "$COLUMN_SECOND_SUPERVISOR INTEGER, "
+                + "$COLUMN_THEME TEXT, "
+                + "$COLUMN_DUE_DATE_DAY INTEGER, "
+                + "$COLUMN_DUE_DATE_MONTH INTEGER, "
+                + "$COLUMN_DUE_DATE_YEAR INTEGER, "
+                + "$COLUMN_BILL_STATE TEXT, "
+                + "$COLUMN_USER_TYPE INTEGER, "
+                + "FOREIGN KEY($COLUMN_STUDENT) REFERENCES $PROFILE_TABLE_NAME($COLUMN_ID), "
+                + "FOREIGN KEY($COLUMN_SUPERVISOR) REFERENCES $PROFILE_TABLE_NAME($COLUMN_ID), "
+                + "FOREIGN KEY($COLUMN_SECOND_SUPERVISOR) REFERENCES $PROFILE_TABLE_NAME($COLUMN_ID) ) " )
         db.execSQL(createTable)
 
 
         insertTemplateDate(db)
+
+        }
+
+    // Überprüfen, ob Rollen eingefügt werden müssen
+    private fun roleInsertNeeded(db: SQLiteDatabase): Boolean {
+        val count = DatabaseUtils.queryNumEntries(db, ROLE_TABLE_NAME)
+        return count <= 0
     }
 
-     private fun insertTemplateDate(db: SQLiteDatabase) {
+    // Einfügen von Beispieldaten
+    private fun insertTemplateDate(db: SQLiteDatabase) {
         if (roleInsertNeeded(db)) {
+            // Einfügen von Rollen
             var insertStatement =
                 "INSERT INTO $ROLE_TABLE_NAME ($COLUMN_NAME) VALUES ('student'), ('supervisor') "
             db.execSQL(insertStatement)
 
+            // Einfügen von Sprachen
             insertStatement =
                 "INSERT INTO $LANGUAGES_TABLE_NAME ($COLUMN_NAME) VALUES ('German'), ('English') "
             db.execSQL(insertStatement)
 
+            // Einfügen von Themen
             insertStatement =
                 ("INSERT INTO $TOPICCATEGORIES_TABLE_NAME ($COLUMN_NAME) " +
                         "VALUES ('Real Estate'), ('Architecture'), ('Industry & Construction') , " +
@@ -136,14 +165,16 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                         "('Data Science & Artificial Intelligence'), ('Human Resources & Law'), " +
                         "('Marketing & Communication'), ('Tourism, Hospitality & Event'), " +
                         "('Business Administration & Management'), ('Finance & Tax Accounting'), " +
-                            "('Planning & Controlling'), ('Methods'), ('Project Management'), " +
+                        "('Planning & Controlling'), ('Methods'), ('Project Management'), " +
                         " ('Languages'), ('Economics')")
+
             db.execSQL(insertStatement)
         }
     }
 
+    // Aktualisieren der Datenbank
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        // Bei einem Upgrade werden alle Tabellen gel�scht und neu erstellt
+        // Bei einem Upgrade werden alle Tabellen gelöscht und neu erstellt
         db.execSQL("DROP TABLE IF EXISTS $PROFILE_TABLE_NAME")
         db.execSQL("DROP TABLE IF EXISTS $THESIS_TABLE_NAME")
         db.execSQL("DROP TABLE IF EXISTS $ROLE_TABLE_NAME")
@@ -153,6 +184,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         onCreate(db)
     }
 
+    // Entfernt den aktuellen Benutzer
     fun removeCurrentUser(){
         val db = this.writableDatabase
         val deleteStatement = "DELETE FROM $CURRENT_USER_TABLE_NAME "
@@ -167,7 +199,9 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         db.execSQL(insertStatement)
         db.close()
     }
- fun getCurrentUser () : UserProfile {
+
+    // Holt den aktuellen Benutzer
+    fun getCurrentUser () : UserProfile {
         val db = this.readableDatabase
         val selectStatement = "SELECT * FROM $PROFILE_TABLE_NAME where $COLUMN_ID = (SELECT $COLUMN_USER_ID FROM $CURRENT_USER_TABLE_NAME )"
 
@@ -189,7 +223,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return userProfile
     }
 
-
     // Holt Benutzer anhand des Benutzernamens
     fun getUser(userName: String): UserProfile? {
         val db = this.readableDatabase
@@ -210,7 +243,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         cursor.close()
         return userProfile
     }
-    // F�gt einen neuen Nutzer hinzu
+    // Fügt einen neuen Nutzer hinzu
+    // Fügt einen neuen Nutzer hinzu
     fun insertUser( userProfile: UserProfile) {
         val db = this.writableDatabase
 
@@ -225,14 +259,13 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         db.close()
     }
 
- // Pr�ft ob ein Benutzer existiert
+    // Prüft ob ein Benutzer existiert
     fun userExists(email : String) : Boolean{
         val count = DatabaseUtils.queryNumEntries(this.writableDatabase, PROFILE_TABLE_NAME, "$COLUMN_EMAIL = '$email'")
         return count > 0
     }
 
-
- // Holt die Fachrichtungen der Betreuer
+    // Holt die Fachrichtungen der Betreuer
     fun getAllSpecialisations() : Array<String>{
         val specialisations = ArrayList<String>()
         val selectStatement = "SELECT * FROM $TOPICCATEGORIES_TABLE_NAME "
@@ -251,7 +284,9 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     // Holt den Datenbankpfad
     fun getDatabasePath(context: Context): String {
         return context.getDatabasePath(DATABASE_NAME).absolutePath
-    }// Holt eine Thesis anhand des Studentennamens
+    }
+
+    // Holt eine Thesis anhand des Studentennamens
     fun getThesisByStudent(studentName: String): Thesis? {
         val db = this.readableDatabase
         val cursor = db.query(
@@ -322,7 +357,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return db.insert(THESIS_TABLE_NAME, null, values)
     }
 
-    // F�gt eine neue Thesis ein oder aktualisiert eine bestehende
+    // Fügt eine neue Thesis ein oder aktualisiert eine bestehende
     fun insertOrUpdateThesis(thesis: Thesis) : Long {
         val db = this.writableDatabase
         val values = ContentValues().apply {
@@ -349,3 +384,4 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         }
     }
 }
+

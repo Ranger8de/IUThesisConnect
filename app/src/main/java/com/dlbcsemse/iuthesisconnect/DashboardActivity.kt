@@ -59,13 +59,11 @@ class DashboardActivity : AppCompatActivity() {
         }
         recyclerView.adapter = buttonAdapter
 
-
         toolbarButton = findViewById(R.id.toolbarImageButton)
         toolbarButton.setOnClickListener{
             val intent = Intent(this, ProfileActivity::class.java)
             startActivity(intent)
         }
-
     }
 
     private fun getMenuItems(userType: DashboardUserType): ArrayList<DashboardItem> {
