@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.dlbcsemse.iuthesisconnect.helper.DatabaseHelper
 import com.dlbcsemse.iuthesisconnect.model.UserProfile
 
-class SupervisorViewFromStudentActivity : AppCompatActivity() {
+class SupervisorViewFromStudentActivity : ToolbarBaseActivity() {
     private lateinit var toolbarImageButton: ImageButton
     private lateinit var databaseHelper: DatabaseHelper
     private lateinit var supervisorProfile: UserProfile
@@ -16,20 +16,10 @@ class SupervisorViewFromStudentActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_supervisor_view_from_student)
 
-        initializeViews()
         setupToolbarButton()
         loadSupervisorData()
     }
 
-    private fun initializeViews() {
-        toolbarImageButton = findViewById(R.id.toolbarImageButton)
-    }
-
-    private fun setupToolbarButton() {
-        toolbarImageButton.setOnClickListener {
-            finish()
-        }
-    }
 
     private fun loadSupervisorData() {
         databaseHelper = DatabaseHelper(this)

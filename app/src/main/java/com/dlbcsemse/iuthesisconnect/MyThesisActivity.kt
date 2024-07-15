@@ -11,7 +11,7 @@ import com.dlbcsemse.iuthesisconnect.helper.DatabaseHelper
 import com.dlbcsemse.iuthesisconnect.model.Thesis
 import com.dlbcsemse.iuthesisconnect.model.UserProfile
 
-class MyThesisActivity : AppCompatActivity() {
+class MyThesisActivity : ToolbarBaseActivity() {
     private lateinit var editTitle: EditText
     private lateinit var editSupervisor: EditText
     private lateinit var editState: EditText
@@ -29,6 +29,7 @@ class MyThesisActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_my_thesis)
 
+        setupToolbarButton()
         initializeViews()
         setupUserAndThesis()
         setupSaveButton()
