@@ -13,6 +13,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
@@ -25,13 +26,13 @@ import java.util.Base64
 
 
 class ProfileActivity : AppCompatActivity() {
+    private lateinit var toolBar : Toolbar
     private lateinit var imgButton: ImageButton
     private lateinit var textViewStatus : TextView
     private lateinit var userProfile : UserProfile
     private lateinit var userName : TextView
     private lateinit var userEmail : TextView
     private lateinit var userImage : ImageView
-    private lateinit var backButton : ImageButton
     private lateinit var textBiography : EditText
     private lateinit var textSpecialisation : TextView
     private lateinit var cardViewBiography : CardView
@@ -47,16 +48,15 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         val databaseHelper = DatabaseHelper(this)
-        Log.d("Database Path", databaseHelper.getDatabasePath(this));
 
         userProfile = databaseHelper.getCurrentUser()
 
+        toolBar = findViewById(R.id.profileToolbar)
         imgButton = findViewById<ImageButton>(R.id.profileImageViewAvailableStatus)
         textViewStatus = findViewById<TextView>(R.id.profileTextViewAvailableStatus)
         userEmail = findViewById(R.id.profileTextViewEmail)
         userName = findViewById(R.id.profileTextViewName)
         userImage = findViewById(R.id.profileImageViewImage)
-        backButton = findViewById(R.id.profileToolbarBackButton)
         textBiography = findViewById(R.id.profileEditTextBiography)
         textSpecialisation = findViewById(R.id.profileTextViewSpecializations)
         cardViewBiography = findViewById(R.id.profileCardViewBiography)
@@ -67,13 +67,15 @@ class ProfileActivity : AppCompatActivity() {
             cardViewBiography.visibility = View.GONE
         }
 
+        setSupportActionBar(toolBar);
+        supportActionBar?.setDisplayHomeAsUpEnabled(true);
+        supportActionBar?.setDisplayShowHomeEnabled(true);
+        toolBar.setNavigationOnClickListener {
+            finish()
+        }
 
         imgButton.setOnClickListener {
             showStatusSelectionDialog()
-        }
-
-        backButton.setOnClickListener {
-            finish()
         }
 
         textSpecialisation.setOnClickListener {
@@ -111,7 +113,7 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("Status wählen")
+        builder.setTitle("Choose status")
         builder.setAdapter(adapter) { dialog, which ->
             when (which) {
                 0 -> {

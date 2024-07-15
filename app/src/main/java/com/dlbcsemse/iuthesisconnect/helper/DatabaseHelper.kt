@@ -17,6 +17,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         private const val CURRENT_USER_TABLE_NAME = "current_user"
         private const val LANGUAGES_TABLE_NAME = "languages"
         private const val TOPICCATEGORIES_TABLE_NAME = "topic_categories"
+        private const val SUPERVISORPROFILE_TABLE_NAME = "supervisor_profile"
+
 
         private const val COLUMN_ID = "id"
         private const val COLUMN_USER_ID = "user_id"
@@ -24,7 +26,9 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         private const val COLUMN_EMAIL = "email"
         private const val COLUMN_PICTURE = "picture"
         private const val COLUMN_ROLE = "role"
-
+        private const val COLUMN_STATUS = "status"
+        private const val COLUMN_BIO = "biography"
+        private const val COLUMN_RESEARCH_TOPICS = "research_topics"
 
     }
 
@@ -57,6 +61,15 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         createTable = ("CREATE TABLE $TOPICCATEGORIES_TABLE_NAME ("
                 + "$COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "$COLUMN_NAME TEXT )")
+        db.execSQL(createTable)
+
+        createTable = ("CREATE TABLE $SUPERVISORPROFILE_TABLE_NAME ("
+                + "$COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "$COLUMN_USER_ID INTEGER, "
+                + "$COLUMN_STATUS INTEGER,  "
+                + "$COLUMN_BIO TEXT, "
+                + "$COLUMN_RESEARCH_TOPICS TEXT, "
+                + "FOREIGN KEY($COLUMN_USER_ID) REFERENCES $PROFILE_TABLE_NAME($COLUMN_ID))")
         db.execSQL(createTable)
 
 
@@ -180,19 +193,16 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     fun getAllSpecialisations() : Array<String>{
 
-        val specialisations = ArrayList<String>()
-        val selectStatement = "SELECT * FROM $TOPICCATEGORIES_TABLE_NAME "
-
-        val cursor: Cursor = this.readableDatabase.rawQuery(selectStatement, null)
-        with(cursor) {
-            while (moveToNext()) {
-                specialisations.add(getString(getColumnIndexOrThrow(COLUMN_NAME)))
-
-            }
+        val cursor: Cursor = this.readableDatabase.query(TOPICCATEGORIES_TABLE_NAME, null, null, null, null,null,null)
+        val specialisations = Array<String>(cursor.count){""}
+        var cursorIndex = 0
+        while (cursor.moveToNext()) {
+            specialisations[cursorIndex] = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME))
+            cursorIndex++
         }
-        cursor.close()
 
-        return specialisations.toArray() as Array<String>
+        cursor.close()
+        return specialisations
     }
 
 
