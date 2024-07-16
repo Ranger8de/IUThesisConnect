@@ -9,15 +9,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.dlbcsemse.iuthesisconnect.helper.DatabaseHelper
 import com.dlbcsemse.iuthesisconnect.model.DashboardUserType
+import com.dlbcsemse.iuthesisconnect.model.Thesis
 import com.dlbcsemse.iuthesisconnect.model.UserProfile
-import com.dlbcsemse.iuthesisconnect.model.ThesisProfile
+
 
 class MyThesisActivity : AppCompatActivity() {
     private lateinit var toolbarImageButton : ImageButton
     // Datenbank-Helper und Datenmodelle
     private lateinit var dbHelper: DatabaseHelper
     private lateinit var currentUser: UserProfile
-    private lateinit var thesis: ThesisProfile
+    private lateinit var thesis: Thesis
     private lateinit var userType: DashboardUserType
     // UI-Elemente
     private lateinit var titleEditText: EditText
@@ -65,9 +66,19 @@ class MyThesisActivity : AppCompatActivity() {
         userType = intent.getSerializableExtra("userType") as? DashboardUserType
             ?: throw IllegalArgumentException("User type not provided")
         currentUser = dbHelper.getCurrentUser()
-        // Lädt die Thesis oder erstellt eine neue, wenn keine existiert
-        thesis = dbHelper.getThesisByStudent(currentUser.userName) ?: ThesisProfile(
-            "", "", "", "", currentUser.userName, 0, 0, 0, "", "", currentUser.userType.ordinal
+        // LÃ¤dt die Thesis oder erstellt eine neue, wenn keine existiert
+        thesis = dbHelper.getThesisByStudent(currentUser.userName) ?: Thesis(
+            currentUser.userId.toInt(),
+            "Noch nicht begonnen" ,
+            -1 ,
+            -1 ,
+            "Noch nicht erstellt" ,
+            currentUser.userId.toInt() ,
+            0 ,
+            0 ,
+            0 ,
+            "Noch nicht gestellt",
+            currentUser.userType.ordinal
         )
     }
     // Initialisiert die UI-Elemente
@@ -80,12 +91,12 @@ class MyThesisActivity : AppCompatActivity() {
         dueDateEditText = findViewById(R.id.faelligkeitsdatumMyThesisTextEdit)
         saveButton = findViewById(R.id.myThesisbuttonSave)
     }
-    // Lädt und zeigt die Thesis-Daten an
+    // LÃ¤dt und zeigt die Thesis-Daten an
     private fun loadAndDisplayThesisData() {
         titleEditText.setText(thesis.theme)
-        supervisorEditText.setText(thesis.supervisor)
+        supervisorEditText.setText(thesis.supervisor.toString())
         stateEditText.setText(thesis.state)
-        secondSupervisorEditText.setText(thesis.secondSupervisor)
+        secondSupervisorEditText.setText(thesis.secondSupervisor.toString())
         // setzt den Studenten automatin anhand des aktuellen Users
         studentEditText.setText(currentUser.userName)
         dueDateEditText.setText("${thesis.dueDateDay}.${thesis.dueDateMonth}.${thesis.dueDateYear}")
@@ -120,14 +131,14 @@ class MyThesisActivity : AppCompatActivity() {
         when (userType) {
             DashboardUserType.student -> {
                 thesis.theme = titleEditText.text.toString()
-                thesis.supervisor = supervisorEditText.text.toString()
+                thesis.supervisor = supervisorEditText.text.toString().toIntOrNull() ?: -1
                 // Anzeigen lassen was geupdatet wurde
                 Log.d("MyThesisActivity", "Updating as student: theme=${thesis.theme}, supervisor=${thesis.supervisor}")
             }
             DashboardUserType.supervisor -> {
                 thesis.state = stateEditText.text.toString()
-                thesis.secondSupervisor = secondSupervisorEditText.text.toString()
-                // Hier müssen Sie die Datumsverarbeitung anpassen
+                thesis.secondSupervisor = secondSupervisorEditText.text.toString().toString().toIntOrNull() ?: -1
+                // Hier mÃ¼ssen Sie die Datumsverarbeitung anpassen
                 val dateParts = dueDateEditText.text.toString().split(".")
                 if (dateParts.size == 3) {
                     thesis.dueDateDay = dateParts[0].toIntOrNull() ?: 0

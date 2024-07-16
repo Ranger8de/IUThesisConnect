@@ -41,7 +41,7 @@
     </androidx.appcompat.widget.Toolbar>
 
     <TextView
-        android:id="@+id/meineAbschlussarbeittextView"
+        android:id="@+id/meineAbschlussarbeitTopictextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Meine Abschlussarbeit"
@@ -63,7 +63,7 @@
         tools:layout_editor_absoluteY="96dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/meineAbschlussarbeittextView"
+        app:layout_constraintTop_toBottomOf="@+id/meineAbschlussarbeitTopictextView"
         >
 
     <FrameLayout
@@ -247,14 +247,14 @@
                 android:paddingBottom="2dp">
 
                 <TextView
-                    android:id="@+id/titlerechnungssatusMyThesisTextView"
+                    android:id="@+id/titlerechnungsstellungMyThesisTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Rechnungsstatus"
+                    android:text="Rechnungsstellung"
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/rechnungsstatusMyThesisTextView"
+                    android:id="@+id/rechnungsstellungMyThesisTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="B-Daten"

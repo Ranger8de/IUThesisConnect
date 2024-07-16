@@ -11,10 +11,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dlbcsemse.iuthesisconnect.model.DashboardUserType
 
-class DashboardActivity : ToolbarBaseActivity() {
+class DashboardActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var buttonAdapter: DashboardButtonAdapter
+    private lateinit var toolbarButton: ImageButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,8 +26,6 @@ class DashboardActivity : ToolbarBaseActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        setupToolbarButton()
 
         val userType = DashboardUserType.valueOf(intent.getStringExtra("userType").toString())
         val items: ArrayList<DashboardItem> = getMenuItems(userType)
@@ -60,6 +59,11 @@ class DashboardActivity : ToolbarBaseActivity() {
         }
         recyclerView.adapter = buttonAdapter
 
+        toolbarButton = findViewById(R.id.toolbarImageButton)
+        toolbarButton.setOnClickListener{
+            val intent = Intent(this, ProfileActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun getMenuItems(userType: DashboardUserType): ArrayList<DashboardItem> {

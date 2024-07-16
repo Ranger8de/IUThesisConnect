@@ -6,9 +6,8 @@ import android.database.Cursor
 import android.database.DatabaseUtils
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-
+import com.dlbcsemse.iuthesisconnect.model.Thesis
 import com.dlbcsemse.iuthesisconnect.model.UserProfile
-import com.dlbcsemse.iuthesisconnect.model.ThesisProfile
 
 class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     companion object {
@@ -21,13 +20,13 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         private const val ROLE_TABLE_NAME = "role"
         private const val CURRENT_USER_TABLE_NAME = "current_user"
         private const val THESIS_TABLE_NAME = "thesis"
-		private const val LANGUAGES_TABLE_NAME = "languages"
+        private const val LANGUAGES_TABLE_NAME = "languages"
         private const val TOPICCATEGORIES_TABLE_NAME = "topic_categories"
         private const val SUPERVISORPROFILE_TABLE_NAME = "supervisor_profile"
 
         // Gemeinsame Spaltennamen
         private const val COLUMN_ID = "id"
- 		private const val COLUMN_USER_ID = "user_id"
+        private const val COLUMN_USER_ID = "user_id"
         private const val COLUMN_NAME = "name"
         private const val COLUMN_EMAIL = "email"
         private const val COLUMN_ROLE = "role"
@@ -56,14 +55,13 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 + "$COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "$COLUMN_NAME TEXT )")
         db.execSQL(createTable)
-        
 
- 		// Erstellen der Profile-Tabelle
+
+        // Erstellen der Profile-Tabelle
         createTable = ("CREATE TABLE $PROFILE_TABLE_NAME ("
                 + "$COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + "$COLUMN_NAME TEXT, "
                 + "$COLUMN_EMAIL TEXT, "
-                + "$COLUMN_PICTURE TEXT, "
                 + "$COLUMN_ROLE int, "
                 + "FOREIGN KEY($COLUMN_ROLE) REFERENCES $ROLE_TABLE_NAME($COLUMN_ID) )")
         db.execSQL(createTable)
@@ -72,28 +70,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         createTable = ("CREATE TABLE $CURRENT_USER_TABLE_NAME ("
                 + "$COLUMN_USER_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "FOREIGN KEY($COLUMN_USER_ID) REFERENCES $PROFILE_TABLE_NAME($COLUMN_ID) )")
-        db.execSQL(createTable)
-
-
-        // Erstellen der Thesis-Tabelle
-        createTable = """
-            CREATE TABLE $THESIS_TABLE_NAME (
-                $COLUMN_STUDENT TEXT PRIMARY KEY,
-                $COLUMN_STATE TEXT,
-                $COLUMN_SUPERVISOR TEXT,
-                $COLUMN_SECOND_SUPERVISOR TEXT,
-                $COLUMN_THEME TEXT,
-                $COLUMN_DUE_DATE_DAY INTEGER,
-                $COLUMN_DUE_DATE_MONTH INTEGER,
-                $COLUMN_DUE_DATE_YEAR INTEGER,
-                $COLUMN_BILL TEXT,
-                $COLUMN_BILL_STATE TEXT,
-                $COLUMN_USER_TYPE INTEGER,
-                FOREIGN KEY($COLUMN_STUDENT) REFERENCES $PROFILE_TABLE_NAME($COLUMN_NAME),
-                FOREIGN KEY($COLUMN_SUPERVISOR) REFERENCES $PROFILE_TABLE_NAME($COLUMN_NAME),
-                FOREIGN KEY($COLUMN_SECOND_SUPERVISOR) REFERENCES $PROFILE_TABLE_NAME($COLUMN_NAME)
-            )
-        """.trimIndent()
         db.execSQL(createTable)
 
         createTable = ("CREATE TABLE $LANGUAGES_TABLE_NAME ("
@@ -114,7 +90,9 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 + "$COLUMN_BIO TEXT, "
                 + "$COLUMN_RESEARCH_TOPICS TEXT, "
                 + "FOREIGN KEY($COLUMN_USER_ID) REFERENCES $PROFILE_TABLE_NAME($COLUMN_ID))")
-        db.execSQL(createTable)        // Erstellen der Thesis-Tabelle
+        db.execSQL(createTable)
+
+        // Erstellen der Thesis-Tabelle
         createTable = ("CREATE TABLE $THESIS_TABLE_NAME ("
                 + "$COLUMN_ID INTEGER PRIMARY KEY, "
                 + "$COLUMN_STUDENT INTEGER , "
@@ -135,7 +113,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
         insertTemplateDate(db)
 
-        }
+    }
 
     // Überprüfen, ob Rollen eingefügt werden müssen
     private fun roleInsertNeeded(db: SQLiteDatabase): Boolean {
@@ -212,11 +190,9 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         val id = cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_ID))
         val name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME))
         val email = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_EMAIL))
-        val picture = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PICTURE))
         val roleId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ROLE))
 
         val userProfile = UserProfile(id, name, email, roleId)
-        userProfile.picture = picture
 
         cursor.close()
 
@@ -234,11 +210,9 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             val id = cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_ID))
             val name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME))
             val email = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_EMAIL))
-            val picture = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PICTURE))
             val roleId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ROLE))
 
             userProfile = UserProfile(id, name, email, roleId)
-            userProfile.picture = picture
         }
         cursor.close()
         return userProfile
@@ -251,7 +225,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         val values = ContentValues().apply {
             put(COLUMN_NAME, userProfile.userName)
             put(COLUMN_EMAIL, userProfile.userEmail )
-            put(COLUMN_PICTURE, userProfile.picture)
             put(COLUMN_ROLE, userProfile.userType.ordinal)
         }
 
@@ -384,4 +357,3 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         }
     }
 }
-
