@@ -71,19 +71,32 @@ class MyThesisActivity : AppCompatActivity() {
             ?: throw IllegalArgumentException("User type not provided")
         currentUser = dbHelper.getCurrentUser()
         // Lädt die Thesis oder erstellt eine neue, wenn keine existiert
-        thesis = dbHelper.getThesisByStudent(currentUser.userName) ?: Thesis(
-            currentUser.userId.toInt(),
-            "Noch nicht begonnen" ,
-            -1 ,
-            -1 ,
-            "Noch nicht erstellt" ,
-            currentUser.userId.toInt() ,
-            0 ,
-            0 ,
-            0 ,
-            "Noch nicht gestellt",
-            currentUser.userType.ordinal
-        )
+        val loadedThesis = dbHelper.getThesisByStudent(currentUser.userName)
+
+        thesis = if(loadedThesis != null) {
+            loadedThesis
+        } else {
+            Thesis(
+                -1,
+                "Noch nicht begonnen",
+                -1,
+                -1,
+                "Noch nicht erstellt",
+                currentUser.userId.toInt(),
+                0,
+                0,
+                0,
+                "Noch nicht gestellt",
+                currentUser.userType.ordinal
+            ).also {newThesis ->
+                val insertedId = dbHelper.insertThesis(newThesis)
+                if (insertedId != -1L) {
+                    newThesis.id = insertedId.toInt()
+                } else {
+                    Log.e("MyThesisActivity", "Failed to insert new Thesis")
+                }
+            }
+        }
     }
     // Initialisiert die UI-Elemente
     private fun initializeViews() {
@@ -147,25 +160,21 @@ class MyThesisActivity : AppCompatActivity() {
             DashboardUserType.student -> {
                 thesis.theme = titleEditText.text.toString()
                 thesis.supervisor = supervisorEditText.text.toString().toIntOrNull() ?: -1
-                // Anzeigen lassen was geupdatet wurde
-                Log.d("MyThesisActivity", "Updating as student: theme=${thesis.theme}, supervisor=${thesis.supervisor}")
             }
             DashboardUserType.supervisor -> {
                 thesis.state = stateEditText.text.toString()
-                thesis.secondSupervisor = secondSupervisorEditText.text.toString().toString().toIntOrNull() ?: -1
-                // Hier müssen Sie die Datumsverarbeitung anpassen
+                thesis.secondSupervisor = secondSupervisorEditText.text.toString().toIntOrNull() ?: -1
                 val dateParts = dueDateEditText.text.toString().split(".")
                 if (dateParts.size == 3) {
                     thesis.dueDateDay = dateParts[0].toIntOrNull() ?: 0
                     thesis.dueDateMonth = dateParts[1].toIntOrNull() ?: 0
                     thesis.dueDateYear = dateParts[2].toIntOrNull() ?: 0
                 }
-                Log.d("MyThesisActivity", "Updating as supervisor: state=${thesis.state}, secondSupervisor=${thesis.secondSupervisor}, dueDate=${thesis.dueDateDay}.${thesis.dueDateMonth}.${thesis.dueDateYear}")
             }
         }
-        val updatedRows = dbHelper.updateThesis(thesis)
-        Log.d("MyThesisActivity", "Updated rows: $updatedRows")
-        if (updatedRows > 0) {
+
+        val result = dbHelper.insertOrUpdateThesis(thesis)
+        if (result != -1L) {
             Toast.makeText(this, "Thesis erfolgreich aktualisiert", Toast.LENGTH_SHORT).show()
             loadAndDisplayThesisData()
         } else {

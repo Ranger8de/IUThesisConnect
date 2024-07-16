@@ -331,7 +331,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     }
 
     // Fügt eine neue Thesis ein oder aktualisiert eine bestehende
-    fun insertOrUpdateThesis(thesis: Thesis) : Long {
+    fun insertOrUpdateThesis(thesis: Thesis): Long {
         val db = this.writableDatabase
         val values = ContentValues().apply {
             put(COLUMN_STATE, thesis.state)
@@ -346,13 +346,9 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             put(COLUMN_USER_TYPE, thesis.userType)
         }
 
-        val cursor = db.query(THESIS_TABLE_NAME, arrayOf(COLUMN_ID), "$COLUMN_STUDENT = ?", arrayOf(thesis.student.toString()), null, null, null)
-        return if (cursor.moveToFirst()) {
-            val id = cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_ID))
-            cursor.close()
-            db.update(THESIS_TABLE_NAME, values, "$COLUMN_ID = ?", arrayOf(id.toString())).toLong()
+        return if (thesis.id > 0) {
+            db.update(THESIS_TABLE_NAME, values, "$COLUMN_ID = ?", arrayOf(thesis.id.toString())).toLong()
         } else {
-            cursor.close()
             db.insert(THESIS_TABLE_NAME, null, values)
         }
     }
