@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.isVisible
 import com.dlbcsemse.iuthesisconnect.helper.DatabaseHelper
 import com.dlbcsemse.iuthesisconnect.model.DashboardUserType
 import com.dlbcsemse.iuthesisconnect.model.Thesis
@@ -30,6 +31,9 @@ class MyThesisActivity : AppCompatActivity() {
     private lateinit var secondSupervisorTextView: TextView
     private lateinit var studentEditText: EditText
     private lateinit var dueDateTextView: TextView
+    private lateinit var billStateTopicTextView: TextView
+    private lateinit var billStateTextView: TextView
+    private lateinit var billButton: Button
     private lateinit var saveButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,7 +93,13 @@ class MyThesisActivity : AppCompatActivity() {
         secondSupervisorEditText = findViewById(R.id.zweitgutachterMyThesisTextEdit)
         studentEditText = findViewById(R.id.studentMyThesisTextEdit)
         dueDateEditText = findViewById(R.id.faelligkeitsdatumMyThesisTextEdit)
+        //
+        billStateTextView = findViewById(R.id.rechnungsstatusMyThesisTextView)
+        billStateTopicTextView = findViewById(R.id.titlerechnungssatusMyThesisTextView)
+
         saveButton = findViewById(R.id.myThesisbuttonSave)
+        //
+        billButton = findViewById(R.id.myThesisbuttonRechnungsstellung)
     }
     // Lädt und zeigt die Thesis-Daten an
     private fun loadAndDisplayThesisData() {
@@ -109,6 +119,9 @@ class MyThesisActivity : AppCompatActivity() {
                 stateEditText.isEnabled = false
                 secondSupervisorEditText.isEnabled = false
                 dueDateEditText.isEnabled = false
+                billStateTextView.isVisible = false
+                billStateTopicTextView.isVisible = false
+                billButton.isVisible = false
             }
             DashboardUserType.supervisor -> {
                 titleEditText.isEnabled = false
@@ -116,9 +129,11 @@ class MyThesisActivity : AppCompatActivity() {
                 stateEditText.isEnabled = true
                 secondSupervisorEditText.isEnabled = true
                 dueDateEditText.isEnabled = true
+                billStateTextView.isVisible = true
+                billStateTopicTextView.isVisible = true
+                billButton.isVisible = true
             }
         }
-        //saveButton.visibility = View.VISIBLE
     }
     // Richtet den Speichern-Button ein
     private fun setupSaveButton() {

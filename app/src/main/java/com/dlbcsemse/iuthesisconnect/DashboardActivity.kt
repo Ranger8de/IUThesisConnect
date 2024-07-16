@@ -11,16 +11,19 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dlbcsemse.iuthesisconnect.model.DashboardUserType
 
-class DashboardActivity : AppCompatActivity() {
+class DashboardActivity : ToolbarBaseActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var buttonAdapter: DashboardButtonAdapter
-    private lateinit var toolbarButton: ImageButton
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_dashboard)
+
+        setupToolbarButton()
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -59,10 +62,7 @@ class DashboardActivity : AppCompatActivity() {
         }
         recyclerView.adapter = buttonAdapter
 
-        toolbarButton = findViewById(R.id.toolbarImageButton)
-        toolbarButton.setOnClickListener{
-            val intent = Intent(this, ProfileActivity::class.java)
-            startActivity(intent)
+
         }
     }
 
@@ -83,4 +83,3 @@ class DashboardActivity : AppCompatActivity() {
         items.add(DashboardItem(2, "Beaufsichtigte Abschlussarbeiten", R.drawable.screenshot, DashboardUserType.supervisor))
         return items
     }
-}

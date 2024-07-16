@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
-class SupervisorActivity : AppCompatActivity() {
+class SupervisorActivity : ToolbarBaseActivity() {
     private lateinit var toolbarImageButton : ImageButton
 
 

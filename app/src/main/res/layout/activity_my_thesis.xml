@@ -247,34 +247,6 @@
                 android:paddingBottom="2dp">
 
                 <TextView
-                    android:id="@+id/titlerechnungsstellungMyThesisTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Rechnungsstellung"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/rechnungsstellungMyThesisTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="B-Daten"
-                    android:textSize="24sp" />
-
-            </LinearLayout>
-
-        </FrameLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:paddingBottom="2dp">
-
-                <TextView
                     android:id="@+id/titlerechnungssatusMyThesisTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
