@@ -20,6 +20,7 @@ import androidx.cardview.widget.CardView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.dlbcsemse.iuthesisconnect.helper.DatabaseHelper
+import com.dlbcsemse.iuthesisconnect.model.DashboardUserType
 import com.dlbcsemse.iuthesisconnect.model.UserProfile
 import java.nio.charset.Charset
 import java.util.Base64

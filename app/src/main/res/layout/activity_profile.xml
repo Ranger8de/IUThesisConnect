@@ -95,7 +95,7 @@
             app:layout_constraintStart_toEndOf="@+id/profileImageViewAvailableStatus" />
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/profileCardViewBiography"
+            android:id="@+id/profileCardViewLanguage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
@@ -103,6 +103,53 @@
             app:cardCornerRadius="8dp"
             app:cardElevation="4dp"
             app:layout_constraintTop_toBottomOf="@+id/profileImageViewHeader"
+            >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Language"
+                android:textSize="18sp" />
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center"
+                tools:context=".ProfileActivity">
+
+                <ToggleButton
+                    android:id="@+id/profileToggleButtonGerman"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textOn="German"
+                    android:textOff="German"
+                    android:layout_margin="16dp" />
+
+                <ToggleButton
+                    android:id="@+id/profileToggleButtonEnglish"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textOn="English"
+                    android:textOff="English"
+                    android:layout_margin="16dp" />
+
+            </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:id="@+id/profileCardViewBiography"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:layout_marginTop="148dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp"
+            app:layout_constraintTop_toBottomOf="@+id/profileCardViewLanguage"
             >
             <ScrollView
                 android:layout_width="match_parent"

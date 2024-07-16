@@ -6,6 +6,7 @@ import android.database.Cursor
 import android.database.DatabaseUtils
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import com.dlbcsemse.iuthesisconnect.model.Thesis
 
 import com.dlbcsemse.iuthesisconnect.model.UserProfile
 import com.dlbcsemse.iuthesisconnect.model.ThesisProfile
@@ -34,6 +35,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         private const val COLUMN_STATUS = "status"
         private const val COLUMN_BIO = "biography"
         private const val COLUMN_RESEARCH_TOPICS = "research_topics"
+        private const val COLUMN_PICTURE = "picture"
 
         // Spezifische Spaltennamen für Thesis-Tabelle
         const val COLUMN_STATE = "state"
@@ -267,18 +269,17 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     // Holt die Fachrichtungen der Betreuer
     fun getAllSpecialisations() : Array<String>{
-        val specialisations = ArrayList<String>()
-        val selectStatement = "SELECT * FROM $TOPICCATEGORIES_TABLE_NAME "
 
-        val cursor: Cursor = this.readableDatabase.rawQuery(selectStatement, null)
-        with(cursor) {
-            while (moveToNext()) {
-                specialisations.add(getString(getColumnIndexOrThrow(COLUMN_NAME)))
-            }
+        val cursor: Cursor = this.readableDatabase.query(TOPICCATEGORIES_TABLE_NAME, null, null, null, null,null,null)
+        val specialisations = Array<String>(cursor.count){""}
+        var cursorIndex = 0
+        while (cursor.moveToNext()) {
+            specialisations[cursorIndex] = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME))
+            cursorIndex++
         }
-        cursor.close()
 
-        return specialisations.toArray() as Array<String>
+        cursor.close()
+        return specialisations
     }
 
     // Holt den Datenbankpfad

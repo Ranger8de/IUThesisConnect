@@ -1,5 +1,5 @@
 package com.dlbcsemse.iuthesisconnect.model
-import com.dlbcsemse.iuthesisconnect.DashboardUserType
+import com.dlbcsemse.iuthesisconnect.model.DashboardUserType
 import org.intellij.lang.annotations.Language
 import java.io.Serializable
 data class UserProfile (val id : Long, val name : String, val eMail : String, val type : Int)  {
