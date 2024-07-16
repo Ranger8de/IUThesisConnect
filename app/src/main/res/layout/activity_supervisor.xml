@@ -5,9 +5,9 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".BetreuteAbschlussarbeitenActivity">
+    tools:context=".SupervisorActivity">
 
-    <Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="0dp"
         android:layout_height="50dp"
@@ -26,6 +26,7 @@
             tools:layout_editor_absoluteY="2dp"
             />
 
+
         <TextView
             android:id="@+id/toolbartextView"
             android:layout_width="wrap_content"
@@ -36,20 +37,20 @@
             android:layout_gravity="right"
             android:layout_marginRight="15dp"
             />
-    </Toolbar>
+    </androidx.appcompat.widget.Toolbar>
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/betreuerTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Betreute Abschlussarbeiten"
+        android:text="Betreuer"
         android:textSize="30sp"
         android:textStyle="bold"
         tools:layout_editor_absoluteX="39dp"
         tools:layout_editor_absoluteY="185dp"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        />
+        app:layout_constraintEnd_toEndOf="parent"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,7 +7,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ArrayAdapter
+import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
@@ -15,16 +21,17 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.dlbcsemse.iuthesisconnect.helper.DatabaseHelper
 import com.dlbcsemse.iuthesisconnect.model.UserProfile
+import java.nio.charset.Charset
 import java.util.Base64
 
 class ProfileActivity : AppCompatActivity() {
+    private lateinit var toolBar : Toolbar
     private lateinit var imgButton: ImageButton
     private lateinit var textViewStatus : TextView
     private lateinit var userProfile : UserProfile
     private lateinit var userName : TextView
     private lateinit var userEmail : TextView
     private lateinit var userImage : ImageView
-    private lateinit var backButton : ImageButton
     private lateinit var textBiography : EditText
     private lateinit var textSpecialisation : TextView
     private lateinit var cardViewBiography : CardView
@@ -40,16 +47,15 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         val databaseHelper = DatabaseHelper(this)
-        Log.d("Database Path", databaseHelper.getDatabasePath(this));
 
         userProfile = databaseHelper.getCurrentUser()
 
+        toolBar = findViewById(R.id.profileToolbar)
         imgButton = findViewById<ImageButton>(R.id.profileImageViewAvailableStatus)
         textViewStatus = findViewById<TextView>(R.id.profileTextViewAvailableStatus)
         userEmail = findViewById(R.id.profileTextViewEmail)
         userName = findViewById(R.id.profileTextViewName)
         userImage = findViewById(R.id.profileImageViewImage)
-        backButton = findViewById(R.id.profileToolbarBackButton)
         textBiography = findViewById(R.id.profileEditTextBiography)
         textSpecialisation = findViewById(R.id.profileTextViewSpecializations)
         cardViewBiography = findViewById(R.id.profileCardViewBiography)
@@ -60,12 +66,15 @@ class ProfileActivity : AppCompatActivity() {
             cardViewBiography.visibility = View.GONE
         }
 
-        imgButton.setOnClickListener {
-            showStatusSelectionDialog()
+        setSupportActionBar(toolBar);
+        supportActionBar?.setDisplayHomeAsUpEnabled(true);
+        supportActionBar?.setDisplayShowHomeEnabled(true);
+        toolBar.setNavigationOnClickListener {
+            finish()
         }
 
-        backButton.setOnClickListener {
-            finish()
+        imgButton.setOnClickListener {
+            showStatusSelectionDialog()
         }
 
         textSpecialisation.setOnClickListener {
@@ -102,7 +111,7 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("Status wählen")
+        builder.setTitle("Choose status")
         builder.setAdapter(adapter) { dialog, which ->
             when (which) {
                 0 -> {

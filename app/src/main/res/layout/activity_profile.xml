@@ -20,20 +20,10 @@
             android:background="@color/cyan"
             android:minHeight="?attr/actionBarSize"
             android:theme="?attr/actionBarTheme"
-            tools:layout_editor_absoluteX="1dp"
-            tools:layout_editor_absoluteY="1dp"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:title="Profile"
 
-            <ImageButton
-                android:id="@+id/profileToolbarBackButton"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:background="@android:color/transparent"
-                android:scaleType="fitCenter"
-                android:src="@drawable/arrow_left"
-                tools:layout_editor_absoluteX="16dp"
-                tools:layout_editor_absoluteY="2dp" />
-        </androidx.appcompat.widget.Toolbar>
+            tools:layout_editor_absoluteX="1dp"/>
 
         <ImageView
             android:id="@+id/profileImageViewHeader"
@@ -127,7 +117,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Biography" />
+                        android:text="Biography"
+                        android:textSize="18sp"/>
 
                     <EditText
                         android:id="@+id/profileEditTextBiography"
@@ -152,6 +143,7 @@
             app:cardCornerRadius="8dp"
             app:cardElevation="4dp"
             app:layout_constraintTop_toBottomOf="@id/profileCardViewBiography"
+            android:id="@+id/profileCardViewTopicCategories"
             >
             <ScrollView
                 android:layout_width="match_parent"
@@ -166,7 +158,9 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Specializations" />
+                        android:text="Topic categories"
+                        android:textSize="18sp"
+                        />
 
                     <TextView
                         android:id="@+id/profileTextViewSpecializations"
@@ -183,6 +177,49 @@
                 </LinearLayout>
             </ScrollView>
         </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:layout_marginTop="148dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp"
+            app:layout_constraintTop_toBottomOf="@id/profileCardViewTopicCategories"
+            android:id="@+id/profileCardViewResearchFields"
+            >
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Research Fields"
+                        android:textSize="18sp"
+                        />
+
+                    <EditText
+                        android:id="@+id/profileTextViewResearchField"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="top"
+                        android:hint="Enter something"
+                        android:inputType="textMultiLine"
+                        android:minHeight="100dp"
+                        android:overScrollMode="always"
+                        android:scrollbars="vertical" />
+
+                </LinearLayout>
+            </ScrollView>
+        </androidx.cardview.widget.CardView>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
