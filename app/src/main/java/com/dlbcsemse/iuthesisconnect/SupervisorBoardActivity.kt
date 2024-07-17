@@ -1,5 +1,6 @@
 package com.dlbcsemse.iuthesisconnect
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
@@ -35,7 +36,12 @@ class SupervisorBoardActivity : ToolbarBaseActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         val supervisors = dbHelper.getAllSupervisors()
-        adapter = SupervisorBoardAdapter(supervisors)
+        adapter = SupervisorBoardAdapter(supervisors) { supervisor ->
+            // Hier wird der onClick-Handler implementiert
+            val intent = Intent(this, SupervisorViewFromStudentActivity::class.java)
+            intent.putExtra("supervisorName", supervisor.userName)
+            startActivity(intent)
+        }
         recyclerView.adapter = adapter
     }
 }

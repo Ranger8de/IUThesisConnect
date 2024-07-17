@@ -8,14 +8,25 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.dlbcsemse.iuthesisconnect.model.UserProfile
 
-class SupervisorBoardAdapter(private val supervisors: List<UserProfile>) :
-    RecyclerView.Adapter<SupervisorBoardAdapter.ViewHolder>() {
+class SupervisorBoardAdapter(
+    private val supervisors: List<UserProfile>,
+    private val onItemClick: (UserProfile) -> Unit
+) : RecyclerView.Adapter<SupervisorBoardAdapter.ViewHolder>() {
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val nameTextView: TextView = view.findViewById(R.id.betreuerboardBetreuernametextView)
         val imageView: ImageView = view.findViewById(R.id.betreuerboardBetreuerItemimageView)
         val subjectsTextView: TextView = view.findViewById(R.id.faecherBetreuerboardItemLayoutTextview)
         val availabilityTextView: TextView = view.findViewById(R.id.verfuegbarkeitBetreuerboardItemLayoutTextview)
+
+        init {
+            view.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    onItemClick(supervisors[position])
+                }
+            }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
