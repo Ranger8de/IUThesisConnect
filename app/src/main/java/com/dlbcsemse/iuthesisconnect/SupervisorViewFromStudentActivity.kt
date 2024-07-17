@@ -55,7 +55,7 @@ class SupervisorViewFromStudentActivity : ToolbarBaseActivity() {
     }
 
     private fun assignThesisToSupervisor() {
-        val thesis = databaseHelper.getThesisByStudent(currentUser.userName)
+        val thesis = databaseHelper.getThesisByStudent(currentUser.userId)
         if (thesis != null) {
             thesis.supervisor = supervisorProfile.userId.toInt()
             val updated = databaseHelper.updateThesis(thesis)

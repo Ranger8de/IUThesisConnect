@@ -15,12 +15,14 @@ import com.dlbcsemse.iuthesisconnect.model.UserProfile
 
 
 class MyThesisActivity : ToolbarBaseActivity() {
-    private lateinit var toolbarImageButton : ImageButton
+    private lateinit var toolbarImageButton: ImageButton
+
     // Datenbank-Helper und Datenmodelle
     private lateinit var dbHelper: DatabaseHelper
     private lateinit var currentUser: UserProfile
     private lateinit var thesis: Thesis
     private lateinit var userType: DashboardUserType
+
     // UI-Elemente
     private lateinit var titleEditText: EditText
     private lateinit var supervisorEditText: EditText
@@ -55,7 +57,8 @@ class MyThesisActivity : ToolbarBaseActivity() {
             ?: throw IllegalArgumentException("User type not provided")
         currentUser = dbHelper.getCurrentUser()
         // Lädt die Thesis oder erstellt eine neue, wenn keine existiert
-        val loadedThesis = dbHelper.getThesisByStudent(currentUser.userName)
+        val loadedThesis = dbHelper.getThesisByStudent(currentUser.userId)
+
 
         thesis = if(loadedThesis != null) {
             loadedThesis
@@ -82,6 +85,7 @@ class MyThesisActivity : ToolbarBaseActivity() {
             }
         }
     }
+
     // Initialisiert die UI-Elemente
     private fun initializeViews() {
         titleEditText = findViewById(R.id.titelMyThesiseditTextEdit)

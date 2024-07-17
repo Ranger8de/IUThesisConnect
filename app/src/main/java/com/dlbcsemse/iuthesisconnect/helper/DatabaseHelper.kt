@@ -86,7 +86,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
         createTable = ("CREATE TABLE $SUPERVISORPROFILE_TABLE_NAME ("
                 + "$COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + "$COLUMN_USER_ID INTEGER, "
+                + "$COLUMN_USER_ID INTEGER UNIQUE, "
                 + "$COLUMN_STATUS INTEGER,  "
                 + "$COLUMN_BIO TEXT, "
                 + "$COLUMN_RESEARCH_TOPICS TEXT, "
@@ -95,8 +95,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
         // Erstellen der Thesis-Tabelle
         createTable = ("CREATE TABLE $THESIS_TABLE_NAME ("
-                + "$COLUMN_ID INTEGER PRIMARY KEY, "
-                + "$COLUMN_STUDENT INTEGER , "
+                + "$COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "$COLUMN_STUDENT INTEGER, "
                 + "$COLUMN_STATE TEXT, "
                 + "$COLUMN_SUPERVISOR INTEGER , "
                 + "$COLUMN_SECOND_SUPERVISOR INTEGER, "
@@ -108,7 +108,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 + "$COLUMN_USER_TYPE INTEGER, "
                 + "FOREIGN KEY($COLUMN_STUDENT) REFERENCES $PROFILE_TABLE_NAME($COLUMN_ID), "
                 + "FOREIGN KEY($COLUMN_SUPERVISOR) REFERENCES $PROFILE_TABLE_NAME($COLUMN_ID), "
-                + "FOREIGN KEY($COLUMN_SECOND_SUPERVISOR) REFERENCES $PROFILE_TABLE_NAME($COLUMN_ID) ) " )
+                + "FOREIGN KEY($COLUMN_SECOND_SUPERVISOR) REFERENCES $PROFILE_TABLE_NAME($COLUMN_ID) "
+                + "UNIQUE($COLUMN_STUDENT) ) ")
         db.execSQL(createTable)
 
 
@@ -188,7 +189,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
         cursor.moveToNext()
 
-        val id = cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_ID))
+        val id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID))
         val name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME))
         val email = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_EMAIL))
         val roleId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ROLE))
@@ -208,7 +209,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
         var userProfile: UserProfile? = null
         if (cursor.moveToFirst()) {
-            val id = cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_ID))
+            val id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID))
             val name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME))
             val email = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_EMAIL))
             val roleId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ROLE))
@@ -261,13 +262,13 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     }
 
     // Holt eine Thesis anhand des Studentennamens
-    fun getThesisByStudent(studentName: String): Thesis? {
+    fun getThesisByStudent(studentId: Int): Thesis? {
         val db = this.readableDatabase
         val cursor = db.query(
             THESIS_TABLE_NAME,
             null,
             "$COLUMN_STUDENT = ?",
-            arrayOf(studentName),
+            arrayOf(studentId.toString()),
             null,
             null,
             null
@@ -358,29 +359,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     // ============================ NEUE FUNKTIONEN MARC ============================
 
 
-    fun getAllUserIds(): List<Long> {
-        val ids = mutableListOf<Long>()
-        val db = this.readableDatabase
-        val cursor = db.query(
-            PROFILE_TABLE_NAME,
-            arrayOf(COLUMN_ID),
-            null,
-            null,
-            null,
-            null,
-            null
-        )
-
-        with(cursor) {
-            while (moveToNext()) {
-                ids.add(getLong(getColumnIndexOrThrow(COLUMN_ID)))
-            }
-        }
-        cursor.close()
-        return ids
-    }
-
-    fun insertInitialUsers() {
+    fun insertInitialUsers() { // Kann später in insertTemplateDate() überführt werden
         val db = this.writableDatabase
 
         var cursor = db.query(PROFILE_TABLE_NAME, null, "$COLUMN_NAME = ?", arrayOf("student"), null, null, null,)
@@ -414,7 +393,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
         with(cursor) {
             while (moveToNext()) {
-                val id = getLong(getColumnIndexOrThrow(COLUMN_ID))
+                val id = getInt(getColumnIndexOrThrow(COLUMN_ID))
                 val name = getString(getColumnIndexOrThrow(COLUMN_NAME))
                 val email = getString(getColumnIndexOrThrow(COLUMN_EMAIL))
                 val type = getInt(getColumnIndexOrThrow(COLUMN_ROLE))
@@ -425,7 +404,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return supervisors
     }
 
-    fun createThesisForStudent(studentId: Long) {
+    fun createThesisForStudent(studentId: Int) {
         if (studentHasThesis(studentId)) {
             return
         }
@@ -453,7 +432,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
         cursor.use { cursor ->
             while (cursor.moveToNext()) {
-                val studentId = cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_ID))
+                val studentId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID))
                 if (!studentHasThesis(studentId)) {
                     createThesisForStudent(studentId)
                 }
@@ -461,7 +440,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         }
     }
 
-    fun studentHasThesis(studentId: Long): Boolean {
+    fun studentHasThesis(studentId: Int): Boolean {
         val db = this.readableDatabase
         val query = "SELECT COUNT(*) FROM $THESIS_TABLE_NAME WHERE $COLUMN_STUDENT = ?"
         val cursor = db.rawQuery(query, arrayOf(studentId.toString()))
