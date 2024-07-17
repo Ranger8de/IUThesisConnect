@@ -58,5 +58,11 @@ class LoginActivity : AppCompatActivity() {
             intent.putExtra("userType", userProfileFromDb.userType.toString())
             startActivity(intent)
         }
+
+        // ============================ NEUE FUNKTIONEN MARC ============================
+
+        val dbHelper = DatabaseHelper(this)
+        dbHelper.insertInitialUsers()
+
     }
 }

@@ -6,6 +6,7 @@ import android.database.Cursor
 import android.database.DatabaseUtils
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import com.dlbcsemse.iuthesisconnect.model.DashboardUserType
 import com.dlbcsemse.iuthesisconnect.model.Thesis
 import com.dlbcsemse.iuthesisconnect.model.UserProfile
 
@@ -352,4 +353,76 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             db.insert(THESIS_TABLE_NAME, null, values)
         }
     }
+
+
+    // ============================ NEUE FUNKTIONEN MARC ============================
+
+
+    fun getAllUserIds(): List<Long> {
+        val ids = mutableListOf<Long>()
+        val db = this.readableDatabase
+        val cursor = db.query(
+            PROFILE_TABLE_NAME,
+            arrayOf(COLUMN_ID),
+            null,
+            null,
+            null,
+            null,
+            null
+        )
+
+        with(cursor) {
+            while (moveToNext()) {
+                ids.add(getLong(getColumnIndexOrThrow(COLUMN_ID)))
+            }
+        }
+        cursor.close()
+        return ids
+    }
+
+    fun insertInitialUsers() {
+        val db = this.writableDatabase
+
+        var cursor = db.query(PROFILE_TABLE_NAME, null, "$COLUMN_NAME = ?", arrayOf("student"), null, null, null,)
+        if (cursor.count == 0) {
+            val studentValues = ContentValues().apply {
+                put(COLUMN_NAME, "student")
+                put(COLUMN_EMAIL, "student@iu.org") // wurde von example.com geändert um keinen renundanten Datensatz zu erzeugen
+                put(COLUMN_ROLE, DashboardUserType.student.ordinal)
+            }
+            db.insert(PROFILE_TABLE_NAME, null, studentValues)
+        }
+        cursor.close()
+
+        cursor = db.query(PROFILE_TABLE_NAME, null, "$COLUMN_NAME = ?", arrayOf("supervisor"), null, null, null)
+        if (cursor.count == 0) {
+            val supervisorValues = ContentValues().apply {
+                put(COLUMN_NAME, "supervisor")
+                put(COLUMN_EMAIL, "supervisor@iu.org") // wurde von example.com geändert um keinen renundanten Datensatz zu erzeugen
+                put(COLUMN_ROLE, DashboardUserType.supervisor.ordinal)
+            }
+            db.insert(PROFILE_TABLE_NAME, null, supervisorValues)
+        }
+        cursor.close()
+    }
+
+    fun getAllSupervisors(): List<UserProfile> {
+        val supervisors = mutableListOf<UserProfile>()
+        val db = this.readableDatabase
+        val query = "SELECT * FROM $PROFILE_TABLE_NAME WHERE $COLUMN_ROLE = ?"
+        val cursor = db.rawQuery(query, arrayOf(DashboardUserType.supervisor.ordinal.toString()))
+
+        with(cursor) {
+            while (moveToNext()) {
+                val id = getLong(getColumnIndexOrThrow(COLUMN_ID))
+                val name = getString(getColumnIndexOrThrow(COLUMN_NAME))
+                val email = getString(getColumnIndexOrThrow(COLUMN_EMAIL))
+                val type = getInt(getColumnIndexOrThrow(COLUMN_ROLE))
+                supervisors.add(UserProfile(id, name, email, type))
+            }
+        }
+        cursor.close()
+        return supervisors
+    }
+
 }
