@@ -425,4 +425,52 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return supervisors
     }
 
+    fun createThesisForStudent(studentId: Long) {
+        if (studentHasThesis(studentId)) {
+            return
+        }
+
+        val db = this.writableDatabase
+        val values = ContentValues().apply {
+            put(COLUMN_STUDENT, studentId)
+            put(COLUMN_STATE, "Nicht begonnen")
+            put(COLUMN_SUPERVISOR, -1)
+            put(COLUMN_SECOND_SUPERVISOR, -1)
+            put(COLUMN_THEME, "Nich gesetzt")
+            put(COLUMN_DUE_DATE_DAY, 0)
+            put(COLUMN_DUE_DATE_MONTH, 0)
+            put(COLUMN_DUE_DATE_YEAR, 0)
+            put(COLUMN_BILL_STATE, "Nicht gestellt")
+            put(COLUMN_USER_TYPE, DashboardUserType.student.ordinal)
+        }
+        db.insert(THESIS_TABLE_NAME, null, values)
+    }
+
+    fun ensureAllStudentsHaveThesis() {
+        val db = this.readableDatabase
+        val query = "SELECT $COLUMN_ID FROM $PROFILE_TABLE_NAME WHERE $COLUMN_ROLE = ?"
+        val cursor = db.rawQuery(query, arrayOf(DashboardUserType.student.ordinal.toString()))
+
+        cursor.use { cursor ->
+            while (cursor.moveToNext()) {
+                val studentId = cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_ID))
+                if (!studentHasThesis(studentId)) {
+                    createThesisForStudent(studentId)
+                }
+            }
+        }
+    }
+
+    fun studentHasThesis(studentId: Long): Boolean {
+        val db = this.readableDatabase
+        val query = "SELECT COUNT(*) FROM $THESIS_TABLE_NAME WHERE $COLUMN_STUDENT = ?"
+        val cursor = db.rawQuery(query, arrayOf(studentId.toString()))
+
+        cursor.use { cursor ->
+            if (cursor.moveToFirst()) {
+                return cursor.getInt(0) > 0
+            }
+        }
+        return false
+    }
 }

@@ -14,7 +14,7 @@ import com.dlbcsemse.iuthesisconnect.model.Thesis
 import com.dlbcsemse.iuthesisconnect.model.UserProfile
 
 
-class MyThesisActivity : AppCompatActivity() {
+class MyThesisActivity : ToolbarBaseActivity() {
     private lateinit var toolbarImageButton : ImageButton
     // Datenbank-Helper und Datenmodelle
     private lateinit var dbHelper: DatabaseHelper
@@ -40,29 +40,13 @@ class MyThesisActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_my_thesis)
 
-        ToolbarButton()
+        setupToolbarButton()
+        initializeData()
+        initializeViews()
+        loadAndDisplayThesisData()
+        setupSaveButton()
+    }
 
-        try {
-            // Initialisierung der Daten und UI
-            initializeData()
-            initializeViews()
-            loadAndDisplayThesisData()
-            setupSaveButton()
-        } catch (e: Exception) {
-            // Fehlerbehandlung
-            Log.e("MyThesisActivity", "Error in onCreate", e)
-            Toast.makeText(this, "Ein Fehler ist aufgetreten: ${e.message}", Toast.LENGTH_LONG).show()
-            finish() // Beendet die Activity bei einem Fehler
-        }
-    }
-    // Gibt dem Toolbarbutton die weiterleit-Funktion
-    private fun ToolbarButton() {
-        toolbarImageButton = findViewById(R.id.toolbarImageButton)
-        toolbarImageButton.setOnClickListener {
-            val intent = Intent(this, ProfileActivity::class.java)
-            startActivity(intent)
-        }
-    }
     // Initialisiert die Daten aus der Datenbank und dem Intent
     private fun initializeData() {
         dbHelper = DatabaseHelper(this)

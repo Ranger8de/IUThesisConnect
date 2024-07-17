@@ -12,6 +12,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.dlbcsemse.iuthesisconnect.helper.AzureAdHelper
 import com.dlbcsemse.iuthesisconnect.helper.DatabaseHelper
+import com.dlbcsemse.iuthesisconnect.model.DashboardUserType
 import java.util.UUID
 
 class LoginActivity : AppCompatActivity() {
@@ -44,14 +45,21 @@ class LoginActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
             var userProfile = azureAdHelper.getUserProfile(userName)
-            if (!databaseHelper.userExists(userProfile.userEmail))
+            if (!databaseHelper.userExists(userProfile.userEmail)) {
                 databaseHelper.insertUser(userProfile)
+            }
 
             val userProfileFromDb = databaseHelper.getUser(userName) ?: run {
                 Toast.makeText(this, "Benutzer konnte nicht gefunden werden", Toast.LENGTH_SHORT)
                     .show()
                 return@setOnClickListener
             }
+
+            // Die nächste 3 Zeilen wurden hinzugefügt, da es immernoch Probleme mit der ThesisDatensatzerzeugung gab Stand 17.07.2024
+            if (userProfileFromDb.userType == DashboardUserType.student && !databaseHelper.studentHasThesis(userProfileFromDb.userId)) {
+                databaseHelper.createThesisForStudent(userProfileFromDb.userId)
+            }
+
             databaseHelper.setCurrentUser(userProfileFromDb)
 
             val intent = Intent(this, DashboardActivity::class.java)
@@ -63,6 +71,7 @@ class LoginActivity : AppCompatActivity() {
 
         val dbHelper = DatabaseHelper(this)
         dbHelper.insertInitialUsers()
+        dbHelper.ensureAllStudentsHaveThesis()
 
     }
 }

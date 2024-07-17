@@ -178,6 +178,13 @@
                 android:text="IT-Sicherheit und Datenschutz, Verteilte Systeme und Netzwerke, Kryptografie und sichere Kommunikation und Künstliche Intelligenz und maschinelles Lernen im Kontext der IT-Sicherheit"
                 />
 
+            <Button
+                android:id="@+id/supervisorViewFromStudentAssignThesisButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Eigene Thesis Zuweisen"
+                android:layout_marginTop="16dp"/>
+
         </LinearLayout>
 
     </ScrollView>
