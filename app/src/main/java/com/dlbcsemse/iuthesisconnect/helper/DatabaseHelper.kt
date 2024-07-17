@@ -387,7 +387,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         if (cursor.count == 0) {
             val studentValues = ContentValues().apply {
                 put(COLUMN_NAME, "student")
-                put(COLUMN_EMAIL, "student@iu.org") // wurde von example.com geändert um keinen renundanten Datensatz zu erzeugen
+                put(COLUMN_EMAIL, "student@iu.org")
                 put(COLUMN_ROLE, DashboardUserType.student.ordinal)
             }
             db.insert(PROFILE_TABLE_NAME, null, studentValues)
@@ -398,7 +398,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         if (cursor.count == 0) {
             val supervisorValues = ContentValues().apply {
                 put(COLUMN_NAME, "supervisor")
-                put(COLUMN_EMAIL, "supervisor@iu.org") // wurde von example.com geändert um keinen renundanten Datensatz zu erzeugen
+                put(COLUMN_EMAIL, "supervisor@iu.org")
                 put(COLUMN_ROLE, DashboardUserType.supervisor.ordinal)
             }
             db.insert(PROFILE_TABLE_NAME, null, supervisorValues)
