@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="thesis_states">
+        <item>Nicht begonnen</item>
+        <item>In Bearbeitung</item>
+        <item>Eingereicht</item>
+        <item>Bestanden</item>
+        <item>Durchgefallen</item>
+    </string-array>
+</resources>

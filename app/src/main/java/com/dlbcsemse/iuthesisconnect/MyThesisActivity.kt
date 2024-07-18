@@ -25,9 +25,10 @@ class MyThesisActivity : ToolbarBaseActivity() {
 
     // UI-Elemente
     private lateinit var titleEditText: EditText
-    private lateinit var supervisorEditText: EditText
-    private lateinit var stateEditText: EditText
-    private lateinit var secondSupervisorEditText: EditText
+    private lateinit var supervisorTextView: TextView
+    private lateinit var stateSpinner: Spinner
+    private lateinit var secondSupervisorSpinner: Spinner
+    private lateinit var supervisors: List<UserProfile>
     private lateinit var dueDateEditText: EditText
     private lateinit var stateTextView: TextView
     private lateinit var secondSupervisorTextView: TextView
@@ -45,6 +46,8 @@ class MyThesisActivity : ToolbarBaseActivity() {
         setupToolbarButton()
         initializeData()
         initializeViews()
+        setupStateSpinner()
+        setupSecondSupervisorSpinner()
         loadAndDisplayThesisData()
         setupSaveButton()
     }
@@ -78,7 +81,7 @@ class MyThesisActivity : ToolbarBaseActivity() {
             0,
             0,
             0,
-            "Noch nicht gestellt",
+            DatabaseHelper.DEFAULT_BILL_STATE,
             currentUser.userType.ordinal
         ).also { newThesis ->
             val insertedId = dbHelper.insertThesis(newThesis)
@@ -93,9 +96,9 @@ class MyThesisActivity : ToolbarBaseActivity() {
     // Initialisiert die UI-Elemente
     private fun initializeViews() {
         titleEditText = findViewById(R.id.titelMyThesiseditTextEdit)
-        supervisorEditText = findViewById(R.id.supervisorMyThesiseditTextEdit)
-        stateEditText = findViewById(R.id.zustandMyThesisTextEdit)
-        secondSupervisorEditText = findViewById(R.id.zweitgutachterMyThesisTextEdit)
+        supervisorTextView = findViewById(R.id.supervisorMyThesisTextView)
+        stateSpinner = findViewById(R.id.zustandMyThesisSpinner)
+        secondSupervisorSpinner = findViewById(R.id.zweitgutachterMyThesisSpinner)
         studentEditText = findViewById(R.id.studentMyThesisTextEdit)
         dueDateEditText = findViewById(R.id.faelligkeitsdatumMyThesisTextEdit)
         //
@@ -106,6 +109,51 @@ class MyThesisActivity : ToolbarBaseActivity() {
         //
         billButton = findViewById(R.id.myThesisbuttonRechnungsstellung)
     }
+
+    private fun setupSecondSupervisorSpinner() {
+        supervisors = dbHelper.getAllSupervisors()
+        val supervisorNames = supervisors.map { it.userName }.toMutableList()
+        supervisorNames.add(0, "Nicht zugewiesen")
+
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, supervisorNames)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        secondSupervisorSpinner.adapter = adapter
+
+        secondSupervisorSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                if (position == 0) {
+                    thesis.secondSupervisor = -1
+                } else {
+                    thesis.secondSupervisor = supervisors[position - 1].userId
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+            }
+        }
+    }
+
+    private fun setupStateSpinner() {
+        ArrayAdapter.createFromResource(
+            this,
+            R.array.thesis_states,
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            stateSpinner.adapter = adapter
+        }
+
+        stateSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                thesis.state = parent.getItemAtPosition(position).toString()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+            }
+        }
+    }
+
+    // Nachfolgende Funktion wurde dahingehend abgeänder, dass jetzt nutzernamen statt id´s angezeigt werden
     // Lädt und zeigt die Thesis-Daten an
     private fun loadAndDisplayThesisData() {
         titleEditText.setText(thesis.theme)
@@ -115,36 +163,31 @@ class MyThesisActivity : ToolbarBaseActivity() {
         } else {
             "Nicht zugewiesen"
         }
-        supervisorEditText.setText(supervisorName)
+        supervisorTextView.text = supervisorName
 
-        stateEditText.setText(thesis.state)
+        val statePosition = (stateSpinner.adapter as ArrayAdapter<String>).getPosition(thesis.state)
+        stateSpinner.setSelection(statePosition)
 
         val secondSupervisorName = if (thesis.secondSupervisor != -1) {
             dbHelper.getUserNameById(thesis.secondSupervisor)
         } else {
             "Nicht zugewiesen"
         }
-        secondSupervisorEditText.setText(secondSupervisorName)
+        val secondSupervisorPosition = (secondSupervisorSpinner.adapter as ArrayAdapter<String>).getPosition(secondSupervisorName)
+        if (secondSupervisorPosition != -1) {
+            secondSupervisorSpinner.setSelection(secondSupervisorPosition)
+        }
 
+        billStateTextView.text = thesis.billState ?: DatabaseHelper.DEFAULT_BILL_STATE
         studentEditText.setText(dbHelper.getUserNameById(thesis.student))
         dueDateEditText.setText("${thesis.dueDateDay}.${thesis.dueDateMonth}.${thesis.dueDateYear}")
-
-        /*
-        supervisorEditText.setText(thesis.supervisor.toString())
-        stateEditText.setText(thesis.state)
-        secondSupervisorEditText.setText(thesis.secondSupervisor.toString())
-        // setzt den Studenten automatin anhand des aktuellen Users
-        studentEditText.setText(currentUser.userName)
-        dueDateEditText.setText("${thesis.dueDateDay}.${thesis.dueDateMonth}.${thesis.dueDateYear}")
-         */
 
         // Passt die UI basierend auf dem Benutzertyp an
         when (userType) {
             DashboardUserType.student -> {
                 titleEditText.isEnabled = true
-                supervisorEditText.isEnabled = true
-                stateEditText.isEnabled = false
-                secondSupervisorEditText.isEnabled = false
+                stateSpinner.isEnabled = false
+                secondSupervisorSpinner.isEnabled = false
                 dueDateEditText.isEnabled = false
                 billStateTextView.isVisible = false
                 billStateTopicTextView.isVisible = false
@@ -152,9 +195,8 @@ class MyThesisActivity : ToolbarBaseActivity() {
             }
             DashboardUserType.supervisor -> {
                 titleEditText.isEnabled = false
-                supervisorEditText.isEnabled = false
-                stateEditText.isEnabled = true
-                secondSupervisorEditText.isEnabled = true
+                stateSpinner.isEnabled = true
+                secondSupervisorSpinner.isEnabled = true
                 dueDateEditText.isEnabled = true
                 billStateTextView.isVisible = true
                 billStateTopicTextView.isVisible = true
@@ -173,11 +215,8 @@ class MyThesisActivity : ToolbarBaseActivity() {
         when (userType) {
             DashboardUserType.student -> {
                 thesis.theme = titleEditText.text.toString()
-                thesis.supervisor = dbHelper.getUserIdByName(supervisorEditText.text.toString())
             }
             DashboardUserType.supervisor -> {
-                thesis.state = stateEditText.text.toString()
-                thesis.secondSupervisor = dbHelper.getUserIdByName(secondSupervisorEditText.text.toString())
                 val dateParts = dueDateEditText.text.toString().split(".")
                 if (dateParts.size == 3) {
                     thesis.dueDateDay = dateParts[0].toIntOrNull() ?: 0

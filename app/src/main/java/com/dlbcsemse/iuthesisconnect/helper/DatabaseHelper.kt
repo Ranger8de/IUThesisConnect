@@ -12,6 +12,7 @@ import com.dlbcsemse.iuthesisconnect.model.UserProfile
 
 class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     companion object {
+        const val DEFAULT_BILL_STATE = "Nicht gestellt"
         // Datenbank-Metadaten
         private const val DATABASE_NAME = "iuThesisConnect.db"
         private const val DATABASE_VERSION = 1
@@ -104,7 +105,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 + "$COLUMN_DUE_DATE_DAY INTEGER, "
                 + "$COLUMN_DUE_DATE_MONTH INTEGER, "
                 + "$COLUMN_DUE_DATE_YEAR INTEGER, "
-                + "$COLUMN_BILL_STATE TEXT, "
+                + "$COLUMN_BILL_STATE TEXT DEFAULT '$DEFAULT_BILL_STATE', "
                 + "$COLUMN_USER_TYPE INTEGER, "
                 + "FOREIGN KEY($COLUMN_STUDENT) REFERENCES $PROFILE_TABLE_NAME($COLUMN_ID), "
                 + "FOREIGN KEY($COLUMN_SUPERVISOR) REFERENCES $PROFILE_TABLE_NAME($COLUMN_ID), "
@@ -326,7 +327,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             put(COLUMN_DUE_DATE_DAY, thesis.dueDateDay)
             put(COLUMN_DUE_DATE_MONTH, thesis.dueDateMonth)
             put(COLUMN_DUE_DATE_YEAR, thesis.dueDateYear)
-            put(COLUMN_BILL_STATE, thesis.billState)
+            put(COLUMN_BILL_STATE, thesis.billState ?: DEFAULT_BILL_STATE)
             put(COLUMN_USER_TYPE, thesis.userType)
         }
         return db.insert(THESIS_TABLE_NAME, null, values)

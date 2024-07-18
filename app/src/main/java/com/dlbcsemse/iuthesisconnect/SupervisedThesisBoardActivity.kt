@@ -18,7 +18,7 @@ class SupervisedThesisBoardActivity : ToolbarBaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+
         setContentView(R.layout.activity_supervised_thesis_board)
 
         setupToolbarButton()

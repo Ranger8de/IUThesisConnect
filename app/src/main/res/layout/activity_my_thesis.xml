@@ -44,7 +44,7 @@
         android:id="@+id/meineAbschlussarbeitTopictextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Meine Abschlussarbeit"
+        android:text="Abschlussarbeit"
         android:textSize="30sp"
         android:textStyle="bold"
         tools:layout_editor_absoluteX="39dp"
@@ -108,12 +108,15 @@
                     android:text="Name Ihres Betreuers"
                     android:textSize="16sp" />
 
-                <EditText
-                    android:id="@+id/supervisorMyThesiseditTextEdit"
-                    android:hint="B-Daten"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="24sp"/>
+            <TextView
+                android:id="@+id/supervisorMyThesisTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:gravity="center_vertical"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:background="@android:color/transparent" />
         </LinearLayout>
     </FrameLayout>
 
@@ -135,12 +138,11 @@
                     android:text="Zustand der Abschlussarbeit"
                     android:textSize="16sp" />
 
-                <EditText
-                    android:id="@+id/zustandMyThesisTextEdit"
+                <Spinner
+                    android:id="@+id/zustandMyThesisSpinner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="B-Daten"
-                    android:textSize="24sp" />
+                    android:minHeight="48dp" />
 
             </LinearLayout>
 
@@ -163,12 +165,11 @@
                     android:text="Zweitgutachter"
                     android:textSize="16sp" />
 
-                <EditText
-                    android:id="@+id/zweitgutachterMyThesisTextEdit"
-                    android:hint="B-Daten"
+                <Spinner
+                    android:id="@+id/zweitgutachterMyThesisSpinner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="24sp"/>
+                    android:minHeight="48dp" />
 
             </LinearLayout>
 
@@ -257,7 +258,7 @@
                     android:id="@+id/rechnungsstatusMyThesisTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Beispieldaten"
+                    android:text="Nicht gestellt"
                     android:textSize="24sp" />
 
             </LinearLayout>

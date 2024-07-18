@@ -1,10 +1,11 @@
 package com.dlbcsemse.iuthesisconnect.model
 
+import com.dlbcsemse.iuthesisconnect.helper.DatabaseHelper
 import com.dlbcsemse.iuthesisconnect.model.DashboardUserType
 
 data class Thesis(
     var id: Int, var state: String, var supervisor: Int, var secondSupervisor: Int, var theme: String, var student: Int, var dueDateDay: Int, var dueDateMonth: Int,
-    var dueDateYear: Int, var billState: String, var userType: Int
+    var dueDateYear: Int, var billState: String = DatabaseHelper.DEFAULT_BILL_STATE, var userType: Int
 ) {
     var thesisId: Int = id
     var thesisState: String = state
