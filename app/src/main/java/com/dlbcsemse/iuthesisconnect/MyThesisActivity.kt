@@ -50,6 +50,7 @@ class MyThesisActivity : ToolbarBaseActivity() {
         setupSecondSupervisorSpinner()
         loadAndDisplayThesisData()
         setupSaveButton()
+        setupBillButton()
     }
 
     // Initialisiert die Daten aus der Datenbank und dem Intent
@@ -192,6 +193,7 @@ class MyThesisActivity : ToolbarBaseActivity() {
                 billStateTextView.isVisible = false
                 billStateTopicTextView.isVisible = false
                 billButton.isVisible = false
+                billButton.isEnabled = false
             }
             DashboardUserType.supervisor -> {
                 titleEditText.isEnabled = false
@@ -201,6 +203,7 @@ class MyThesisActivity : ToolbarBaseActivity() {
                 billStateTextView.isVisible = true
                 billStateTopicTextView.isVisible = true
                 billButton.isVisible = true
+                billButton.isEnabled = true
             }
         }
     }
@@ -232,6 +235,20 @@ class MyThesisActivity : ToolbarBaseActivity() {
             loadAndDisplayThesisData()
         } else {
             Toast.makeText(this, "Fehler beim Aktualisieren der Thesis", Toast.LENGTH_SHORT).show()
+        }
+    }
+    private fun setupBillButton() {
+        billButton.setOnClickListener {
+            if (userType == DashboardUserType.supervisor) {
+                thesis.billState = "Rechnung wurde versendet"
+                val result = dbHelper.insertOrUpdateThesis(thesis)
+                if (result != -1L) {
+                    Toast.makeText(this, "Rechnungsstatus aktualisiert", Toast.LENGTH_SHORT).show()
+                    loadAndDisplayThesisData()
+                } else {
+                    Toast.makeText(this, "Fehler beim Aktualisieren des Rechnungsstatus", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 }
