@@ -452,4 +452,61 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         }
         return false
     }
+    fun getThesesBySupervisor(supervisorId: Int): List<Thesis> {
+        val theses = mutableListOf<Thesis>()
+        val db = this.readableDatabase
+        val query = "SELECT * FROM $THESIS_TABLE_NAME WHERE $COLUMN_SUPERVISOR = ? OR $COLUMN_SECOND_SUPERVISOR = ?"
+        val cursor = db.rawQuery(query, arrayOf(supervisorId.toString(), supervisorId.toString()))
+
+        cursor.use { cursor ->
+            while (cursor.moveToNext()) {
+                val thesis = Thesis(
+                    id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID)),
+                    state = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_STATE)),
+                    supervisor = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_SUPERVISOR)),
+                    secondSupervisor = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_SECOND_SUPERVISOR)),
+                    theme = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_THEME)),
+                    student = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_STUDENT)),
+                    dueDateDay = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_DUE_DATE_DAY)),
+                    dueDateMonth = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_DUE_DATE_MONTH)),
+                    dueDateYear = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_DUE_DATE_YEAR)),
+                    billState = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_BILL_STATE)),
+                    userType = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_USER_TYPE))
+                )
+                theses.add(thesis)
+            }
+        }
+        return theses
+    }
+    fun getThesisById(thesisId: Int): Thesis? {
+        val db = this.readableDatabase
+        val cursor = db.query(
+            THESIS_TABLE_NAME,
+            null,
+            "$COLUMN_ID = ?",
+            arrayOf(thesisId.toString()),
+            null,
+            null,
+            null
+        )
+
+        var thesis: Thesis? = null
+        if (cursor.moveToFirst()) {
+            thesis = Thesis(
+                id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID)),
+                state = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_STATE)),
+                supervisor = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_SUPERVISOR)),
+                secondSupervisor = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_SECOND_SUPERVISOR)),
+                theme = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_THEME)),
+                student = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_STUDENT)),
+                dueDateDay = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_DUE_DATE_DAY)),
+                dueDateMonth = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_DUE_DATE_MONTH)),
+                dueDateYear = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_DUE_DATE_YEAR)),
+                billState = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_BILL_STATE)),
+                userType = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_USER_TYPE))
+            )
+        }
+        cursor.close()
+        return thesis
+    }
 }

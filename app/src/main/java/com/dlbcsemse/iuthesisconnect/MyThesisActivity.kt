@@ -52,36 +52,40 @@ class MyThesisActivity : ToolbarBaseActivity() {
     // Initialisiert die Daten aus der Datenbank und dem Intent
     private fun initializeData() {
         dbHelper = DatabaseHelper(this)
-        // Sicheres Casting des userType mit Fallback auf einen Fehler
-        userType = intent.getSerializableExtra("userType") as? DashboardUserType
-            ?: throw IllegalArgumentException("User type not provided")
+        userType = try {
+            DashboardUserType.valueOf(intent.getStringExtra("userType") ?: "")
+        } catch (e: IllegalArgumentException) {
+            DashboardUserType.student
+        }
         currentUser = dbHelper.getCurrentUser()
-        // Lädt die Thesis oder erstellt eine neue, wenn keine existiert
-        val loadedThesis = dbHelper.getThesisByStudent(currentUser.userId)
 
-
-        thesis = if(loadedThesis != null) {
-            loadedThesis
+        val thesisId = intent.getIntExtra("thesisId", -1)
+        thesis = if (thesisId != -1) {
+            dbHelper.getThesisById(thesisId) ?: createNewThesis()
         } else {
-            Thesis(
-                -1,
-                "Noch nicht begonnen",
-                -1,
-                -1,
-                "Noch nicht erstellt",
-                currentUser.userId.toInt(),
-                0,
-                0,
-                0,
-                "Noch nicht gestellt",
-                currentUser.userType.ordinal
-            ).also {newThesis ->
-                val insertedId = dbHelper.insertThesis(newThesis)
-                if (insertedId != -1L) {
-                    newThesis.id = insertedId.toInt()
-                } else {
-                    Log.e("MyThesisActivity", "Failed to insert new Thesis")
-                }
+            dbHelper.getThesisByStudent(currentUser.userId) ?: createNewThesis()
+        }
+    }
+
+    private fun createNewThesis(): Thesis {
+        return Thesis(
+            -1,
+            "Noch nicht begonnen",
+            -1,
+            -1,
+            "Noch nicht erstellt",
+            currentUser.userId.toInt(),
+            0,
+            0,
+            0,
+            "Noch nicht gestellt",
+            currentUser.userType.ordinal
+        ).also { newThesis ->
+            val insertedId = dbHelper.insertThesis(newThesis)
+            if (insertedId != -1L) {
+                newThesis.id = insertedId.toInt()
+            } else {
+                Log.e("MyThesisActivity", "Failed to insert new Thesis")
             }
         }
     }

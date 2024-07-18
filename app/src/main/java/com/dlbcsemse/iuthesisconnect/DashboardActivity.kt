@@ -2,9 +2,7 @@ package com.dlbcsemse.iuthesisconnect
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.ImageButton
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -53,7 +51,7 @@ class DashboardActivity : ToolbarBaseActivity() {
                     startActivity(intent)
                 }
                 2L -> {
-                    val intent = Intent(this, SupervisedThesisActivity::class.java)
+                    val intent = Intent(this, SupervisedThesisBoardActivity::class.java)
                     intent.putExtra("userType", userType)
                     startActivity(intent)
                 }
