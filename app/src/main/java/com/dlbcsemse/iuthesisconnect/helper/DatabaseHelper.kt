@@ -509,4 +509,30 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         cursor.close()
         return thesis
     }
+    fun getUserNameById(userId: Int): String {
+        val db = this.readableDatabase
+        val query = "SELECT $COLUMN_NAME FROM $PROFILE_TABLE_NAME WHERE $COLUMN_ID = ?"
+        val cursor = db.rawQuery(query, arrayOf(userId.toString()))
+
+        var userName = "Nicht zugewiesen"
+        if (cursor.moveToFirst()) {
+            userName = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME))
+        }
+        cursor.close()
+        return userName
+    }
+    fun getUserIdByName(userName: String): Int {
+        if (userName == "Nicht zugewiesen") return -1
+
+        val db = this.readableDatabase
+        val query = "SELECT $COLUMN_ID FROM $PROFILE_TABLE_NAME WHERE $COLUMN_NAME = ?"
+        val cursor = db.rawQuery(query, arrayOf(userName))
+
+        var userId = -1
+        if (cursor.moveToFirst()) {
+            userId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID))
+        }
+        cursor.close()
+        return userId
+    }
 }

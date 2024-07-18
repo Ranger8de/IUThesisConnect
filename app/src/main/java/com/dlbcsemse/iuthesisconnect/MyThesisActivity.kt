@@ -109,12 +109,34 @@ class MyThesisActivity : ToolbarBaseActivity() {
     // Lädt und zeigt die Thesis-Daten an
     private fun loadAndDisplayThesisData() {
         titleEditText.setText(thesis.theme)
+
+        val supervisorName = if (thesis.supervisor != -1) {
+            dbHelper.getUserNameById(thesis.supervisor)
+        } else {
+            "Nicht zugewiesen"
+        }
+        supervisorEditText.setText(supervisorName)
+
+        stateEditText.setText(thesis.state)
+
+        val secondSupervisorName = if (thesis.secondSupervisor != -1) {
+            dbHelper.getUserNameById(thesis.secondSupervisor)
+        } else {
+            "Nicht zugewiesen"
+        }
+        secondSupervisorEditText.setText(secondSupervisorName)
+
+        studentEditText.setText(dbHelper.getUserNameById(thesis.student))
+        dueDateEditText.setText("${thesis.dueDateDay}.${thesis.dueDateMonth}.${thesis.dueDateYear}")
+
+        /*
         supervisorEditText.setText(thesis.supervisor.toString())
         stateEditText.setText(thesis.state)
         secondSupervisorEditText.setText(thesis.secondSupervisor.toString())
         // setzt den Studenten automatin anhand des aktuellen Users
         studentEditText.setText(currentUser.userName)
         dueDateEditText.setText("${thesis.dueDateDay}.${thesis.dueDateMonth}.${thesis.dueDateYear}")
+         */
 
         // Passt die UI basierend auf dem Benutzertyp an
         when (userType) {
@@ -151,11 +173,11 @@ class MyThesisActivity : ToolbarBaseActivity() {
         when (userType) {
             DashboardUserType.student -> {
                 thesis.theme = titleEditText.text.toString()
-                thesis.supervisor = supervisorEditText.text.toString().toIntOrNull() ?: -1
+                thesis.supervisor = dbHelper.getUserIdByName(supervisorEditText.text.toString())
             }
             DashboardUserType.supervisor -> {
                 thesis.state = stateEditText.text.toString()
-                thesis.secondSupervisor = secondSupervisorEditText.text.toString().toIntOrNull() ?: -1
+                thesis.secondSupervisor = dbHelper.getUserIdByName(secondSupervisorEditText.text.toString())
                 val dateParts = dueDateEditText.text.toString().split(".")
                 if (dateParts.size == 3) {
                     thesis.dueDateDay = dateParts[0].toIntOrNull() ?: 0
