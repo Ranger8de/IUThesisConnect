@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".SupervisedThesisActivity">
 
-    <Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="0dp"
         android:layout_height="50dp"
@@ -36,7 +36,7 @@
             android:layout_gravity="right"
             android:layout_marginRight="15dp"
             />
-    </Toolbar>
+    </androidx.appcompat.widget.Toolbar>
 
     <TextView
         android:id="@+id/textView4"
