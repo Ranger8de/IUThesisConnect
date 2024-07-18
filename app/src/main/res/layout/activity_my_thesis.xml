@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
@@ -47,243 +48,166 @@
         android:text="Abschlussarbeit"
         android:textSize="30sp"
         android:textStyle="bold"
-        tools:layout_editor_absoluteX="39dp"
-        tools:layout_editor_absoluteY="185dp"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/meineAbschlussarbeitTopictextView"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        />
+        android:layout_marginHorizontal="16dp">
 
     <LinearLayout
-        android:layout_width="375dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp"
-        tools:layout_editor_absoluteX="-5dp"
-        tools:layout_editor_absoluteY="96dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/meineAbschlussarbeitTopictextView"
-        >
+        android:orientation="vertical">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Titel Ihrer Abschlussarbeit"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"/>
+
+        <EditText
+            android:id="@+id/titelMyThesiseditTextEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="B-Daten"
+            android:textSize="24sp"
+            android:layout_marginTop="8dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Name Ihres Betreuers"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"/>
+
+        <TextView
+            android:id="@+id/supervisorMyThesisTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:gravity="center_vertical"
+            android:textSize="24sp"
+            android:textColor="@android:color/black"
+            android:background="@android:color/transparent"
+            android:layout_marginTop="8dp"/>
+
+        <TextView
+            android:id="@+id/titlezustandMyThesisTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Zustand der Abschlussarbeit"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"/>
+
+        <Spinner
+            android:id="@+id/zustandMyThesisSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:textSize="24sp"
+            android:layout_marginTop="8dp"/>
+
+        <TextView
+            android:id="@+id/titlezweitgutachterMyThesisTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Zweitgutachter"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"/>
+
+        <Spinner
+            android:id="@+id/zweitgutachterMyThesisSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:textSize="24sp"
+            android:layout_marginTop="8dp"/>
+
+        <TextView
+            android:id="@+id/titlestudentMyThesisTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Student"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"/>
+
+        <EditText
+            android:id="@+id/studentMyThesisTextEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:enabled="false"
+            android:layout_marginTop="8dp"/>
+
+        <TextView
+            android:id="@+id/titlefaelligkeitsdatumMyThesisTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Fälligkeitsdatum"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"/>
+
+        <EditText
+            android:id="@+id/faelligkeitsdatumMyThesisTextEdit"
+            android:hint="B-Daten"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:layout_marginTop="8dp"/>
+
+        <TextView
+            android:id="@+id/titlerechnungssatusMyThesisTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Rechnungsstatus"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"/>
+
+        <TextView
+            android:id="@+id/rechnungsstatusMyThesisTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nicht gestellt"
+            android:textSize="24sp"
+            android:layout_marginTop="8dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:paddingBottom="2dp">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end"
+            android:layout_marginTop="24dp">
 
-            <TextView
-                android:layout_width="match_parent"
+            <Button
+                android:id="@+id/myThesisbuttonRechnungsstellung"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Titel Ihrer Abschlussarbeit"
-                android:textSize="16sp" />
+                android:text="Rechnungsstellung"
+                android:layout_marginEnd="8dp"/>
 
-            <EditText
-                android:id="@+id/titelMyThesiseditTextEdit"
-                android:layout_width="match_parent"
+            <Button
+                android:id="@+id/myThesisbuttonSave"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="B-Daten"
-                android:textSize="24sp"/>
+                android:text="Speichern"/>
 
         </LinearLayout>
-    </FrameLayout>
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:paddingBottom="2dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Name Ihres Betreuers"
-                    android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/supervisorMyThesisTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="48dp"
-                android:gravity="center_vertical"
-                android:textSize="16sp"
-                android:textColor="@android:color/black"
-                android:background="@android:color/transparent" />
-        </LinearLayout>
-    </FrameLayout>
-
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:paddingBottom="2dp">
-
-                <TextView
-                    android:id="@+id/titlezustandMyThesisTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Zustand der Abschlussarbeit"
-                    android:textSize="16sp" />
-
-                <Spinner
-                    android:id="@+id/zustandMyThesisSpinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="48dp" />
-
-            </LinearLayout>
-
-        </FrameLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:paddingBottom="2dp">
-
-                <TextView
-                    android:id="@+id/titlezweitgutachterMyThesisTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Zweitgutachter"
-                    android:textSize="16sp" />
-
-                <Spinner
-                    android:id="@+id/zweitgutachterMyThesisSpinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="48dp" />
-
-            </LinearLayout>
-
-        </FrameLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:paddingBottom="2dp">
-
-                <TextView
-                    android:id="@+id/titlestudentMyThesisTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Student"
-                    android:textSize="16sp" />
-
-                <EditText
-                    android:id="@+id/studentMyThesisTextEdit"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="24sp"
-                    android:enabled="false"/>
-
-            </LinearLayout>
-
-        </FrameLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:paddingBottom="2dp">
-
-                <TextView
-                    android:id="@+id/titlefaelligkeitsdatumMyThesisTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Fälligkeitsdatum"
-                    android:textSize="16sp" />
-
-                <EditText
-                    android:id="@+id/faelligkeitsdatumMyThesisTextEdit"
-                    android:hint="B-Daten"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="24sp"/>
-
-            </LinearLayout>
-
-        </FrameLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-        </FrameLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:paddingBottom="2dp">
-
-                <TextView
-                    android:id="@+id/titlerechnungssatusMyThesisTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Rechnungsstatus"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/rechnungsstatusMyThesisTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Nicht gestellt"
-                    android:textSize="24sp" />
-
-            </LinearLayout>
-
-        </FrameLayout>
-
-        <Button
-            android:id="@+id/myThesisbuttonRechnungsstellung"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Rechnungsstellung"
-            android:layout_gravity="right"
-            android:layout_marginTop="10dp"
-            />
-
-        <Button
-            android:id="@+id/myThesisbuttonSave"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Speichern"
-            android:layout_gravity="right"
-            android:layout_marginTop="10dp"
-            />
-
 
     </LinearLayout>
-
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
