@@ -5,10 +5,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.dlbcsemse.iuthesisconnect.helper.DatabaseHelper
 import com.dlbcsemse.iuthesisconnect.model.Thesis
 
 class SupervisedThesisAdapter(
     private val theses: List<Thesis>,
+    private val dbHelper: DatabaseHelper,
     private val onItemClick: (Thesis) -> Unit
 ) : RecyclerView.Adapter<SupervisedThesisAdapter.ViewHolder>() {
 
@@ -16,6 +18,7 @@ class SupervisedThesisAdapter(
         val themeTextView: TextView = view.findViewById(R.id.thesisThemeTextView)
         val studentNameTextView: TextView = view.findViewById(R.id.studentNameTextView)
         val stateTextView: TextView = view.findViewById(R.id.thesisStateTextView)
+        val billStateTextView: TextView = view.findViewById(R.id.billStateTextView)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -27,8 +30,9 @@ class SupervisedThesisAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val thesis = theses[position]
         holder.themeTextView.text = thesis.theme
-        holder.studentNameTextView.text = "Student: ${thesis.student}"
+        holder.studentNameTextView.text = "Student: ${dbHelper.getUserNameById(thesis.student)}"
         holder.stateTextView.text = "Status: ${thesis.state}"
+        holder.billStateTextView.text = "Rechnungsstatus: ${thesis.billState}"
 
         holder.itemView.setOnClickListener {
             onItemClick(thesis)

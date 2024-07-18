@@ -18,7 +18,7 @@ class SupervisedThesisBoardActivity : ToolbarBaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        enableEdgeToEdge()
         setContentView(R.layout.activity_supervised_thesis_board)
 
         setupToolbarButton()
@@ -33,7 +33,7 @@ class SupervisedThesisBoardActivity : ToolbarBaseActivity() {
     private fun loadSupervisedTheses() {
         val currentUser = dbHelper.getCurrentUser()
         val supervisedTheses = dbHelper.getThesesBySupervisor(currentUser.userId)
-        adapter = SupervisedThesisAdapter(supervisedTheses) { thesis ->
+        adapter = SupervisedThesisAdapter(supervisedTheses, dbHelper) { thesis ->
             openMyThesisActivity(thesis)
         }
         recyclerView.adapter = adapter
