@@ -6,6 +6,8 @@ import android.database.Cursor
 import android.database.DatabaseUtils
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import com.dlbcsemse.iuthesisconnect.model.AvailabilityStatus
+import com.dlbcsemse.iuthesisconnect.model.SupervisorProfile
 import com.dlbcsemse.iuthesisconnect.model.Thesis
 
 import com.dlbcsemse.iuthesisconnect.model.UserProfile
@@ -25,6 +27,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 		private const val LANGUAGES_TABLE_NAME = "languages"
         private const val TOPICCATEGORIES_TABLE_NAME = "topic_categories"
         private const val SUPERVISORPROFILE_TABLE_NAME = "supervisor_profile"
+        private const val TOPIC_SUPERVISOR_TABLE_NAME = "topic_supervisor"
 
         // Gemeinsame Spaltennamen
         private const val COLUMN_ID = "id"
@@ -36,6 +39,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         private const val COLUMN_BIO = "biography"
         private const val COLUMN_RESEARCH_TOPICS = "research_topics"
         private const val COLUMN_PICTURE = "picture"
+        private const val COLUMN_LANGUAGES = "languages"
+        private const val COLUMN_TOPICCATEGORY_ID = "topic_id"
 
         // Spezifische Spaltennamen für Thesis-Tabelle
         const val COLUMN_STATE = "state"
@@ -115,23 +120,17 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 + "$COLUMN_STATUS INTEGER,  "
                 + "$COLUMN_BIO TEXT, "
                 + "$COLUMN_RESEARCH_TOPICS TEXT, "
+                + "$COLUMN_LANGUAGES TEXT, "
                 + "FOREIGN KEY($COLUMN_USER_ID) REFERENCES $PROFILE_TABLE_NAME($COLUMN_ID))")
-        db.execSQL(createTable)        // Erstellen der Thesis-Tabelle
-        createTable = ("CREATE TABLE $THESIS_TABLE_NAME ("
-                + "$COLUMN_ID INTEGER PRIMARY KEY, "
-                + "$COLUMN_STUDENT INTEGER , "
-                + "$COLUMN_STATE TEXT, "
-                + "$COLUMN_SUPERVISOR INTEGER , "
-                + "$COLUMN_SECOND_SUPERVISOR INTEGER, "
-                + "$COLUMN_THEME TEXT, "
-                + "$COLUMN_DUE_DATE_DAY INTEGER, "
-                + "$COLUMN_DUE_DATE_MONTH INTEGER, "
-                + "$COLUMN_DUE_DATE_YEAR INTEGER, "
-                + "$COLUMN_BILL_STATE TEXT, "
-                + "$COLUMN_USER_TYPE INTEGER, "
-                + "FOREIGN KEY($COLUMN_STUDENT) REFERENCES $PROFILE_TABLE_NAME($COLUMN_ID), "
-                + "FOREIGN KEY($COLUMN_SUPERVISOR) REFERENCES $PROFILE_TABLE_NAME($COLUMN_ID), "
-                + "FOREIGN KEY($COLUMN_SECOND_SUPERVISOR) REFERENCES $PROFILE_TABLE_NAME($COLUMN_ID) ) " )
+        db.execSQL(createTable)
+
+        // Erstellen der Topic Categories-Tabelle (Zuordnung der Forschungsgebiete zu Betreuern)
+        createTable = ("CREATE TABLE $TOPIC_SUPERVISOR_TABLE_NAME ("
+                + "$COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "$COLUMN_USER_ID INTEGER, "
+                + "$COLUMN_TOPICCATEGORY_ID INTEGER," +
+                " FOREIGN KEY($COLUMN_USER_ID) REFERENCES $PROFILE_TABLE_NAME($COLUMN_ID), " +
+                " FOREIGN KEY($COLUMN_TOPICCATEGORY_ID) REFERENCES $TOPICCATEGORIES_TABLE_NAME($COLUMN_ID))")
         db.execSQL(createTable)
 
 
@@ -245,7 +244,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         cursor.close()
         return userProfile
     }
-    // Fügt einen neuen Nutzer hinzu
     // Fügt einen neuen Nutzer hinzu
     fun insertUser( userProfile: UserProfile) {
         val db = this.writableDatabase
@@ -384,5 +382,103 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             db.insert(THESIS_TABLE_NAME, null, values)
         }
     }
-}
 
+    fun getSupervisorProfile(supervisorId: Int): SupervisorProfile {
+        val selectStatement = "SELECT * FROM $SUPERVISORPROFILE_TABLE_NAME WHERE $COLUMN_ID = ?"
+        val cursor: Cursor = readableDatabase.rawQuery(selectStatement, arrayOf(supervisorId.toString()))
+
+        var supervisorProfile: SupervisorProfile = SupervisorProfile.emptySupervisorProfile()
+        if (cursor.moveToFirst()) {
+            val id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID))
+            val userId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_USER_ID))
+            val status = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_STATUS))
+            val biography = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_BIO))
+            val topicCategories = getSupervisorTopicCategories(id)
+            val researchFields = cursor.getString(cursor.getColumnIndexOrThrow(
+                COLUMN_RESEARCH_TOPICS))
+
+            val languages = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_LANGUAGES)).split(";").toTypedArray()
+
+            supervisorProfile = SupervisorProfile(id, userId, AvailabilityStatus.entries[status], biography, topicCategories, researchFields, languages)
+
+        }
+        cursor.close()
+        return supervisorProfile
+    }
+
+    private fun getSupervisorTopicCategories(supervisorId: Int): Array<String> {
+        val selectStatement = ("SELECT * FROM $TOPIC_SUPERVISOR_TABLE_NAME TS" +
+                " JOIN $TOPICCATEGORIES_TABLE_NAME TC on TS.$COLUMN_TOPICCATEGORY_ID = TC.$COLUMN_ID" +
+                " WHERE $COLUMN_USER_ID = ?")
+        val cursor: Cursor = readableDatabase.rawQuery(selectStatement, arrayOf(supervisorId.toString()))
+
+        val topicCategories = Array<String>(cursor.count){""}
+        var cursorIndex = 0
+        while (cursor.moveToNext()) {
+            topicCategories[cursorIndex] = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME))
+            cursorIndex++
+        }
+
+        cursor.close()
+        return topicCategories
+    }
+
+    fun setSupervisorProfile(supervisorProfile: SupervisorProfile) {
+        if (supervisorProfile.id <= 0)
+            insertSuperVisorProfile(supervisorProfile)
+        else
+            updateSuperVisorProfile(supervisorProfile)
+
+    }
+
+    private fun updateSuperVisorProfile(supervisorProfile: SupervisorProfile) {
+        val updateStatement = ("UPDATE $SUPERVISORPROFILE_TABLE_NAME SET " +
+                "$COLUMN_USER_ID = ${supervisorProfile.userId}, " +
+                "$COLUMN_STATUS = ${supervisorProfile.status.ordinal}, " +
+                "$COLUMN_BIO = '${supervisorProfile.biography}', " +
+                "$COLUMN_RESEARCH_TOPICS = '${supervisorProfile.researchTopics}', " +
+                "$COLUMN_LANGUAGES = '${supervisorProfile.languages.joinToString (";")}' " +
+                "WHERE $COLUMN_ID = ${supervisorProfile.id}" )
+
+
+        writableDatabase.execSQL(updateStatement)
+        setSupervisorTopicCategories(supervisorProfile.userId, supervisorProfile.topicCategories)
+    }
+
+    private fun insertSuperVisorProfile(supervisorProfile: SupervisorProfile) {
+        val insertStatement = ("INSERT INTO $SUPERVISORPROFILE_TABLE_NAME " +
+                "($COLUMN_USER_ID, $COLUMN_STATUS, $COLUMN_BIO, $COLUMN_RESEARCH_TOPICS, $COLUMN_LANGUAGES) " +
+                "VALUES (${supervisorProfile.userId}, ${supervisorProfile.status.ordinal}, " +
+                "${supervisorProfile.biography}, ${supervisorProfile.researchTopics}, " +
+                "${supervisorProfile.languages.joinToString (";")})")
+
+        writableDatabase.execSQL(insertStatement)
+        setSupervisorTopicCategories(supervisorProfile.userId, supervisorProfile.topicCategories)
+    }
+
+    private fun setSupervisorTopicCategories(supervisorId: Int, topics: Array<String>) {
+        val allTopics = getAllSpecialisations()
+        val selectedTopics = mutableListOf<Int>()
+
+        for (topic in topics) {
+            selectedTopics.add(allTopics.indexOf(topic)+1)
+        }
+
+        val deleteStatement = ("DELETE FROM $TOPIC_SUPERVISOR_TABLE_NAME WHERE $COLUMN_USER_ID = $supervisorId")
+        writableDatabase.execSQL(deleteStatement)
+
+        if (selectedTopics.size > 0) {
+            var insertStatement =
+                ("INSERT INTO $TOPIC_SUPERVISOR_TABLE_NAME ($COLUMN_USER_ID, $COLUMN_TOPICCATEGORY_ID)" +
+                        "VALUES ")
+
+            for (topic in selectedTopics) {
+                insertStatement += "($supervisorId, $topic), "
+            }
+
+            insertStatement = insertStatement.substring(0, insertStatement.length - 2)
+
+            writableDatabase.execSQL(insertStatement)
+        }
+    }
+}

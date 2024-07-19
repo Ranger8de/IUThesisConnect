@@ -112,7 +112,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Language"
+                android:text="@string/language"
                 android:textSize="18sp" />
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
@@ -122,21 +122,20 @@
                 android:gravity="center"
                 tools:context=".ProfileActivity">
 
-                <ToggleButton
+                <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/profileToggleButtonGerman"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textOn="German"
-                    android:textOff="German"
-                    android:layout_margin="16dp" />
+                    android:text="@string/german"
+                    android:layout_margin="16dp"/>
 
-                <ToggleButton
+                <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/profileToggleButtonEnglish"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textOn="English"
-                    android:textOff="English"
+                    android:text="@string/english"
                     android:layout_margin="16dp" />
+
 
             </LinearLayout>
             </LinearLayout>
@@ -164,7 +163,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Biography"
+                        android:text="@string/biography"
                         android:textSize="18sp"/>
 
                     <EditText
@@ -172,7 +171,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="top"
-                        android:hint="Enter something"
+                        android:hint="@string/enter_something"
                         android:inputType="textMultiLine"
                         android:minHeight="100dp"
                         android:overScrollMode="always"
@@ -205,7 +204,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Topic categories"
+                        android:text="@string/topic_categories"
                         android:textSize="18sp"
                         />
 
@@ -215,8 +214,7 @@
                         android:layout_height="wrap_content"
                         android:editable="false"
                         android:gravity="top"
-                        android:hint="Enter something"
-                        android:inputType="textMultiLine"
+                        android:hint="@string/enter_something"
                         android:minHeight="100dp"
                         android:overScrollMode="always"
                         android:scrollbars="vertical" />
@@ -248,16 +246,16 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Research Fields"
+                        android:text="@string/research_fields"
                         android:textSize="18sp"
                         />
 
                     <EditText
-                        android:id="@+id/profileTextViewResearchField"
+                        android:id="@+id/profileEditTextResearchField"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="top"
-                        android:hint="Enter something"
+                        android:hint="@string/enter_something"
                         android:inputType="textMultiLine"
                         android:minHeight="100dp"
                         android:overScrollMode="always"
