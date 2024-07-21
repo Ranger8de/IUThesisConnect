@@ -12,7 +12,7 @@ import com.dlbcsemse.iuthesisconnect.helper.DatabaseHelper
 import com.dlbcsemse.iuthesisconnect.model.DashboardUserType
 import com.dlbcsemse.iuthesisconnect.model.Thesis
 import com.dlbcsemse.iuthesisconnect.model.UserProfile
-
+import com.dlbcsemse.iuthesisconnect.model.ThesisProfile
 
 class MyThesisActivity : ToolbarBaseActivity() {
     private lateinit var toolbarImageButton: ImageButton
@@ -22,7 +22,6 @@ class MyThesisActivity : ToolbarBaseActivity() {
     private lateinit var currentUser: UserProfile
     private lateinit var thesis: Thesis
     private lateinit var userType: DashboardUserType
-
     // UI-Elemente
     private lateinit var titleEditText: EditText
     private lateinit var supervisorTextView: TextView
@@ -102,12 +101,9 @@ class MyThesisActivity : ToolbarBaseActivity() {
         secondSupervisorSpinner = findViewById(R.id.zweitgutachterMyThesisSpinner)
         studentEditText = findViewById(R.id.studentMyThesisTextEdit)
         dueDateEditText = findViewById(R.id.faelligkeitsdatumMyThesisTextEdit)
-        //
         billStateTextView = findViewById(R.id.rechnungsstatusMyThesisTextView)
         billStateTopicTextView = findViewById(R.id.titlerechnungssatusMyThesisTextView)
-
         saveButton = findViewById(R.id.myThesisbuttonSave)
-        //
         billButton = findViewById(R.id.myThesisbuttonRechnungsstellung)
     }
 

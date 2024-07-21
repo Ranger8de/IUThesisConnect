@@ -7,4 +7,12 @@
     <string name="availabilityStatus_free">I have free capacities</string>
     <string name="availabilityStatus_limited">I am currently only able to accept a few more supervisions</string>
     <string name="availabilityStatus_blocked">I have no more free capacities</string>
+    <string name="german">German</string>
+    <string name="english">English</string>
+    <string name="language">Language</string>
+    <string name="biography">Biography</string>
+    <string name="enter_something">Enter something</string>
+    <string name="topic_categories">Topic categories</string>
+    <string name="research_fields">Research Fields</string>
+    <string name="send">Send</string>
 </resources>

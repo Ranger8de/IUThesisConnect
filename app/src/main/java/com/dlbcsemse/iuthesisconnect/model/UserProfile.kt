@@ -7,10 +7,7 @@ data class UserProfile (val id : Int, val name : String, val eMail : String, val
     var userName : String = name
     var userEmail : String = eMail
     var userType : DashboardUserType = DashboardUserType.entries[type]
-    lateinit var picture : String
-    lateinit var biography : String
-    var languages : ArrayList<Language> = ArrayList<Language>()
-    var status : AvailabilityStatus = AvailabilityStatus.free
+    var picture : String = ""
 
     constructor(id : Int, name : String, eMail : String, type : String)
             : this(
@@ -18,10 +15,5 @@ data class UserProfile (val id : Int, val name : String, val eMail : String, val
         name,
         eMail,
         DashboardUserType.valueOf(type).ordinal
-    ){
-    }
-    init {
-        picture = ""
-        biography = ""
-    }
+    )
 }
