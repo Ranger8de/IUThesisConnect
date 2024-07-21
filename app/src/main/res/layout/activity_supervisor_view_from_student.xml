@@ -179,10 +179,17 @@
                 />
 
             <Button
+                android:id="@+id/supervisorViewFromStudentContactButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Kontaktiere diesen Supervisor"
+                android:layout_marginTop="16dp"/>
+
+            <Button
                 android:id="@+id/supervisorViewFromStudentAssignThesisButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Eigene Thesis Zuweisen"
+                android:text="Zur eigenen Thesis zuweisen"
                 android:layout_marginTop="16dp"/>
 
         </LinearLayout>
