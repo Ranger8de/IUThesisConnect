@@ -1,18 +1,26 @@
 package com.dlbcsemse.iuthesisconnect
 
+import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import com.dlbcsemse.iuthesisconnect.helper.DatabaseHelper
+import com.dlbcsemse.iuthesisconnect.model.SupervisorProfile
 import com.dlbcsemse.iuthesisconnect.model.UserProfile
+import java.util.Base64
 
 class SupervisorViewFromStudentActivity : ToolbarBaseActivity() {
     private lateinit var toolbarImageButton: ImageButton
     private lateinit var databaseHelper: DatabaseHelper
-    private lateinit var supervisorProfile: UserProfile
+    private lateinit var supervisorProfile: SupervisorProfile
     private lateinit var assignThesisButton: Button
+    private lateinit var contactSupervisorButton : Button
     private lateinit var currentUser: UserProfile
 
 
@@ -24,6 +32,7 @@ class SupervisorViewFromStudentActivity : ToolbarBaseActivity() {
         setupToolbarButton()
         loadSupervisorData()
         setupAssignThesisButton()
+        setupContactSupervisorButton()
     }
 
     private fun initializeViews() {
@@ -34,9 +43,9 @@ class SupervisorViewFromStudentActivity : ToolbarBaseActivity() {
     private fun loadSupervisorData() {
         databaseHelper = DatabaseHelper(this)
         currentUser = databaseHelper.getCurrentUser()
-        val supervisorName = intent.getStringExtra("supervisorName")
-        if (supervisorName != null) {
-            supervisorProfile = databaseHelper.getUser(supervisorName) ?: return
+        val supervisorId = intent.getIntExtra("supervisorId", -1)
+        if (supervisorId > 0) {
+            supervisorProfile = databaseHelper.getSupervisorProfile(supervisorId) ?: return
             displaySupervisorInfo()
         } else {
             finish()
@@ -44,8 +53,16 @@ class SupervisorViewFromStudentActivity : ToolbarBaseActivity() {
     }
 
     private fun displaySupervisorInfo() {
-        findViewById<TextView>(R.id.profileTextViewName).text = supervisorProfile.userName
-        findViewById<TextView>(R.id.profileTextViewEmail).text = supervisorProfile.userEmail
+        findViewById<TextView>(R.id.profileTextViewName).text = supervisorProfile.userProfile.userName
+        findViewById<TextView>(R.id.profileTextViewEmail).text = supervisorProfile.userProfile.userEmail
+        findViewById<TextView>(R.id.supervisorViewFromStudentLanguages).text = supervisorProfile.languages.joinToString (", ")
+        findViewById<TextView>(R.id.supervisorViewFromStudentSubjects).text = supervisorProfile.topicCategories.joinToString ("\r\n")
+        findViewById<TextView>(R.id.supervisorViewFromStudentBiography).text = supervisorProfile.biography
+        findViewById<TextView>(R.id.supervisorViewFromStudentThesisThemes).text = supervisorProfile.researchTopics
+
+        val decodedString: ByteArray = Base64.getDecoder().decode(supervisorProfile.userProfile.picture.toByteArray())
+        val decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
+        findViewById<ImageView>(R.id.profileImageViewImage).setImageBitmap(decodedByte)
     }
 
     private fun setupAssignThesisButton() {
@@ -57,7 +74,7 @@ class SupervisorViewFromStudentActivity : ToolbarBaseActivity() {
     private fun assignThesisToSupervisor() {
         val thesis = databaseHelper.getThesisByStudent(currentUser.userId)
         if (thesis != null) {
-            thesis.supervisor = supervisorProfile.userId.toInt()
+            thesis.supervisor = supervisorProfile.userProfile.userId.toInt()
             val updated = databaseHelper.updateThesis(thesis)
             if (updated > 0) {
                 Toast.makeText(this, "Thesis erfolgreich zugewiesen", Toast.LENGTH_SHORT).show()
@@ -66,6 +83,19 @@ class SupervisorViewFromStudentActivity : ToolbarBaseActivity() {
             }
         } else {
             Toast.makeText(this, "Keine Thesis gefunden", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun setupContactSupervisorButton() {
+        contactSupervisorButton = findViewById(R.id.supervisorViewFromStudentContactButton)
+
+        contactSupervisorButton.setOnClickListener {
+            val chatId = databaseHelper.addChat(supervisorProfile.userProfile.userId, currentUser.userId)
+
+            val intent = Intent(this, ChatActivity::class.java)
+            intent.putExtra("chatId", chatId)
+            startActivity(intent)
+
         }
     }
 }

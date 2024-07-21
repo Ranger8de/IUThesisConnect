@@ -67,7 +67,7 @@ class ProfileActivity : AppCompatActivity() {
         databaseHelper = DatabaseHelper(this)
 
         userProfile = databaseHelper.getCurrentUser()
-        supervisorProfile = databaseHelper.getSupervisorProfile(userProfile.id.toInt())
+        supervisorProfile = databaseHelper.getSupervisorProfile(userProfile.id)
 
         toolBar = findViewById(R.id.profileToolbar)
         imgButton = findViewById<ImageButton>(R.id.profileImageViewAvailableStatus)
@@ -155,10 +155,14 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     override fun onPause() {
-        super.onPause()
+
         if (isProfileChanged){
+            if (supervisorProfile.userProfile.userId == -1) {
+                supervisorProfile.userProfile = userProfile
+            }
             databaseHelper.setSupervisorProfile(supervisorProfile)
         }
+        super.onPause()
     }
 
     private fun setLanguage(checkedGerman: Boolean, checkedEnglish: Boolean) {

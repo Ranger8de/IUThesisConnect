@@ -80,6 +80,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="hans.clarin@iu.org"
+            android:autoLink="email"
+            android:linksClickable="true"
             android:textColor="@color/white"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
