@@ -13,9 +13,6 @@
         android:theme="@style/Theme.IUThesisConnect"
         tools:targetApi="31">
         <activity
-            android:name=".SupervisedThesisActivity"
-            android:exported="false" />
-        <activity
             android:name=".SupervisorViewFromStudentActivity"
             android:exported="false" />
         <activity
