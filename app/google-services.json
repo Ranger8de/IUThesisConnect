@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "580334843716",
+    "project_id": "iuthesisconnect",
+    "storage_bucket": "iuthesisconnect.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:580334843716:android:5ac7e7dc4df808617cc911",
+        "android_client_info": {
+          "package_name": "com.dlbcsemse.iuthesisconnect"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-eqSuJNlRh0IbWmpmMbYtIGYaRWsO2Pw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

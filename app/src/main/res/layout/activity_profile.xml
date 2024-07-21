@@ -23,7 +23,21 @@
             app:layout_constraintTop_toTopOf="parent"
             app:title="Profile"
 
-            tools:layout_editor_absoluteX="1dp"/>
+            tools:layout_editor_absoluteX="1dp">
+
+            <ImageButton
+                android:id="@+id/profileImageButtonChat"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="right"
+                android:src="@android:drawable/ic_dialog_email"
+                tools:layout_editor_absoluteX="357dp"
+                tools:layout_editor_absoluteY="12dp"
+
+                />
+
+
+        </androidx.appcompat.widget.Toolbar>
 
         <ImageView
             android:id="@+id/profileImageViewHeader"

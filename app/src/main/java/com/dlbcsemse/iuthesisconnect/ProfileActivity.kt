@@ -1,6 +1,7 @@
 package com.dlbcsemse.iuthesisconnect
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.text.Editable
@@ -50,6 +51,7 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var toggleButtonEnglish : SwitchCompat
     private var isProfileChanged : Boolean = false
     private lateinit var databaseHelper : DatabaseHelper
+    private lateinit var chatButton: ImageButton
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,6 +84,7 @@ class ProfileActivity : AppCompatActivity() {
         cardViewResearchFields = findViewById(R.id.profileCardViewResearchFields)
         toggleButtonGerman = findViewById(R.id.profileToggleButtonGerman)
         toggleButtonEnglish = findViewById(R.id.profileToggleButtonEnglish)
+        chatButton = findViewById(R.id.profileImageButtonChat)
 
         if (userProfile.userType == DashboardUserType.student) {
             imgButton.visibility = View.INVISIBLE
@@ -101,6 +104,11 @@ class ProfileActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowHomeEnabled(true);
         toolBar.setNavigationOnClickListener {
             finish()
+        }
+
+        chatButton.setOnClickListener {
+            val intent = Intent(this, ChatOverviewActivity::class.java)
+            startActivity(intent)
         }
 
         initializeUserInterface()

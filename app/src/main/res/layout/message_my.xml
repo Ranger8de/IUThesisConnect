@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/chatTextViewMessageMy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/chat_message_bubble_my"
+        android:elevation="5dp"
+        android:maxWidth="240dp"
+        android:padding="15dp"
+        android:text="Hi, my message"
+        android:textColor="#ffffff"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/chatTextViewMessageTimeMy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:text="12:00 PM"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/chatTextViewMessageMy"
+        app:layout_constraintRight_toLeftOf="@+id/chatTextViewMessageMy" />
+
+    <ImageView
+        android:id="@+id/chatImageViewAttachmentMy"
+        android:layout_width="64dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="53dp"
+        android:layout_marginEnd="65dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/chatTextViewMessageMy"
+        app:layout_constraintStart_toStartOf="@+id/chatTextViewMessageMy"
+        app:layout_constraintTop_toBottomOf="@+id/chatTextViewMessageMy"
+        app:srcCompat="@android:drawable/ic_menu_gallery" />
+
+    <TextView
+        android:id="@+id/chatTextViewAttachementNameMy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="datei.pdf"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/chatTextViewMessageMy"
+        app:layout_constraintStart_toStartOf="@+id/chatTextViewMessageMy"
+        app:layout_constraintTop_toBottomOf="@+id/chatImageViewAttachmentMy" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
