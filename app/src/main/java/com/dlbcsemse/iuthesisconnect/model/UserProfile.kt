@@ -16,4 +16,8 @@ data class UserProfile (val id : Int, val name : String, val eMail : String, val
         eMail,
         DashboardUserType.valueOf(type).ordinal
     )
+    companion object {
+        fun emptyUserProfile() : UserProfile =
+            UserProfile(-1, "kein Nutzer zugewiesen", "", "student")
+    }
 }

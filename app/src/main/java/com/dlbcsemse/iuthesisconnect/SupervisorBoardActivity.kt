@@ -36,10 +36,10 @@ class SupervisorBoardActivity : ToolbarBaseActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         val supervisors = dbHelper.getAllSupervisors()
-        adapter = SupervisorBoardAdapter(supervisors) { supervisor ->
+        adapter = SupervisorBoardAdapter(supervisors, dbHelper) { supervisor ->
             // Hier wird der onClick-Handler implementiert
             val intent = Intent(this, SupervisorViewFromStudentActivity::class.java)
-            intent.putExtra("supervisorName", supervisor.userName)
+            intent.putExtra("supervisorName", supervisor.id)
             startActivity(intent)
         }
         recyclerView.adapter = adapter

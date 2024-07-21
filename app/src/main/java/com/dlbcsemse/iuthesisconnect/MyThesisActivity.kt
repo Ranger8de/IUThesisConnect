@@ -10,9 +10,10 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
 import com.dlbcsemse.iuthesisconnect.helper.DatabaseHelper
 import com.dlbcsemse.iuthesisconnect.model.DashboardUserType
+import com.dlbcsemse.iuthesisconnect.model.SupervisorProfile
 import com.dlbcsemse.iuthesisconnect.model.Thesis
 import com.dlbcsemse.iuthesisconnect.model.UserProfile
-import com.dlbcsemse.iuthesisconnect.model.ThesisProfile
+//import com.dlbcsemse.iuthesisconnect.model.ThesisProfile
 
 class MyThesisActivity : ToolbarBaseActivity() {
     private lateinit var toolbarImageButton: ImageButton
@@ -27,7 +28,7 @@ class MyThesisActivity : ToolbarBaseActivity() {
     private lateinit var supervisorTextView: TextView
     private lateinit var stateSpinner: Spinner
     private lateinit var secondSupervisorSpinner: Spinner
-    private lateinit var supervisors: List<UserProfile>
+    private lateinit var supervisors: List<SupervisorProfile>
     private lateinit var dueDateEditText: EditText
     private lateinit var stateTextView: TextView
     private lateinit var secondSupervisorTextView: TextView
@@ -109,7 +110,7 @@ class MyThesisActivity : ToolbarBaseActivity() {
 
     private fun setupSecondSupervisorSpinner() {
         supervisors = dbHelper.getAllSupervisors()
-        val supervisorNames = supervisors.map { it.userName }.toMutableList()
+        val supervisorNames = supervisors.map { it.userProfile.userName }.toMutableList()
         supervisorNames.add(0, "Nicht zugewiesen")
 
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, supervisorNames)
@@ -121,7 +122,7 @@ class MyThesisActivity : ToolbarBaseActivity() {
                 if (position == 0) {
                     thesis.secondSupervisor = -1
                 } else {
-                    thesis.secondSupervisor = supervisors[position - 1].userId
+                    thesis.secondSupervisor = supervisors[position - 1].userProfile.userId
                 }
             }
 

@@ -6,11 +6,14 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.dlbcsemse.iuthesisconnect.helper.DatabaseHelper
+import com.dlbcsemse.iuthesisconnect.model.SupervisorProfile
 import com.dlbcsemse.iuthesisconnect.model.UserProfile
 
 class SupervisorBoardAdapter(
-    private val supervisors: List<UserProfile>,
-    private val onItemClick: (UserProfile) -> Unit
+    private val supervisors: List<SupervisorProfile>,
+    private val dbHelper: DatabaseHelper,
+    private val onItemClick: (SupervisorProfile) -> Unit
 ) : RecyclerView.Adapter<SupervisorBoardAdapter.ViewHolder>() {
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -37,7 +40,10 @@ class SupervisorBoardAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val supervisor = supervisors[position]
-        holder.nameTextView.text = supervisor.userName
+        val userProfile = supervisor.userProfile
+        if (userProfile != null) {
+            holder.nameTextView.text = userProfile.userName
+        }
         // Hier können Sie ein Bild setzen, wenn verfügbar
         holder.subjectsTextView.text = "Fächer werden bald hinzugefügt"
         holder.availabilityTextView.text = supervisor.status.toString()

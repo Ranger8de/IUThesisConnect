@@ -12,10 +12,8 @@ import com.dlbcsemse.iuthesisconnect.model.AvailabilityStatus
 import com.dlbcsemse.iuthesisconnect.model.Chat
 import com.dlbcsemse.iuthesisconnect.model.ChatMessage
 import com.dlbcsemse.iuthesisconnect.model.SupervisorProfile
-import com.dlbcsemse.iuthesisconnect.model.Thesis
-
 import com.dlbcsemse.iuthesisconnect.model.UserProfile
-import com.dlbcsemse.iuthesisconnect.model.ThesisProfile
+//import com.dlbcsemse.iuthesisconnect.model.ThesisProfile
 
 class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     companion object {
@@ -318,7 +316,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
         var userProfile: UserProfile? = null
         if (cursor.moveToFirst()) {
-            val id = cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_ID))
+            val id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID))
             val name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME))
             val email = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_EMAIL))
             val picture = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PICTURE))
@@ -489,19 +487,26 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         cursor.close()
     }
 
-    fun getAllSupervisors(): List<UserProfile> {
-        val supervisors = mutableListOf<UserProfile>()
+    fun getAllSupervisors(): List<SupervisorProfile> {
+        val supervisors = mutableListOf<SupervisorProfile>()
         val db = this.readableDatabase
-        val query = "SELECT * FROM $PROFILE_TABLE_NAME WHERE $COLUMN_ROLE = ?"
-        val cursor = db.rawQuery(query, arrayOf(DashboardUserType.supervisor.ordinal.toString()))
+        val query = "SELECT * FROM $SUPERVISORPROFILE_TABLE_NAME WHERE 1 = ?"
+        val cursor = db.rawQuery(query, arrayOf("1"))
 
         with(cursor) {
             while (moveToNext()) {
-                val id = getInt(getColumnIndexOrThrow(COLUMN_ID))
-                val name = getString(getColumnIndexOrThrow(COLUMN_NAME))
-                val email = getString(getColumnIndexOrThrow(COLUMN_EMAIL))
-                val type = getInt(getColumnIndexOrThrow(COLUMN_ROLE))
-                supervisors.add(UserProfile(id, name, email, type))
+                val id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID))
+                val userId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_USER_ID))
+                val userProfile = getUser(userId)
+                val status = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_STATUS))
+                val biography = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_BIO))
+                val topicCategories = getSupervisorTopicCategories(id)
+                val researchFields = cursor.getString(cursor.getColumnIndexOrThrow(
+                    COLUMN_RESEARCH_TOPICS))
+
+                val languages = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_LANGUAGES)).split(";").toTypedArray()
+
+                supervisors.add(SupervisorProfile(id, userProfile!!, AvailabilityStatus.entries[status], biography, topicCategories, researchFields, languages))
             }
         }
         cursor.close()
@@ -647,6 +652,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         if (cursor.moveToFirst()) {
             val id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID))
             val userId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_USER_ID))
+            val userProfile = getUser(supervisorId)
             val status = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_STATUS))
             val biography = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_BIO))
             val topicCategories = getSupervisorTopicCategories(id)
@@ -655,7 +661,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
             val languages = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_LANGUAGES)).split(";").toTypedArray()
 
-            supervisorProfile = SupervisorProfile(id, userId, AvailabilityStatus.entries[status], biography, topicCategories, researchFields, languages)
+            supervisorProfile = SupervisorProfile(id, userProfile!!, AvailabilityStatus.entries[status], biography, topicCategories, researchFields, languages)
 
         }
         cursor.close()
@@ -689,7 +695,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     private fun updateSuperVisorProfile(supervisorProfile: SupervisorProfile) {
         val updateStatement = ("UPDATE $SUPERVISORPROFILE_TABLE_NAME SET " +
-                "$COLUMN_USER_ID = ${supervisorProfile.userId}, " +
+                "$COLUMN_USER_ID = ${supervisorProfile.userProfile.userId}, " +
                 "$COLUMN_STATUS = ${supervisorProfile.status.ordinal}, " +
                 "$COLUMN_BIO = '${supervisorProfile.biography}', " +
                 "$COLUMN_RESEARCH_TOPICS = '${supervisorProfile.researchTopics}', " +
@@ -698,18 +704,18 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
 
         writableDatabase.execSQL(updateStatement)
-        setSupervisorTopicCategories(supervisorProfile.userId, supervisorProfile.topicCategories)
+        setSupervisorTopicCategories(supervisorProfile.userProfile.userId, supervisorProfile.topicCategories)
     }
 
     private fun insertSuperVisorProfile(supervisorProfile: SupervisorProfile) {
         val insertStatement = ("INSERT INTO $SUPERVISORPROFILE_TABLE_NAME " +
                 "($COLUMN_USER_ID, $COLUMN_STATUS, $COLUMN_BIO, $COLUMN_RESEARCH_TOPICS, $COLUMN_LANGUAGES) " +
-                "VALUES (${supervisorProfile.userId}, ${supervisorProfile.status.ordinal}, " +
+                "VALUES (${supervisorProfile.userProfile.userId}, ${supervisorProfile.status.ordinal}, " +
                 "'${supervisorProfile.biography}', '${supervisorProfile.researchTopics}', " +
                 "'${supervisorProfile.languages.joinToString (";")}')")
 
         writableDatabase.execSQL(insertStatement)
-        setSupervisorTopicCategories(supervisorProfile.userId, supervisorProfile.topicCategories)
+        setSupervisorTopicCategories(supervisorProfile.userProfile.userId, supervisorProfile.topicCategories)
     }
 
     private fun setSupervisorTopicCategories(supervisorId: Int, topics: Array<String>) {
@@ -806,7 +812,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
                 val chatMessage = ChatMessage(
                     messageId,
-                    chatId,
+                                                        chatId,
                     toUserProfile,
                     message,
                     timeStamp,
