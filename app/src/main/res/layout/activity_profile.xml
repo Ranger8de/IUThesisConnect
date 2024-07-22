@@ -275,7 +275,9 @@
                         android:inputType="textMultiLine"
                         android:minHeight="100dp"
                         android:overScrollMode="always"
-                        android:scrollbars="vertical" />
+                        android:scrollbarStyle="insideOverlay"
+                        android:scrollbars="vertical"
+                        android:fadeScrollbars="false"/>
 
                 </LinearLayout>
             </ScrollView>
