@@ -15,7 +15,7 @@ import com.dlbcsemse.iuthesisconnect.model.UserProfile
 import java.util.Base64
 
 class SupervisorBoardAdapter(
-    private val supervisors: List<SupervisorProfile>,
+    private var supervisors: List<SupervisorProfile>,
     private val dbHelper: DatabaseHelper,
     private val onItemClick: (SupervisorProfile) -> Unit
 ) : RecyclerView.Adapter<SupervisorBoardAdapter.ViewHolder>() {
@@ -84,6 +84,10 @@ class SupervisorBoardAdapter(
                 R.string.availabilityStatus_limited
             }
         }
+    }
+    fun updateSupervisors(newSupervisors: List<SupervisorProfile>) {
+        supervisors = newSupervisors
+        notifyDataSetChanged()
     }
 
     override fun getItemCount() = supervisors.size
