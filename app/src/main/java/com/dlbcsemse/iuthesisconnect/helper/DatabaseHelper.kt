@@ -536,7 +536,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             put(COLUMN_STATE, "Nicht begonnen")
             put(COLUMN_SUPERVISOR, -1)
             put(COLUMN_SECOND_SUPERVISOR, -1)
-            put(COLUMN_THEME, "Nich gesetzt")
+            put(COLUMN_THEME, "Nicht gesetzt")
             put(COLUMN_DUE_DATE_DAY, 0)
             put(COLUMN_DUE_DATE_MONTH, 0)
             put(COLUMN_DUE_DATE_YEAR, 0)
