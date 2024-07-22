@@ -76,8 +76,8 @@ class DashboardActivity : ToolbarBaseActivity() {
 
     private fun createMenuItems(): ArrayList<DashboardItem> {
         var items: ArrayList<DashboardItem> = ArrayList<DashboardItem>()
-        items.add(DashboardItem(0, "Betreuerboard", R.drawable.screenshot, DashboardUserType.student))
-        items.add(DashboardItem(1, "Meine Abschlussarbeit", R.drawable.screenshot, DashboardUserType.student))
-        items.add(DashboardItem(2, "Beaufsichtigte Abschlussarbeiten", R.drawable.screenshot, DashboardUserType.supervisor))
+        items.add(DashboardItem(0, "Betreuerboard", R.drawable.supervisoboard, DashboardUserType.student))
+        items.add(DashboardItem(1, "Meine Abschlussarbeit", R.drawable.thesis, DashboardUserType.student))
+        items.add(DashboardItem(2, "Beaufsichtigte Abschlussarbeiten", R.drawable.thesis, DashboardUserType.supervisor))
         return items
     }
