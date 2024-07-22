@@ -24,6 +24,7 @@
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:src="@android:drawable/ic_dialog_info"
+            android:background="?attr/selectableItemBackgroundBorderless"
             tools:layout_editor_absoluteX="16dp"
             tools:layout_editor_absoluteY="2dp"
             />
