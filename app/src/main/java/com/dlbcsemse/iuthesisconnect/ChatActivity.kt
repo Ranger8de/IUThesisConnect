@@ -65,6 +65,7 @@ class ChatActivity : AppCompatActivity() {
             recipientUser = chatHeader.user1
         }
 
+        databaseHelper.setChatReadedFlag(chatId, currentUser.id)
 
         adapter = ChatMessageAdapter(this)
         adapter.addAllMessages(databaseHelper.getChatMessages(chatId))
@@ -92,9 +93,9 @@ class ChatActivity : AppCompatActivity() {
                     message.attachmentName = attachmentName
                 }
                 adapter.addMessage(message)
-                databaseHelper.addChatMessage(chatId, recipientUser.id.toInt() , messageText, currentTime, attachment, attachmentName )
+                databaseHelper.addChatMessage(chatId, recipientUser.id , messageText, currentTime, attachment, attachmentName )
 
-                editTextMessage.clearComposingText()
+                editTextMessage.text.clear()
             }
         }
 

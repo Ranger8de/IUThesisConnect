@@ -2,18 +2,33 @@ package com.dlbcsemse.iuthesisconnect
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.ImageButton
 import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.dlbcsemse.iuthesisconnect.helper.DatabaseHelper
 import com.dlbcsemse.iuthesisconnect.model.DashboardUserType
 
 class DashboardActivity : ToolbarBaseActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var buttonAdapter: DashboardButtonAdapter
+    private lateinit var buttonChat : ImageButton
+    private var databaseHelper = DatabaseHelper(this)
 
+    override fun onResume() {
+        super.onResume()
+
+        if (databaseHelper.hasUserUnreadedMessages(databaseHelper.getCurrentUser().userId)) {
+            buttonChat.setBackgroundColor(getColor(R.color.red))
+        }
+        else {
+            buttonChat.setBackgroundColor(getColor(android.R.color.transparent))
+        }
+
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +49,14 @@ class DashboardActivity : ToolbarBaseActivity() {
         // RecyclerView Initialisierung
         recyclerView = findViewById(R.id.dashboardRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
+
+        // chat
+        buttonChat = findViewById(R.id.dashboardImageButtonChat)
+        buttonChat.setOnClickListener {
+            val intent = Intent(this, ChatOverviewActivity::class.java)
+            startActivity(intent)
+        }
+
 
         // Verschiedene Weiterleitungen
         buttonAdapter = DashboardButtonAdapter(items) { clickedItem ->
@@ -64,8 +87,10 @@ class DashboardActivity : ToolbarBaseActivity() {
         }
     }
 
+
+
     private fun getMenuItems(userType: DashboardUserType): ArrayList<DashboardItem> {
-        var items: ArrayList<DashboardItem> = ArrayList<DashboardItem>()
+        val items: ArrayList<DashboardItem> = ArrayList<DashboardItem>()
         for (item in createMenuItems()) {
             if (item.userType == userType) {
                 items.add(item)
@@ -75,7 +100,7 @@ class DashboardActivity : ToolbarBaseActivity() {
     }
 
     private fun createMenuItems(): ArrayList<DashboardItem> {
-        var items: ArrayList<DashboardItem> = ArrayList<DashboardItem>()
+        val items: ArrayList<DashboardItem> = ArrayList<DashboardItem>()
         items.add(DashboardItem(0, "Betreuerboard", R.drawable.supervisoboard, DashboardUserType.student))
         items.add(DashboardItem(1, "Meine Abschlussarbeit", R.drawable.thesis, DashboardUserType.student))
         items.add(DashboardItem(2, "Beaufsichtigte Abschlussarbeiten", R.drawable.thesis, DashboardUserType.supervisor))

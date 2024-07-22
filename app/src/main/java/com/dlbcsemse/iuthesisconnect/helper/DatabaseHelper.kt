@@ -512,7 +512,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 val userProfile = getUser(userId)
                 val status = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_STATUS))
                 val biography = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_BIO))
-                val topicCategories = getSupervisorTopicCategories(id)
+                val topicCategories = getSupervisorTopicCategories(userId)
                 val researchFields = cursor.getString(cursor.getColumnIndexOrThrow(
                     COLUMN_RESEARCH_TOPICS))
 
@@ -656,18 +656,17 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         cursor.close()
         return userId
     }
-    fun getSupervisorProfile(supervisorId: Int): SupervisorProfile {
-        val selectStatement = "SELECT * FROM $SUPERVISORPROFILE_TABLE_NAME WHERE $COLUMN_ID = ?"
-        val cursor: Cursor = readableDatabase.rawQuery(selectStatement, arrayOf(supervisorId.toString()))
+    fun getSupervisorProfile(userId: Int): SupervisorProfile {
+        val selectStatement = "SELECT * FROM $SUPERVISORPROFILE_TABLE_NAME WHERE $COLUMN_USER_ID = ?"
+        val cursor: Cursor = readableDatabase.rawQuery(selectStatement, arrayOf(userId.toString()))
 
         var supervisorProfile: SupervisorProfile = SupervisorProfile.emptySupervisorProfile()
         if (cursor.moveToFirst()) {
             val id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID))
-            val userId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_USER_ID))
             val userProfile = getUser(userId)
             val status = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_STATUS))
             val biography = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_BIO))
-            val topicCategories = getSupervisorTopicCategories(id)
+            val topicCategories = getSupervisorTopicCategories(userId)
             val researchFields = cursor.getString(cursor.getColumnIndexOrThrow(
                 COLUMN_RESEARCH_TOPICS))
 
@@ -680,11 +679,11 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return supervisorProfile
     }
 
-    private fun getSupervisorTopicCategories(supervisorId: Int): Array<String> {
+    private fun getSupervisorTopicCategories(userId: Int): Array<String> {
         val selectStatement = ("SELECT * FROM $TOPIC_SUPERVISOR_TABLE_NAME TS" +
                 " JOIN $TOPICCATEGORIES_TABLE_NAME TC on TS.$COLUMN_TOPICCATEGORY_ID = TC.$COLUMN_ID" +
                 " WHERE $COLUMN_USER_ID = ?")
-        val cursor: Cursor = readableDatabase.rawQuery(selectStatement, arrayOf(supervisorId.toString()))
+        val cursor: Cursor = readableDatabase.rawQuery(selectStatement, arrayOf(userId.toString()))
 
         val topicCategories = Array<String>(cursor.count){""}
         var cursorIndex = 0
@@ -730,7 +729,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         setSupervisorTopicCategories(supervisorProfile.userProfile.userId, supervisorProfile.topicCategories)
     }
 
-    private fun setSupervisorTopicCategories(supervisorId: Int, topics: Array<String>) {
+    private fun setSupervisorTopicCategories(userId: Int, topics: Array<String>) {
         val allTopics = getAllSpecialisations()
         val selectedTopics = mutableListOf<Int>()
 
@@ -738,7 +737,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             selectedTopics.add(allTopics.indexOf(topic)+1)
         }
 
-        val deleteStatement = ("DELETE FROM $TOPIC_SUPERVISOR_TABLE_NAME WHERE $COLUMN_USER_ID = $supervisorId")
+        val deleteStatement = ("DELETE FROM $TOPIC_SUPERVISOR_TABLE_NAME WHERE $COLUMN_USER_ID = $userId")
         writableDatabase.execSQL(deleteStatement)
 
         if (selectedTopics.size > 0) {
@@ -747,7 +746,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                         "VALUES ")
 
             for (topic in selectedTopics) {
-                insertStatement += "($supervisorId, $topic), "
+                insertStatement += "($userId, $topic), "
             }
 
             insertStatement = insertStatement.substring(0, insertStatement.length - 2)
@@ -888,6 +887,26 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 "VALUES ($chatId, $toUserId, '$message', $timeStamp, 0, '$attachment', '$attachmentName')")
 
         writableDatabase.execSQL(insertStatement)
+    }
+
+    fun setChatReadedFlag(chatId: Int, userId: Int) {
+        val updateStatement = ("UPDATE $CHAT_MESSAGES_TABLE_NAME " +
+                "SET $COLUMN_READED = 1 " +
+                "WHERE $COLUMN_CHAT_ID = $chatId and $COLUMN_CHAT_TOUSER = $userId")
+
+        writableDatabase.execSQL(updateStatement)
+    }
+
+    fun hasUserUnreadedMessages(userId: Int) : Boolean{
+        val selectStatement = ("SELECT COUNT(*) FROM $CHAT_MESSAGES_TABLE_NAME " +
+                "WHERE $COLUMN_READED = 0 AND $COLUMN_CHAT_TOUSER = $userId" )
+
+        val cursor = readableDatabase.rawQuery(selectStatement, null)
+        cursor.moveToFirst()
+        val scalarValue = cursor.getInt(0)
+        cursor.close()
+
+        return scalarValue > 0
     }
 }
 

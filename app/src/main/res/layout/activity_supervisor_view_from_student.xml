@@ -29,7 +29,7 @@
             android:id="@+id/toolbartextView"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="iu"
+            android:text="@string/iu"
             android:textSize="40sp"
             android:textStyle="bold"
             android:layout_gravity="end"
@@ -94,6 +94,17 @@
         android:src="@drawable/flag_green"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profileTextViewEmail" />
+
+    <TextView
+        android:id="@+id/profileTextViewAvailableStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginBottom="15dp"
+        android:text="@string/availabilityStatus_free"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/profileImageViewAvailableStatus"
+        app:layout_constraintStart_toEndOf="@+id/profileImageViewAvailableStatus" />
 
     <ScrollView
         android:layout_width="0dp"

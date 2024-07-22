@@ -2,26 +2,15 @@ package com.dlbcsemse.iuthesisconnect
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.ScrollView
-import android.widget.Spinner
-import androidx.activity.enableEdgeToEdge
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.children
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.dlbcsemse.iuthesisconnect.R
-import com.dlbcsemse.iuthesisconnect.SupervisorBoardAdapter
 import com.dlbcsemse.iuthesisconnect.helper.DatabaseHelper
-import com.dlbcsemse.iuthesisconnect.model.DashboardUserType
 import com.dlbcsemse.iuthesisconnect.model.SupervisorProfile
-import com.dlbcsemse.iuthesisconnect.model.UserProfile
 
 class SupervisorBoardActivity : ToolbarBaseActivity() {
     private lateinit var recyclerView: RecyclerView
@@ -47,9 +36,9 @@ class SupervisorBoardActivity : ToolbarBaseActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         allSupervisors = dbHelper.getAllSupervisors()
-        adapter = SupervisorBoardAdapter(allSupervisors, dbHelper) { supervisor ->
+        adapter = SupervisorBoardAdapter(allSupervisors) { supervisor ->
             val intent = Intent(this, SupervisorViewFromStudentActivity::class.java)
-            intent.putExtra("supervisorId", supervisor.id)
+            intent.putExtra("userId", supervisor.userProfile.userId)
             startActivity(intent)
         }
         recyclerView.adapter = adapter

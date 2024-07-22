@@ -6,17 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContextCompat.getString
 import androidx.recyclerview.widget.RecyclerView
 import com.dlbcsemse.iuthesisconnect.helper.DatabaseHelper
 import com.dlbcsemse.iuthesisconnect.model.AvailabilityStatus
 import com.dlbcsemse.iuthesisconnect.model.SupervisorProfile
-import com.dlbcsemse.iuthesisconnect.model.UserProfile
 import java.util.Base64
 
 class SupervisorBoardAdapter(
     private var supervisors: List<SupervisorProfile>,
-    private val dbHelper: DatabaseHelper,
     private val onItemClick: (SupervisorProfile) -> Unit
 ) : RecyclerView.Adapter<SupervisorBoardAdapter.ViewHolder>() {
 
@@ -49,42 +46,15 @@ class SupervisorBoardAdapter(
 
         // Hier können Sie ein Bild setzen, wenn verfügbar
         holder.subjectsTextView.text = supervisor.topicCategories.joinToString("\r\n")
-        holder.availabilityTextView.text = holder._view.context.getString( getAvailabilityText(supervisor.status))
+        holder.availabilityTextView.text = holder._view.context.getString( AvailabilityStatus.getAvailabilityText(supervisor.status))
 
         val decodedString: ByteArray = Base64.getDecoder().decode(supervisor.userProfile.picture.toByteArray())
         val decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
         holder.imageView.setImageBitmap(decodedByte)
 
-        holder.availabilityImageView.setImageResource(getAvailabilityFlag(supervisor.status))
+        holder.availabilityImageView.setImageResource(AvailabilityStatus.getAvailabilityFlag(supervisor.status))
     }
 
-    private fun getAvailabilityFlag(status: AvailabilityStatus): Int {
-        return when (status) {
-            AvailabilityStatus.free -> {
-                R.drawable.flag_green
-            }
-            AvailabilityStatus.blocked -> {
-                R.drawable.flag_red
-            }
-            AvailabilityStatus.limited -> {
-                R.drawable.flag_yellow
-            }
-        }
-    }
-
-    private fun getAvailabilityText(status: AvailabilityStatus): Int {
-        return when (status) {
-            AvailabilityStatus.free -> {
-                R.string.availabilityStatus_free
-            }
-            AvailabilityStatus.blocked -> {
-                R.string.availabilityStatus_blocked
-            }
-            AvailabilityStatus.limited -> {
-                R.string.availabilityStatus_limited
-            }
-        }
-    }
     fun updateSupervisors(newSupervisors: List<SupervisorProfile>) {
         supervisors = newSupervisors
         notifyDataSetChanged()

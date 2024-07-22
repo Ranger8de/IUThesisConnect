@@ -41,7 +41,6 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var userImage : ImageView
     private lateinit var textBiography : EditText
     private lateinit var textResearch : EditText
-    private lateinit var textTopicCategories : TextView
     private lateinit var textSpecialisation : TextView
     private lateinit var cardViewLanguage : CardView
     private lateinit var cardViewBiography : CardView
@@ -96,12 +95,13 @@ class ProfileActivity : AppCompatActivity() {
 
         }
         else{
-            supervisorProfile = databaseHelper.getSupervisorProfile(userProfile.id.toInt())
+            supervisorProfile = databaseHelper.getSupervisorProfile(userProfile.id)
         }
 
-        setSupportActionBar(toolBar);
-        supportActionBar?.setDisplayHomeAsUpEnabled(true);
-        supportActionBar?.setDisplayShowHomeEnabled(true);
+        setSupportActionBar(toolBar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        toolBar.setTitleTextColor(getResources().getColor(R.color.black))
         toolBar.setNavigationOnClickListener {
             finish()
         }
@@ -199,21 +199,10 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun setAvailability(status: AvailabilityStatus) {
         supervisorProfile.status = status
-        when (status) {
-            AvailabilityStatus.free -> {
-                imgButton.setImageResource(R.drawable.flag_green)
-                textViewStatus.text = getString(R.string.availabilityStatus_free)
-            }
-            AvailabilityStatus.blocked -> {
-                imgButton.setImageResource(R.drawable.flag_red)
-                textViewStatus.text = getString(R.string.availabilityStatus_blocked)
-            }
-            AvailabilityStatus.limited -> {
-                imgButton.setImageResource(R.drawable.flag_yellow)
-                textViewStatus.text = getString(R.string.availabilityStatus_limited)
-            }
-        }
+        imgButton.setImageResource(AvailabilityStatus.getAvailabilityFlag(status))
+        textViewStatus.text = getString(AvailabilityStatus.getAvailabilityText(status))
     }
+
     private fun setAvailability(status: Int) {
         setAvailability(AvailabilityStatus.entries[status])
     }

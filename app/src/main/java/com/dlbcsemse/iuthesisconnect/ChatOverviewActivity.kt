@@ -2,7 +2,7 @@ package com.dlbcsemse.iuthesisconnect
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -12,11 +12,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.dlbcsemse.iuthesisconnect.helper.DatabaseHelper
 import com.dlbcsemse.iuthesisconnect.model.Chat
 import com.dlbcsemse.iuthesisconnect.model.ChatMessage
-import com.dlbcsemse.iuthesisconnect.model.UserProfile
 
 class ChatOverviewActivity : AppCompatActivity() {
     private lateinit var recycler : RecyclerView
+    private lateinit var toolBar : Toolbar
     private val dbHelper = DatabaseHelper(this)
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -26,12 +28,22 @@ class ChatOverviewActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        toolBar = findViewById(R.id.chatOverviewToolbar)
+        setSupportActionBar(toolBar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        toolBar.setTitleTextColor(getResources().getColor(R.color.black))
+        toolBar.setNavigationOnClickListener {
+            finish()
+        }
+
         val currentUser = dbHelper.getCurrentUser()
 
         recycler = findViewById(R.id.chatOverviewRecyclerViewChatList)
         recycler.layoutManager = LinearLayoutManager(this)
-        val chats: List<Chat> = dbHelper.getChats(currentUser.id.toInt())
-        var chatAdapter = ChatAdapter(chats, currentUser ) {
+        val chats: List<Chat> = dbHelper.getChats(currentUser.id)
+        val chatAdapter = ChatAdapter(chats, currentUser ) {
             clickedItem ->
             val intent = Intent(this, ChatActivity::class.java)
             intent.putExtra("chatId", clickedItem.id)
