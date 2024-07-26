@@ -74,7 +74,7 @@ class MyThesisActivity : ToolbarBaseActivity() {
     private fun createNewThesis(): Thesis {
         return Thesis(
             -1,
-            "Noch nicht begonnen",
+            "In Abstimmung",
             -1,
             -1,
             "Noch nicht erstellt",
