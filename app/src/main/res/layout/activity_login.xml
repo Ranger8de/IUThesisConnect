@@ -87,6 +87,8 @@
         android:text="@string/next"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/loginEditTextPassword" />
+        app:layout_constraintTop_toBottomOf="@+id/loginEditTextPassword"
+        android:backgroundTint="#4DFBFF"
+        android:textColor="#000000"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

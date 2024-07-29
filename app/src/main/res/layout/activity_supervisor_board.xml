@@ -129,7 +129,9 @@
         android:text="Filter zurücksetzen"
         app:layout_constraintTop_toBottomOf="@id/filterScrollView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        android:backgroundTint="#4DFBFF"
+        android:textColor="#000000"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/dashboardRecyclerView"
