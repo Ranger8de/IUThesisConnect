@@ -16,4 +16,7 @@
     <string name="research_fields">Research Fields</string>
     <string name="send">Send</string>
     <string name="iu">iu</string>
+    <string name="fcm_channel_name">IuThesisConnectChannel</string>
+    <string name="fcm_channel_description">Chanel for receiving fcm messages</string>
+    <string name="fcm_message_title">IU Thesis Connect - New Message</string>
 </resources>

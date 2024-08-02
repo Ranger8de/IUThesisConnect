@@ -1,8 +1,12 @@
 package com.dlbcsemse.iuthesisconnect
 
 import android.annotation.SuppressLint
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -13,6 +17,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.dlbcsemse.iuthesisconnect.helper.AzureAdHelper
 import com.dlbcsemse.iuthesisconnect.helper.DatabaseHelper
 import com.dlbcsemse.iuthesisconnect.model.DashboardUserType
+import com.google.firebase.messaging.FirebaseMessaging
 import java.util.UUID
 
 class LoginActivity : AppCompatActivity() {
@@ -67,11 +72,34 @@ class LoginActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // ============================ NEUE FUNKTIONEN MARC ============================
-
         val dbHelper = DatabaseHelper(this)
         dbHelper.insertInitialUsers()
         dbHelper.ensureAllStudentsHaveThesis()
+
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (!task.isSuccessful){
+                Log.w("FCM", "Fetching FCM registration token failed", task.exception)
+                return@addOnCompleteListener
+            }
+
+            val token = task.result
+            Log.w("FCM", token)
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Erstellen Sie den NotificationChannel
+            val name = getString(R.string.fcm_channel_name)
+            val descriptionText = getString(R.string.fcm_channel_description)
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(name, name, importance).apply {
+                description = descriptionText
+            }
+
+            // Registrieren Sie den Kanal im System
+            val notificationManager: NotificationManager =
+                getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
 
     }
 }
